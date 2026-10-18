@@ -1,0 +1,701 @@
+import "./style.css";
+import { World, drawPerson } from "./art";
+import { Ambience } from "./audio";
+import {
+  groundPosition,
+  choose,
+  decodeSave,
+  encodeSave,
+  lockReason,
+  MANUAL_KEY,
+  newGame,
+  SAVE_KEY,
+  travel,
+  unlock,
+} from "./engine";
+import {
+  canEmbers,
+  canWitness,
+  chapter,
+  dialogues,
+  endings,
+  evidenceCount,
+  flag,
+  has,
+  items,
+  quests,
+  scenes,
+} from "./story";
+import {
+  L,
+  type EndingId,
+  type Hotspot,
+  type ItemId,
+  type Lang,
+  type SceneId,
+  type Text,
+} from "./types";
+
+const icons: Record<string, string> = {
+  boat: '<path d="M3 15h18l-4 5H7zM11 3v11m3-10 6 9h-6z"/>',
+  book: '<path d="M3 4h6c2 0 3 1 3 3v14c0-2-1-3-3-3H3zm18 0h-6c-2 0-3 1-3 3v14c0-2 1-3 3-3h6z"/>',
+  bag: '<path d="M7 8V6a5 5 0 0 1 10 0v2M4 8h16l1 13H3zM8 12h8"/>',
+  map: '<path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2zm6-2v16m6-14v16"/>',
+  sound:
+    '<path d="M4 9h4l5-4v14l-5-4H4zm12-2a7 7 0 0 1 0 10m3-13a11 11 0 0 1 0 16"/>',
+  mute: '<path d="M4 9h4l5-4v14l-5-4H4zm13 0 5 6m0-6-5 6"/>',
+  save: '<path d="M4 3h13l4 4v14H3V3zm3 0v7h10V3M7 21v-7h10v7"/>',
+  settings:
+    '<circle cx="12" cy="12" r="4"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/>',
+  arrow: '<path d="M5 12h14m-5-5 5 5-5 5"/>',
+  close: '<path d="m5 5 14 14M5 19 19 5"/>',
+  check: '<path d="m5 12 4 4L19 6"/>',
+  lock: '<rect x="5" y="10" width="14" height="11" rx="1"/><path d="M8 10V6a4 4 0 0 1 8 0v4m-4 5v3"/>',
+  pin: '<path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z"/><circle cx="12" cy="10" r="2"/>',
+  moon: '<path d="M20 15A9 9 0 0 1 9 3a9 9 0 1 0 11 12Z"/>',
+  rain: '<path d="M5 14a5 5 0 0 1 0-10 6 6 0 0 1 11 0 5 5 0 0 1 2 10M7 17l-2 4m8-4-2 4m8-4-2 4"/>',
+  eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+  letter:
+    '<rect x="3" y="5" width="18" height="14"/><path d="m3 5 9 8 9-8m-18 14 6-6m12 6-6-6"/>',
+  key: '<circle cx="8" cy="8" r="5"/><path d="m12 12 9 9m-5-5 3-3m-6 0 3-3"/>',
+  photo:
+    '<rect x="3" y="3" width="18" height="18"/><circle cx="9" cy="8" r="2"/><path d="m4 19 5-6 4 3 3-6 5 9"/>',
+  paper: '<path d="M5 2h10l4 4v16H5zm10 0v5h4M8 11h8m-8 4h8m-8 4h5"/>',
+  ticket:
+    '<path d="M3 5h18v5a2 2 0 0 0 0 4v5H3v-5a2 2 0 0 0 0-4zm13 0v3m0 2v4m0 2v3"/>',
+  help: '<circle cx="12" cy="12" r="10"/><path d="M9 8a3 3 0 0 1 6 0c0 3-3 2-3 6m0 3v1"/>',
+};
+const icon = (name: string, cls = "") =>
+  `<svg class="icon ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.paper}</svg>`;
+const escape = (s: string) =>
+  s.replace(
+    /[&<>"']/g,
+    (ch) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        ch
+      ]!,
+  );
+function storageGet(key: string) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+function storageSet(key: string, value: string) {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+let lang: Lang = storageGet("wudu-lang") === "en" ? "en" : "zh";
+const t = (value: Text) => escape(value[lang]);
+const tr = (zh: string, en: string) => (lang === "zh" ? zh : en);
+const loaded = decodeSave(storageGet(SAVE_KEY));
+let state = loaded?.state ?? newGame();
+let currentDialogue: string | null =
+  loaded?.dialogue ?? (flag(state, "intro") ? null : "intro");
+let modal: string | null = null;
+let selectedItem: ItemId = "letter";
+let returnFocus: HTMLElement | null = null;
+let toastTimer = 0;
+let motion =
+  storageGet("wudu-motion") !== "off" &&
+  !matchMedia("(prefers-reduced-motion: reduce)").matches;
+let collected: EndingId[] = [];
+try {
+  const data = JSON.parse(storageGet("wudu-endings") || "[]");
+  if (Array.isArray(data))
+    collected = data.filter((e: EndingId) => Object.hasOwn(endings, e));
+} catch {
+  /* recover from corrupt collection */
+}
+const ambience = new Ambience();
+
+document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
+  <header class="site-header" id="header"></header>
+  <main class="shell">
+    <section class="chapter-heading" id="heading"></section>
+    <div class="game-layout">
+      <div class="main-column">
+        <section class="scene-frame" aria-label="Game world">
+          <div class="scene-toolbar" id="scene-toolbar"></div>
+          <div class="stage" id="stage">
+            <canvas id="world" tabindex="0" aria-label="Pixel game scene"></canvas>
+            <div class="stage-atmosphere" aria-hidden="true"></div>
+            <div class="scene-caption" id="scene-caption"></div>
+            <div id="hotspots"></div>
+            <div class="scene-bottom" id="scene-bottom"></div>
+          </div>
+        </section>
+        <section class="dialogue-panel" id="dialogue" aria-label="Story dialogue"></section>
+        <div class="control-strip" id="controls"></div>
+      </div>
+      <aside class="sidebar" id="sidebar"></aside>
+    </div>
+    <footer class="footer" id="footer"></footer>
+  </main>
+  <div id="modal-root"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+`;
+const world = new World(document.querySelector("#world")!);
+world.change(state.scene, state.x, state.y);
+world.motion = motion;
+world.onPosition = (x, y) => {
+  state.x = x;
+  state.y = y;
+};
+function notify(text: string) {
+  const el = document.querySelector("#toast")!;
+  el.textContent = text;
+  el.classList.add("visible");
+  window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => el.classList.remove("visible"), 3500);
+}
+let storageWarningShown = false;
+function persist(manual = false) {
+  const ok = storageSet(
+    manual ? MANUAL_KEY : SAVE_KEY,
+    encodeSave(state, currentDialogue),
+  );
+  if (manual)
+    notify(
+      ok
+        ? tr("已保存当前进度", "Progress saved")
+        : tr(
+            "浏览器未允许保存，请检查存储设置",
+            "Storage unavailable. Check browser settings.",
+          ),
+    );
+  else if (!ok && !storageWarningShown) {
+    notify(
+      tr(
+        "自动保存不可用；请允许浏览器本地存储",
+        "Autosave unavailable. Please allow local storage.",
+      ),
+    );
+    storageWarningShown = true;
+  }
+  return ok;
+}
+function render() {
+  const scene = scenes.find((s) => s.id === state.scene)!;
+  const ch = chapter(state);
+  document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+  document.title = tr("雾渡 · The Other Shore", "The Other Shore · 雾渡");
+  document.querySelector("#header")!.innerHTML = `
+    <a class="brand" href="#" data-action="home" aria-label="${tr("雾渡首页", "The Other Shore home")}"><span class="brand-mark">${icon("boat")}</span><span class="brand-name">雾渡<span>THE OTHER SHORE</span></span></a>
+    <nav class="main-nav" aria-label="${tr("主导航", "Main navigation")}"><button class="active" data-action="story">${tr("故 事", "Story")}<span class="nav-dot"></span></button><button data-action="journal">${tr("手 记", "Journal")}</button><button data-action="endings">${tr("余 音", "Endings")}<small>${collected.length}/4</small></button></nav>
+    <div class="header-tools"><button class="lang-button" data-action="lang" aria-label="${tr("Switch to English", "切换到中文")}"><span class="${lang === "zh" ? "selected" : ""}">中</span><span class="separator">/</span><span class="${lang === "en" ? "selected" : ""}">EN</span></button><span class="tool-divider"></span><button class="icon-button" data-action="audio" aria-label="${tr("切换环境音", "Toggle ambience")}" title="${tr("环境音（默认关闭）", "Ambience (off by default)")}">${icon(ambience.enabled ? "sound" : "mute")}</button><button class="icon-button" data-action="settings" aria-label="${tr("设置与存档", "Settings and saves")}">${icon("settings")}</button></div>
+  `;
+  document.querySelector("#heading")!.innerHTML =
+    `<div><div class="eyebrow"><span></span>${t(ch.title)}</div><h1>${t(scene.subtitle)}<span class="heading-seal">${tr("沪", "沪")}</span></h1><p>${t(scene.description)}</p></div><div class="heading-meta"><span>SHANGHAI · 1968</span><span>${icon("rain")}${tr("深秋 · 夜雨", "LATE AUTUMN · RAIN")}</span></div>`;
+  document.querySelector("#scene-toolbar")!.innerHTML =
+    `<div>${icon("pin")}<span>${t(scene.name)}</span><span class="toolbar-slash">/</span><small>${tr("上海", "SHANGHAI")}</small></div><button data-action="map">${icon("map")}${tr("街区地图", "District map")}<kbd>M</kbd></button>`;
+  document.querySelector("#scene-caption")!.innerHTML =
+    `<span class="scene-number">0${scenes.indexOf(scene) + 1} — ${tr("夜行", "NIGHT WALK")}</span><span>${t(scene.name)}</span>`;
+  document.querySelector("#scene-bottom")!.innerHTML =
+    `<span class="night-clock">${icon("moon")}${scene.time}<span class="clock-divider">·</span>${tr("长夜未明", "BEFORE DAYBREAK")}</span><span class="exploration-tag"><i></i>${currentDialogue ? tr("对话中", "IN CONVERSATION") : tr("自由探索", "EXPLORING")}</span>`;
+  document.querySelector("#hotspots")!.innerHTML = scene.hotspots
+    .map(
+      (h) =>
+        `<button class="hotspot ${h.kind} ${currentDialogue ? "subdued" : ""}" style="left:${(h.x / 720) * 100}%;top:${((h.y - 23) / 400) * 100}%" data-hotspot="${h.id}" aria-label="${t(h.label)}" ${currentDialogue || state.ending ? "disabled" : ""}><span class="hotspot-symbol">${h.kind === "person" ? "···" : h.kind === "exit" ? icon("arrow") : icon("eye")}</span><span class="hotspot-label">${t(h.label)}</span></button>`,
+    )
+    .join("");
+  renderDialogue();
+  renderSidebar();
+  document.querySelector("#controls")!.innerHTML =
+    `<div><span><kbd>W</kbd><span class="key-stack"><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span> / ${tr("方向键 移动", "Arrows to move")}</span><span><kbd>E</kbd>${tr("交互", "Interact")}</span><span><kbd>1–5</kbd>${tr("选择", "Choose")}</span></div><button data-action="help">${icon("help")}${tr("游玩指南", "How to play")}</button>`;
+  document.querySelector("#footer")!.innerHTML =
+    `<span>${tr("一个关于记忆、选择与未归之人的故事。", "A story of memory, choice, and those yet to return.")}</span><span class="autosave"><i></i>${tr("进度自动保存于此浏览器", "Progress saved in this browser")}</span>`;
+  document
+    .querySelector("#world")!
+    .setAttribute(
+      "aria-label",
+      tr(
+        `${scene.name.zh}像素场景。WASD 或方向键移动，E 交互。`,
+        `${scene.name.en} pixel scene. WASD or arrow keys to move. E to interact.`,
+      ),
+    );
+  world.enabled = !currentDialogue && !modal && !state.ending;
+  if (modal) renderModal();
+}
+function renderDialogue() {
+  const el = document.querySelector("#dialogue")!;
+  if (state.ending) {
+    const e = endings[state.ending];
+    el.innerHTML = `<div class="quiet-state"><div class="quiet-icon">${icon("boat")}</div><div><span class="eyebrow">${tr("故事的余音", "AFTER THE STORY")} · ${e.number}</span><h2>${t(e.title)}</h2><p>${t(e.subtitle)}</p></div><button class="primary-button" data-action="ending">${tr("阅读结局", "Read ending")}${icon("arrow")}</button></div>`;
+    return;
+  }
+  if (!currentDialogue) {
+    const q = quests(state).find((q) => !q.done)!;
+    el.innerHTML = `<div class="quiet-state"><div class="quiet-icon">${icon("eye")}</div><div><span class="eyebrow">${tr("巷陌之间", "BETWEEN THE ALLEYS")}</span><h2>${tr("雨声里，还有未说完的话。", "The rain has more to tell.")}</h2><p>${tr("点击场景中的标记，或走近后按 E 交互。", "Click a scene marker, or walk nearby and press E.")}</p></div></div><div class="next-objective">${icon("book")}<span>${tr("此刻的线索", "CURRENT LEAD")}</span><p>${t(q.detail)}</p><button data-action="journal">${icon("arrow")}</button></div>`;
+    return;
+  }
+  const d = dialogues[currentDialogue];
+  el.innerHTML = `<div class="dialogue-top"><div class="speaker-badge"><canvas class="portrait" width="56" height="56" aria-hidden="true"></canvas><div><h2>${t(d.speaker)}</h2><span>${d.role ? t(d.role) : d.portrait === "narrator" ? tr("所见 · 所感", "OBSERVATION") : tr("雨夜的低语", "A VOICE IN THE RAIN")}</span></div></div><span class="dialogue-kicker">${tr("一九六八 · 上海", "SHANGHAI · 1968")}</span></div><div class="dialogue-text" aria-live="polite">${t(
+    d.text,
+  )
+    .split("\n")
+    .map((p) => `<p>${p}</p>`)
+    .join(
+      "",
+    )}</div><div class="choices">${d.choices.map((c, i) => (!c.requires || c.requires(state) ? `<button class="choice" data-choice="${i}"><span class="choice-number">0${i + 1}</span><span>${t(c.label)}</span>${icon("arrow")}</button>` : "")).join("")}</div>${currentDialogue === "finale" ? `<div class="ending-hints">${tr("结局线索", "ENDING CLUES")} · ${tr("证据", "Evidence")} ${evidenceCount(state)}/3 · ${tr("信任", "Trust")} ${flag(state, "trusted") ? "✓" : "—"} · ${tr("守护", "Care")} ${flag(state, "protected") ? "✓" : "—"} · ${tr("记忆", "Memory")} ${flag(state, "remembered") ? "✓" : "—"} <button data-action="endings">${tr("查看条件", "View conditions")}</button></div>` : ""}`;
+  const portrait = el.querySelector<HTMLCanvasElement>(".portrait")!;
+  const c = portrait.getContext("2d")!;
+  c.imageSmoothingEnabled = false;
+  c.fillStyle = "#252d27";
+  c.fillRect(0, 0, 56, 56);
+  if (d.portrait === "narrator") {
+    c.strokeStyle = "#8c977c";
+    c.strokeRect(17, 13, 22, 29);
+    c.strokeRect(21, 17, 14, 21);
+  } else drawPerson(c, 28, 60, d.portrait || "shen", 0, 1, 1.45);
+}
+function renderSidebar() {
+  const qs = quests(state),
+    done = qs.filter((q) => q.done).length,
+    current = qs.find((q) => !q.done),
+    scene = scenes.find((s) => s.id === state.scene)!;
+  document.querySelector("#sidebar")!.innerHTML = `
+    <section class="journal-card"><div class="section-label">${icon("book")}<h2>${tr("旅人手记", "TRAVELER’S JOURNAL")}</h2><span>0${done}<small>/ 06</small></span></div><div class="progress-track"><span style="width:${(done / 6) * 100}%"></span></div><div class="current-quest"><div class="quest-eyebrow"><span class="tiny-diamond"></span>${tr("当前线索", "CURRENT LEAD")}</div><h3>${current ? t(current.title) : tr("长夜已渡", "The night is behind you")}</h3><p>${current ? t(current.detail) : tr("在余音中重温你的选择。", "Revisit your choices in Endings.")}</p></div><div class="quest-list">${qs
+      .slice(0, 5)
+      .map(
+        (q) =>
+          `<div class="quest-item ${q.done ? "done" : ""}"><span>${q.done ? icon("check") : ""}</span>${t(q.title)}</div>`,
+      )
+      .join(
+        "",
+      )}</div><button class="text-link" data-action="journal">${tr("翻开完整手记", "Open the journal")}${icon("arrow")}</button></section>
+    <section class="inventory-card"><div class="section-label">${icon("bag")}<h2>${tr("随身之物", "BELONGINGS")}</h2><span>${String(state.inventory.length).padStart(2, "0")}<small>/ 07</small></span></div><div class="inventory-slots">${state.inventory
+      .slice(0, 4)
+      .map(
+        (id) =>
+          `<button class="item-slot" data-item="${id}" title="${t(items[id].name)}" aria-label="${t(items[id].name)}">${icon(items[id].icon)}</button>`,
+      )
+      .join(
+        "",
+      )}${Array.from({ length: Math.max(0, 4 - state.inventory.length) }, () => '<span class="item-slot empty">·</span>').join("")}</div><p class="inventory-caption">${tr("旧物无言，却记得一切。", "Silent things remember everything.")}</p><button class="text-link" data-action="bag">${tr("查看行囊", "Open belongings")}<kbd>I</kbd></button></section>
+    <section class="places-card"><div class="section-label">${icon("map")}<h2>${tr("雨夜行迹", "PLACES IN THE RAIN")}</h2></div><div class="places-list">${scenes.map((s, i) => `<button class="place ${s.id === scene.id ? "current" : ""} ${unlock(state, s.id) ? "" : "locked"}" data-scene="${s.id}" data-locked="${!unlock(state, s.id)}" aria-label="${t(s.name)}${unlock(state, s.id) ? "" : " · " + t(lockReason(s.id))}"><span class="place-index">0${i + 1}</span><span>${t(s.name)}</span>${s.id === scene.id ? '<span class="here-dot"></span>' : unlock(state, s.id) ? icon("arrow") : icon("lock")}</button>`).join("")}</div></section>
+    <div class="sidebar-quote"><span>“</span><p>${tr("有些东西并不是消失了，<br>只是还没有到岸。", "Some things have not vanished.<br>They have not reached the shore.")}</p><small>— ${tr("未寄出的信", "THE UNSENT LETTER")}</small></div>
+  `;
+}
+function interact(h: Hotspot) {
+  if (currentDialogue || modal || state.ending) return;
+  if (h.target) go(h.target);
+  else if (h.dialogue) {
+    currentDialogue = h.dialogue(state);
+    world.target = null;
+    world.keys.clear();
+    persist();
+    render();
+  }
+}
+function go(id: SceneId) {
+  if (state.ending) {
+    openModal("ending");
+    return;
+  }
+  if (currentDialogue) {
+    notify(tr("请先完成眼前的对话", "Finish the current conversation first"));
+    return;
+  }
+  if (!unlock(state, id)) {
+    notify(t(lockReason(id)));
+    return;
+  }
+  state = travel(state, id);
+  world.change(id, state.x, state.y);
+  persist();
+  closeModal(false);
+  render();
+  const stage = document.querySelector("#stage")!;
+  stage.classList.remove("arriving");
+  if (motion) {
+    void (stage as HTMLElement).offsetWidth;
+    stage.classList.add("arriving");
+  }
+}
+function makeChoice(index: number) {
+  if (!currentDialogue || modal) return;
+  const prev = state.inventory.length;
+  const result = choose(state, currentDialogue, index);
+  state = result.state;
+  currentDialogue = result.next;
+  if (state.inventory.length > prev)
+    notify(
+      `${tr("获得", "Received")} · ${state.inventory
+        .slice(prev)
+        .map((i) => items[i].name[lang])
+        .join(" / ")}`,
+    );
+  if (state.ending && !collected.includes(state.ending)) {
+    collected.push(state.ending);
+    storageSet("wudu-endings", JSON.stringify(collected));
+  }
+  persist();
+  render();
+  if (state.ending) openModal("ending");
+  else if (currentDialogue)
+    document
+      .querySelector<HTMLButtonElement>("[data-choice]")
+      ?.focus({ preventScroll: true });
+  else
+    document
+      .querySelector<HTMLCanvasElement>("#world")!
+      .focus({ preventScroll: true });
+}
+function openModal(name: string) {
+  if (!modal) returnFocus = document.activeElement as HTMLElement;
+  modal = name;
+  world.enabled = false;
+  world.keys.clear();
+  world.target = null;
+  renderModal();
+  document.body.classList.add("modal-open");
+  document
+    .querySelector<HTMLButtonElement>(".modal-close")
+    ?.focus({ preventScroll: true });
+}
+function closeModal(restore = true) {
+  modal = null;
+  document.querySelector("#modal-root")!.innerHTML = "";
+  document.body.classList.remove("modal-open");
+  world.enabled = !currentDialogue && !state.ending;
+  if (restore && returnFocus?.isConnected)
+    returnFocus.focus({ preventScroll: true });
+}
+function renderModal() {
+  if (!modal) return;
+  let content = "",
+    title = "",
+    eyebrow = "",
+    wide = false;
+  if (modal === "journal") {
+    title = tr("旅人手记", "Traveler’s journal");
+    eyebrow = "NOTES FROM A LONG NIGHT";
+    content = `<p class="modal-intro">${tr("写下的东西，就不再只属于黑夜。", "What is written no longer belongs only to the night.")}</p><div class="journal-entries">${quests(
+      state,
+    )
+      .map(
+        (q, i) =>
+          `<article class="journal-entry ${q.done ? "complete" : ""}"><span>${q.done ? icon("check") : String(i + 1).padStart(2, "0")}</span><div><h3>${t(q.title)}</h3><p>${t(q.detail)}</p></div><small>${q.done ? tr("已完成", "DONE") : tr("待寻", "OPEN")}</small></article>`,
+      )
+      .join(
+        "",
+      )}</div><h3 class="subheading">${tr("沿途记下的话", "Notes along the way")}</h3><div class="memory-log">${state.log.length ? state.log.map((n, i) => `<p><span>${String(i + 1).padStart(2, "0")}</span>${t(n)}</p>`).join("") : `<p>${tr("第一行，留给今夜。", "The first line is waiting for tonight.")}</p>`}</div>`;
+  } else if (modal === "bag") {
+    title = tr("随身之物", "Belongings");
+    eyebrow = `POCKETS OF MEMORY · ${state.inventory.length}/7`;
+    if (!state.inventory.includes(selectedItem))
+      selectedItem = state.inventory[0];
+    content = `<p class="modal-intro">${tr("线索会在对话中自动使用。点击物品，重读它记下的故事。", "Clues are used automatically in conversations. Select an item to read its story.")}</p><div class="bag-grid">${state.inventory.map((id) => `<button class="bag-item ${id === selectedItem ? "selected" : ""}" data-select-item="${id}">${icon(items[id].icon)}<span>${t(items[id].name)}</span></button>`).join("")}</div><div class="item-detail"><div>${icon(items[selectedItem].icon)}</div><h3>${t(items[selectedItem].name)}</h3><p>${t(items[selectedItem].description)}</p></div>`;
+  } else if (modal === "map") {
+    title = tr("上海 · 夜行地图", "Shanghai · Night map");
+    eyebrow = "SIX PLACES, ONE LONG NIGHT";
+    wide = true;
+    content = `<p class="modal-intro">${tr("点击已开放的地点前往。故事进展会解锁新的街区；可以随时回访。", "Choose an open location. Follow the story to unlock the district; revisit places at any time.")}</p><div class="district-map">${scenes.map((s, i) => `<button class="map-place ${unlock(state, s.id) ? "" : "locked"} ${state.scene === s.id ? "selected" : ""}" data-scene="${s.id}" data-locked="${!unlock(state, s.id)}" aria-label="${t(s.name)}${unlock(state, s.id) ? "" : " · " + t(lockReason(s.id))}"><span class="map-number">0${i + 1}</span>${icon(unlock(state, s.id) ? "pin" : "lock")}<h3>${t(s.name)}</h3><p>${unlock(state, s.id) ? t(s.subtitle) : t(lockReason(s.id))}</p><small>${state.scene === s.id ? tr("你在这里", "YOU ARE HERE") : state.visited.includes(s.id) ? tr("再次前往", "REVISIT") : unlock(state, s.id) ? tr("前往探索", "EXPLORE") : tr("尚未开放", "NOT YET OPEN")}</small></button>`).join("")}</div>`;
+  } else if (modal === "endings") {
+    title = tr("长夜的余音", "Echoes of the night");
+    eyebrow = `FOUR WAYS TO REACH THE SHORE · ${collected.length}/4`;
+    const conditions: Record<EndingId, Text> = {
+      witness: L(
+        "收集校样、名册与证言，并与林岚建立信任。",
+        "Collect the proof, register, and testimony, and trust Lin Lan.",
+      ),
+      departure: L(
+        "获得转运名册与末班船票。",
+        "Obtain the transfer register and last ferry ticket.",
+      ),
+      silence: L(
+        "到达江岸后，选择烧毁证据。",
+        "Reach the shore, then choose to burn the evidence.",
+      ),
+      embers: L(
+        "获得名册、答应保护医生，并给顾先生看旧屋合影。",
+        "Obtain the register, protect the doctor, and show Mr. Gu the photograph.",
+      ),
+    };
+    content = `<p class="modal-intro">${tr("没有完美的选择。只有你愿意带到天亮的东西。结局收集不会因重新开始而清除。", "There is no perfect choice. Only what you choose to carry into the dawn. Discovered endings survive a new game.")}</p><div class="endings-grid">${(Object.keys(endings) as EndingId[]).map((id) => `<article class="ending-tile ${collected.includes(id) ? "discovered" : ""}"><span>${endings[id].number}</span><div><h3>${collected.includes(id) ? t(endings[id].title) : tr("未抵达的岸", "An unreached shore")}</h3><p>${t(conditions[id])}</p><small>${collected.includes(id) ? tr("已解锁", "DISCOVERED") : (id === "witness" && canWitness(state)) || (id === "embers" && canEmbers(state)) || (id === "departure" && has(state, "ticket") && has(state, "record")) || (id === "silence" && has(state, "record")) ? tr("已满足条件 · 在江岸选择", "AVAILABLE AT THE SHORE") : tr("尚待探索", "STILL TO BE FOUND")}</small></div></article>`).join("")}</div>`;
+  } else if (modal === "ending") {
+    const e = endings[state.ending!];
+    title = t(e.title);
+    eyebrow = `ENDING ${e.number} / IV · ${tr("长夜的余音", "AN ECHO OF THE NIGHT")}`;
+    content = `<div class="ending-art">${icon("boat")}<span>彼 岸</span></div><p class="ending-subtitle">${t(e.subtitle)}</p><div class="ending-prose">${t(
+      e.text,
+    )
+      .split("\n")
+      .map((p) => `<p>${p}</p>`)
+      .join(
+        "",
+      )}</div><div class="ending-actions"><button class="primary-button" data-action="return-choice">${tr("回到最后的选择", "Return to the final choice")}${icon("arrow")}</button><button class="secondary-button" data-action="endings">${tr("查看所有余音", "View all endings")}</button></div><p class="fiction-note">${tr("本作人物、地点细节及具体事件均为虚构。以真实历史时期为背景，献给被记住的人。", "The characters, specific events, and local places are fictional. Set against a real historical period, this story is dedicated to those remembered.")}</p>`;
+  } else if (modal === "settings") {
+    title = tr("灯下小憩", "A pause beneath the lamp");
+    eyebrow = "SETTINGS & SAVED MEMORIES";
+    const save = decodeSave(storageGet(MANUAL_KEY));
+    content = `<div class="settings-row"><div><h3>${tr("语言", "Language")}</h3><p>中文 / English</p></div><button class="secondary-button" data-action="lang">${lang === "zh" ? "English" : "中文"}</button></div><div class="settings-row"><div><h3>${tr("雨声与环境音", "Rain & ambience")}</h3><p>${tr("原创合成环境音 · 默认关闭", "Original synthesized ambience · off by default")}</p></div><button class="toggle ${ambience.enabled ? "on" : ""}" data-action="audio" aria-pressed="${ambience.enabled}">${ambience.enabled ? tr("开启", "On") : tr("关闭", "Off")}</button></div><div class="settings-row"><div><h3>${tr("雨景动态", "Rain animation")}</h3><p>${tr("关闭以减少画面动态", "Turn off for reduced motion")}</p></div><button class="toggle ${motion ? "on" : ""}" data-action="motion" aria-pressed="${motion}">${motion ? tr("开启", "On") : tr("关闭", "Off")}</button></div><div class="save-panel"><h3>${tr("手动存档", "Manual save")}</h3><p>${save ? `${t(scenes.find((s) => s.id === save.state.scene)!.name)} · ${escape(new Date(save.savedAt).toLocaleString(lang === "zh" ? "zh-CN" : "en-US"))}` : tr("尚无手动存档。自动存档始终在后台进行。", "No manual save yet. Autosave runs in the background.")}</p><div><button class="primary-button" data-action="save">${icon("save")}${tr("保存进度", "Save progress")}</button><button class="secondary-button" data-action="load" ${save ? "" : "disabled"}>${tr("读取存档", "Load save")}</button></div></div><button class="danger-button" data-action="reset">${tr("重新开始故事", "Start a new story")}</button>`;
+  } else if (modal === "reset" || modal === "load") {
+    const reset = modal === "reset";
+    title = reset
+      ? tr("重新走进雨里？", "Step into the rain again?")
+      : tr("回到保存的那一刻？", "Return to your saved moment?");
+    eyebrow = "A MOMENT TO CHOOSE";
+    content = `<p class="modal-intro">${reset ? tr("当前自动进度将被新故事覆盖。手动存档和已收集的结局会保留。", "A new story will replace the current autosave. Your manual save and discovered endings will remain.") : tr("当前自动进度将由手动存档替换。", "Your manual save will replace the current autosaved progress.")}</p><div class="confirm-actions"><button class="primary-button" data-action="${reset ? "confirm-reset" : "confirm-load"}">${tr("确认", "Confirm")}</button><button class="secondary-button" data-action="settings">${tr("取消", "Cancel")}</button></div>`;
+  } else {
+    title = tr("在雨夜中行走", "Walking through the night");
+    eyebrow = "A SMALL GUIDE";
+    content = `<p class="modal-intro">${tr("《雾渡》是一部约 20–35 分钟的原创叙事 RPG 原型。没有战斗，也没有倒计时。可以慢慢阅读，反复走访。", "The Other Shore is an original narrative RPG prototype, about 20–35 minutes long. There is no combat or countdown. Read at your own pace and revisit freely.")}</p><div class="help-rows"><p><kbd>WASD / ↑↓←→</kbd>${tr("在场景的街道或地板上移动", "Move along the street or floor")}</p><p><kbd>E</kbd>${tr("与附近人物、物件或出口交互", "Interact with a nearby person, object, or exit")}</p><p><kbd>1–5</kbd>${tr("选择相应对话；空格推进单选段落", "Choose a dialogue option; Space advances single-choice passages")}</p><p><kbd>J / I / M</kbd>${tr("打开手记 / 行囊 / 地图", "Open journal / belongings / map")}</p><p><kbd>Esc</kbd>${tr("关闭菜单；对话需要做出选择", "Close a menu; dialogue requires a choice")}</p></div><p class="modal-intro">${tr("鼠标或触屏：点击场景标记交互，点击地面移动，点击右侧地点旅行。物品会自动参与对话与结局判断。场景时刻是章节氛围，不是游戏计时器。", "Mouse or touch: select markers to interact, the ground to walk, or a location to travel. Items are used automatically by dialogue and endings. Scene times convey atmosphere; they are not a timer.")}</p><p class="fiction-note">${tr("背景：中国文化大革命时期，1968 年的上海。沈砚、沈泊、林岚及所有具体事件均为原创虚构。包含政治迫害、失踪与创伤的非血腥描写。", "Setting: Shanghai in 1968, during China’s Cultural Revolution. Shen Yan, Shen Bo, Lin Lan, and all specific events are original fiction. Contains non-graphic depictions of political persecution, disappearance, and trauma.")}</p>`;
+  }
+  document.querySelector("#modal-root")!.innerHTML =
+    `<div class="modal-backdrop"><section class="modal ${wide ? "wide" : ""} ${modal === "ending" ? "ending-modal" : ""}" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="icon-button modal-close" data-action="close" aria-label="${tr("关闭", "Close")}">${icon("close")}</button><span class="eyebrow">${eyebrow}</span><h2 id="modal-title">${title}</h2>${content}</section></div>`;
+}
+
+async function action(name: string) {
+  if (name === "close") {
+    closeModal();
+    return;
+  }
+  if (name === "lang") {
+    lang = lang === "zh" ? "en" : "zh";
+    storageSet("wudu-lang", lang);
+    render();
+    return;
+  }
+  if (name === "audio") {
+    try {
+      await ambience.toggle();
+      render();
+    } catch {
+      notify(
+        tr("此浏览器无法播放环境音", "Audio is unavailable in this browser"),
+      );
+    }
+    return;
+  }
+  if (name === "motion") {
+    motion = !motion;
+    world.motion = motion;
+    storageSet("wudu-motion", motion ? "on" : "off");
+    renderModal();
+    return;
+  }
+  if (name === "save") {
+    persist(true);
+    renderModal();
+    return;
+  }
+  if (name === "confirm-load") {
+    const save = decodeSave(storageGet(MANUAL_KEY));
+    if (!save) {
+      notify(tr("存档无法读取", "The save could not be read"));
+      return;
+    }
+    state = save.state;
+    currentDialogue = save.dialogue;
+    world.change(state.scene, state.x, state.y);
+    closeModal(false);
+    persist();
+    render();
+    notify(tr("已恢复手动存档", "Manual save restored"));
+    if (state.ending) openModal("ending");
+    return;
+  }
+  if (name === "confirm-reset") {
+    state = newGame();
+    currentDialogue = "intro";
+    world.change("lane");
+    closeModal(false);
+    persist();
+    render();
+    return;
+  }
+  if (name === "return-choice") {
+    state.ending = null;
+    currentDialogue = "finale";
+    closeModal(false);
+    persist();
+    render();
+    return;
+  }
+  if (name === "home" || name === "story") {
+    closeModal();
+    window.scrollTo({ top: 0, behavior: motion ? "smooth" : "instant" });
+    return;
+  }
+  openModal(name);
+}
+document.addEventListener("click", (event) => {
+  const target = event.target as HTMLElement;
+  const a = target.closest<HTMLElement>("[data-action]");
+  if (a) {
+    event.preventDefault();
+    void action(a.dataset.action!);
+    return;
+  }
+  const choice = target.closest<HTMLElement>("[data-choice]");
+  if (choice) {
+    makeChoice(Number(choice.dataset.choice));
+    return;
+  }
+  const hs = target.closest<HTMLElement>("[data-hotspot]");
+  if (hs) {
+    if (currentDialogue || modal) return;
+    const h = scenes
+      .find((s) => s.id === state.scene)!
+      .hotspots.find((h) => h.id === hs.dataset.hotspot)!;
+    world.move(h.x, h.y + 19, () => interact(h));
+    return;
+  }
+  const scene = target.closest<HTMLElement>("[data-scene]");
+  if (scene) {
+    go(scene.dataset.scene as SceneId);
+    return;
+  }
+  const item = target.closest<HTMLElement>("[data-item]");
+  if (item) {
+    selectedItem = item.dataset.item as ItemId;
+    openModal("bag");
+    return;
+  }
+  const select = target.closest<HTMLElement>("[data-select-item]");
+  if (select) {
+    selectedItem = select.dataset.selectItem as ItemId;
+    renderModal();
+    document
+      .querySelector<HTMLButtonElement>(`[data-select-item="${selectedItem}"]`)
+      ?.focus();
+    return;
+  }
+  if (target.classList.contains("modal-backdrop")) closeModal();
+});
+document.querySelector("#stage")!.addEventListener("pointerdown", (event) => {
+  if ((event.target as HTMLElement).closest("button") || !world.enabled) return;
+  const e = event as PointerEvent,
+    r = document.querySelector("#world")!.getBoundingClientRect();
+  world.move(
+    ((e.clientX - r.left) / r.width) * 720,
+    ((e.clientY - r.top) / r.height) * 400,
+  );
+  document
+    .querySelector<HTMLCanvasElement>("#world")!
+    .focus({ preventScroll: true });
+});
+document.addEventListener("keydown", (event) => {
+  if (event.ctrlKey || event.metaKey || event.altKey) return;
+  const key = event.key.toLowerCase();
+  if (modal) {
+    if (key === "escape") {
+      event.preventDefault();
+      closeModal();
+    }
+    if (key === "tab") {
+      const buttons = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".modal button:not(:disabled), .modal a[href]",
+        ),
+      );
+      const first = buttons[0],
+        last = buttons.at(-1);
+      if (
+        event.shiftKey &&
+        (document.activeElement === first ||
+          !document.querySelector(".modal")!.contains(document.activeElement))
+      ) {
+        event.preventDefault();
+        last?.focus();
+      } else if (
+        !event.shiftKey &&
+        (document.activeElement === last ||
+          !document.querySelector(".modal")!.contains(document.activeElement))
+      ) {
+        event.preventDefault();
+        first?.focus();
+      }
+    }
+    return;
+  }
+  if (
+    [
+      "arrowleft",
+      "arrowright",
+      "arrowup",
+      "arrowdown",
+      "w",
+      "a",
+      "s",
+      "d",
+    ].includes(key)
+  ) {
+    event.preventDefault();
+    if (world.enabled) world.keys.add(key);
+    return;
+  }
+  if (event.repeat) return;
+  if (["j", "i", "m"].includes(key)) {
+    event.preventDefault();
+    openModal(key === "j" ? "journal" : key === "i" ? "bag" : "map");
+    return;
+  }
+  if (key === "escape") {
+    openModal("settings");
+    return;
+  }
+  if (currentDialogue) {
+    const choices = dialogues[currentDialogue].choices;
+    if (/^[1-5]$/.test(key)) {
+      const n = Number(key) - 1,
+        c = choices[n];
+      if (c && (!c.requires || c.requires(state))) {
+        event.preventDefault();
+        makeChoice(n);
+      }
+      return;
+    }
+    if (
+      (key === " " || key === "e") &&
+      choices.length === 1 &&
+      !(key === " " && (event.target as HTMLElement).closest("button"))
+    ) {
+      event.preventDefault();
+      makeChoice(0);
+    }
+    return;
+  }
+  if (key === "e" && world.enabled) {
+    event.preventDefault();
+    const closest = scenes
+      .find((s) => s.id === state.scene)!
+      .hotspots.map((h) => ({
+        h,
+        d: Math.hypot(
+          h.x - world.x,
+          groundPosition(state.scene, h.x, h.y + 19).y - world.y,
+        ),
+      }))
+      .sort((a, b) => a.d - b.d)[0];
+    if (closest.d < 65) interact(closest.h);
+    else
+      notify(
+        tr(
+          "再靠近人物或物件一些，也可以直接点击标记",
+          "Move closer to a person or object, or click a marker",
+        ),
+      );
+  }
+});
+document.addEventListener("keyup", (e) =>
+  world.keys.delete(e.key.toLowerCase()),
+);
+window.addEventListener("blur", () => world.keys.clear());
+window.addEventListener("pagehide", () => persist());
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    world.keys.clear();
+    persist();
+  }
+});
+render();
+persist();
+if (state.ending) openModal("ending");
