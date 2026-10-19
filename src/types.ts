@@ -69,3 +69,81 @@ export interface Scene {
   time: string;
   hotspots: Hotspot[];
 }
+
+/** Story conditions are data only; the story adapter never evaluates code. */
+export type StoryCondition =
+  | { item: ItemId }
+  | { flag: Flag }
+  | { all: StoryCondition[] }
+  | { any: StoryCondition[] }
+  | { not: StoryCondition }
+  | { evidenceAtLeast: number }
+  | { endingReached: boolean }
+  | { rule: string };
+
+export interface ItemUse {
+  scene: SceneId;
+  event: string;
+  label: Text;
+  hint: Text;
+}
+
+export interface StoryItem {
+  name: Text;
+  description: Text;
+  icon: string;
+  use: ItemUse;
+}
+
+export interface StoryChoiceData extends Omit<Choice, "requires"> {
+  requires?: StoryCondition;
+}
+
+export interface StoryDialogueData extends Omit<Dialogue, "choices"> {
+  choices: StoryChoiceData[];
+}
+
+export type DialogueSelector =
+  | string
+  | { when: StoryCondition; then: string; otherwise: string };
+
+export interface StoryHotspotData extends Omit<Hotspot, "x" | "y" | "dialogue"> {
+  dialogue?: DialogueSelector;
+}
+
+export interface StorySceneData extends Omit<Scene, "hotspots"> {
+  hotspots: StoryHotspotData[];
+}
+
+export interface StoryEnding {
+  number: string;
+  title: Text;
+  subtitle: Text;
+  text: Text;
+}
+
+export interface StoryChapterData {
+  index: number;
+  title: Text;
+  when?: StoryCondition;
+}
+
+export interface StoryQuestData {
+  title: Text;
+  detail: Text;
+  complete: StoryCondition;
+}
+
+export interface StoryData {
+  version: 1;
+  flags: Flag[];
+  evidenceItems: ItemId[];
+  conditions: Record<string, StoryCondition>;
+  items: Record<ItemId, StoryItem>;
+  dialogues: Record<string, StoryDialogueData>;
+  scenes: StorySceneData[];
+  endings: Record<EndingId, StoryEnding>;
+  /** Ordered highest-priority first; final entry is an unconditional fallback. */
+  chapters: StoryChapterData[];
+  quests: StoryQuestData[];
+}

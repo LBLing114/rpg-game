@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import {
-  groundPosition,
   choose,
   decodeSave,
   encodeSave,
@@ -19,6 +18,7 @@ import {
   quests,
   scenes,
 } from "../src/story";
+import { getSpawn, groundPosition, isWalkable, TILE_SIZE, toTile } from "../src/grid";
 import type { State } from "../src/types";
 
 function pick(s: State, node: string, i = 0) {
@@ -139,12 +139,20 @@ describe("original narrative progression", () => {
 });
 
 describe("save integrity", () => {
-  it("keeps river travel, mouse targets and restored saves on the near quay", () => {
+  it("starts river travel on the quay and restores obsolete coordinates to walkable grid centers", () => {
     const s = completeStory();
-    expect(s.y).toBeGreaterThanOrEqual(315);
-    expect(groundPosition("river", 259, 233)).toEqual({ x: 259, y: 315 });
-    s.y = 260;
-    expect(decodeSave(encodeSave(s, null))?.state.y).toBe(315);
+    expect({ x: s.x, y: s.y }).toEqual(getSpawn("river"));
+    // A save from the old continuous-movement renderer can point into the water.
+    s.x = 259;
+    s.y = 233;
+    const restored = decodeSave(encodeSave(s, null))!.state;
+    expect({ x: restored.x, y: restored.y }).toEqual(
+      groundPosition("river", s.x, s.y),
+    );
+    const tile = toTile(restored);
+    expect(isWalkable("river", tile.col, tile.row)).toBe(true);
+    expect(restored.x % TILE_SIZE).toBe(TILE_SIZE / 2);
+    expect(restored.y % TILE_SIZE).toBe(TILE_SIZE / 2);
   });
   it("roundtrips inventory, decisions, position, and in-progress dialogue", () => {
     const state = completeStory();
@@ -187,7 +195,14 @@ describe("save integrity", () => {
     s.x = 10000;
     s.y = -5;
     const save = decodeSave(encodeSave(s, null));
-    expect(save?.state.x).toBe(630);
-    expect(save?.state.y).toBe(245);
+    expect(save).not.toBeNull();
+    const position = save!.state;
+    expect({ x: position.x, y: position.y }).toEqual(
+      groundPosition("lane", s.x, s.y),
+    );
+    const tile = toTile(position);
+    expect(isWalkable("lane", tile.col, tile.row)).toBe(true);
+    expect(position.x % TILE_SIZE).toBe(TILE_SIZE / 2);
+    expect(position.y % TILE_SIZE).toBe(TILE_SIZE / 2);
   });
 });

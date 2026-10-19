@@ -1,0 +1,1410 @@
+{
+  "version": 1,
+  "flags": [
+    "intro",
+    "aunt",
+    "trusted",
+    "protected",
+    "remembered",
+    "copied",
+    "confessed"
+  ],
+  "evidenceItems": [
+    "proof",
+    "record",
+    "testimony"
+  ],
+  "conditions": {
+    "witness": {
+      "all": [
+        {
+          "evidenceAtLeast": 3
+        },
+        {
+          "flag": "trusted"
+        }
+      ]
+    },
+    "embers": {
+      "all": [
+        {
+          "flag": "protected"
+        },
+        {
+          "flag": "remembered"
+        },
+        {
+          "item": "record"
+        }
+      ]
+    }
+  },
+  "items": {
+    "letter": {
+      "name": {
+        "zh": "未寄出的信",
+        "en": "Unsent letter"
+      },
+      "description": {
+        "zh": "弟弟沈泊的笔迹。背面写着：“别信那封检举信。找出第三份校样，天亮前到江边。”信没有署日期。",
+        "en": "Your brother Shen Bo’s handwriting: “Do not believe the accusation. Find the third proof. Come to the river before dawn.” There is no date."
+      },
+      "icon": "letter",
+      "use": {
+        "scene": "lane",
+        "event": "aunt",
+        "label": {
+          "zh": "向周姨出示信件",
+          "en": "Show Aunt Zhou the letter"
+        },
+        "hint": {
+          "zh": "回到槐生里，走到周姨身边。",
+          "en": "Return to Huaisheng Lane and approach Aunt Zhou."
+        }
+      }
+    },
+    "key": {
+      "name": {
+        "zh": "黄铜钥匙",
+        "en": "Brass key"
+      },
+      "description": {
+        "zh": "周姨替你保管的旧家钥匙。齿缝里还有一点蓝色的油漆。可以回到沈家旧屋。",
+        "en": "Aunt Zhou kept your old house key. Blue paint remains between its teeth. It opens the Shen family home."
+      },
+      "icon": "key",
+      "use": {
+        "scene": "lane",
+        "event": "home",
+        "label": {
+          "zh": "打开旧屋的门",
+          "en": "Unlock the old home"
+        },
+        "hint": {
+          "zh": "在槐生里找到沈家旧屋的门。",
+          "en": "Find the door of the old Shen home in Huaisheng Lane."
+        }
+      }
+    },
+    "photo": {
+      "name": {
+        "zh": "半张合影",
+        "en": "Torn photograph"
+      },
+      "description": {
+        "zh": "1956 年，上海。你、沈泊和顾先生站在江边。背后只有一句：“记得我们本来的名字。”",
+        "en": "Shanghai, 1956. You, Shen Bo, and Mr. Gu stand by the river. On the back: “Remember our real names.”"
+      },
+      "icon": "photo",
+      "use": {
+        "scene": "clinic",
+        "event": "gu",
+        "label": {
+          "zh": "给顾先生看合影",
+          "en": "Show Mr. Gu the photograph"
+        },
+        "hint": {
+          "zh": "到仁安诊所，走到顾先生身边。",
+          "en": "Go to Ren’an Clinic and approach Mr. Gu."
+        }
+      }
+    },
+    "proof": {
+      "name": {
+        "zh": "第三份校样",
+        "en": "Third proof"
+      },
+      "description": {
+        "zh": "林岚保存的印刷校样。你的名字被另一种铅字补进检举信；原稿里没有署名。这是一份伪造的指控。",
+        "en": "A printing proof kept by Lin Lan. Your name was inserted into the accusation in a different typeface. The original was unsigned. The accusation was forged."
+      },
+      "icon": "paper",
+      "use": {
+        "scene": "press",
+        "event": "lin",
+        "label": {
+          "zh": "与林岚核对校样",
+          "en": "Review the proof with Lin Lan"
+        },
+        "hint": {
+          "zh": "到长明印刷铺，走到林岚身边。",
+          "en": "Go to Changming Press and approach Lin Lan."
+        }
+      }
+    },
+    "record": {
+      "name": {
+        "zh": "转运名册抄件",
+        "en": "Transfer register"
+      },
+      "description": {
+        "zh": "档案名册的抄件：沈泊于十一月十四日被转往外地。签收栏空白。他并非传言中的告密者，下落仍不明。",
+        "en": "A copy of the register: Shen Bo was transferred out of Shanghai on November 14. No one signed for his arrival. He was not the informer in the rumors. His fate remains unknown."
+      },
+      "icon": "book",
+      "use": {
+        "scene": "river",
+        "event": "finale",
+        "label": {
+          "zh": "带着名册作出抉择",
+          "en": "Decide what to do with the register"
+        },
+        "hint": {
+          "zh": "到黄浦江岸，走到末班渡船前。",
+          "en": "Go to the Huangpu shore and approach the last ferry."
+        }
+      }
+    },
+    "testimony": {
+      "name": {
+        "zh": "医生的证言",
+        "en": "Doctor’s testimony"
+      },
+      "description": {
+        "zh": "罗医生亲笔证明：所谓检举发生的那一夜，你一直在诊所救助伤者。落款用了她的真名。",
+        "en": "Dr. Luo’s signed account: on the night of the alleged accusation, you were helping the wounded at her clinic. She has signed her real name."
+      },
+      "icon": "paper",
+      "use": {
+        "scene": "clinic",
+        "event": "doctor",
+        "label": {
+          "zh": "与医生核对证言",
+          "en": "Review the testimony with Dr. Luo"
+        },
+        "hint": {
+          "zh": "到仁安诊所，走到罗医生身边。",
+          "en": "Go to Ren’an Clinic and approach Dr. Luo."
+        }
+      }
+    },
+    "ticket": {
+      "name": {
+        "zh": "末班船票",
+        "en": "Last ferry ticket"
+      },
+      "description": {
+        "zh": "一张驶向吴淞的船票。不是逃离时代的出口，只是一段尚能自己选择的路。",
+        "en": "A ticket to Wusong. It cannot take you beyond the reach of the times, but it offers one stretch of road you can choose yourself."
+      },
+      "icon": "ticket",
+      "use": {
+        "scene": "river",
+        "event": "finale",
+        "label": {
+          "zh": "在渡口出示船票",
+          "en": "Present the ticket at the ferry"
+        },
+        "hint": {
+          "zh": "到黄浦江岸，走到末班渡船前。",
+          "en": "Go to the Huangpu shore and approach the last ferry."
+        }
+      }
+    }
+  },
+  "dialogues": {
+    "intro": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "上海，一九六八年，深秋。\n归国的第十一年，名字成了罪证，家成了不敢敲响的门。今晚，一封没有邮戳的信把我带回槐生里。\n弟弟失踪后，我第一次认出了他的笔迹。",
+        "en": "Shanghai, late autumn, 1968.\nEleven years after returning from overseas, my name has become an accusation, my home a door I dare not knock on. Tonight, a letter without a postmark brings me back to Huaisheng Lane.\nFor the first time since my brother vanished, I recognize his handwriting."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "把信收好，走进雨里",
+            "en": "Pocket the letter. Step into the rain."
+          },
+          "flags": [
+            "intro"
+          ],
+          "note": {
+            "zh": "回到槐生里。先向门前的周姨打听旧屋与弟弟的消息。",
+            "en": "Back in Huaisheng Lane. Ask Aunt Zhou about the old home and your brother."
+          }
+        }
+      ]
+    },
+    "aunt": {
+      "speaker": {
+        "zh": "周姨",
+        "en": "Aunt Zhou"
+      },
+      "role": {
+        "zh": "守门的人",
+        "en": "The one who stayed"
+      },
+      "portrait": "aunt",
+      "text": {
+        "zh": "“小沈？……别站在灯底下。”\n她把一只搪瓷杯放下，目光停在你磨破的袖口。\n“你弟弟走前，把钥匙留给我。他说，哥哥总有一天会回来。那孩子……从没说过你一句坏话。”",
+        "en": "“Yan? … Don’t stand beneath the light.”\nShe sets down an enamel cup, looking at your frayed sleeve.\n“Your brother left me the key. He said you would come home one day. That boy… he never spoke a word against you.”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "接过钥匙：我想回家看看",
+            "en": "Take the key. “I want to see home.”"
+          },
+          "items": [
+            "key"
+          ],
+          "flags": [
+            "aunt"
+          ],
+          "next": "auntKey",
+          "note": {
+            "zh": "周姨归还了钥匙。沈家旧屋就在里弄尽头。",
+            "en": "Aunt Zhou returned the key. The family home is at the end of the lane."
+          }
+        },
+        {
+          "label": {
+            "zh": "压低声音：谁送来的信？",
+            "en": "Lower your voice. “Who brought the letter?”"
+          },
+          "next": "auntLetter"
+        }
+      ]
+    },
+    "auntLetter": {
+      "speaker": {
+        "zh": "周姨",
+        "en": "Aunt Zhou"
+      },
+      "portrait": "aunt",
+      "text": {
+        "zh": "“一个印刷铺的姑娘，姓林。她的手上都是洗不掉的墨。”\n周姨把钥匙塞进你掌心。\n“这些年，我学会了少问一句。但有些门，总得留着钥匙。”",
+        "en": "“A girl from the printing shop. Lin, I think. Ink on her hands that would not wash away.”\nAunt Zhou presses the key into your palm.\n“I’ve learned to ask fewer questions. But some doors still deserve a key.”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "握住钥匙，向她道谢",
+            "en": "Accept the key and thank her"
+          },
+          "items": [
+            "key"
+          ],
+          "flags": [
+            "aunt"
+          ],
+          "note": {
+            "zh": "信由印刷铺的林岚送来。周姨替我保留了旧屋钥匙。",
+            "en": "Lin Lan from the printing shop delivered the letter. Aunt Zhou kept the key for me."
+          }
+        }
+      ]
+    },
+    "auntKey": {
+      "speaker": {
+        "zh": "周姨",
+        "en": "Aunt Zhou"
+      },
+      "portrait": "aunt",
+      "text": {
+        "zh": "“印刷铺还亮着灯。送信的姑娘在等你。”\n她抬起头，像在听墙里的雨声。\n“要是有人问起，我今晚谁也没见过。你记得我就好。”",
+        "en": "“The printing shop still has its light on. The girl who delivered the letter is waiting.”\nShe looks up, as if listening to rain inside the walls.\n“If anyone asks, I saw no one tonight. It is enough that you remember me.”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "暂且告别",
+            "en": "Say goodbye"
+          }
+        }
+      ]
+    },
+    "auntAgain": {
+      "speaker": {
+        "zh": "周姨",
+        "en": "Aunt Zhou"
+      },
+      "portrait": "aunt",
+      "text": {
+        "zh": "“门开着。人还在，家就不算空。”\n她用袖子擦去门牌上的雨水。你终于看清那三个褪色的字：槐生里。",
+        "en": "“The door is open. As long as someone remains, a home is not empty.”\nShe wipes rain from the enamel street plate. The faded characters emerge: Huaisheng Lane."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "暂且告别",
+            "en": "Say goodbye"
+          }
+        }
+      ]
+    },
+    "wall": {
+      "speaker": {
+        "zh": "斑驳的墙",
+        "en": "The weathered wall"
+      },
+      "portrait": "narrator",
+      "text": {
+        "zh": "层层纸张遮住了旧门牌。雨水把墨迹拖成长长的黑线。\n最底下一张纸的角落，露出弟弟画过的小船。小时候他说，船不用认字，也知道哪边是回家的路。\n我没有撕下它。",
+        "en": "Layers of paper cover an old street plate. Rain draws the ink into long black lines.\nIn the corner of the lowest sheet is a little boat my brother once drew. As a child he said boats need not read to know the way home.\nI leave it where it is."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收起思绪",
+            "en": "Step back"
+          }
+        }
+      ]
+    },
+    "desk": {
+      "speaker": {
+        "zh": "旧书桌",
+        "en": "The old desk"
+      },
+      "portrait": "narrator",
+      "text": {
+        "zh": "抽屉里没有书，只有半张合影。照片上的你仍穿着归国那天的西装。沈泊笑得模糊，顾先生的脸被一道折痕穿过。\n你把照片翻过来：“记得我们本来的名字。”\n窗外有人走过。脚步没有停。",
+        "en": "There are no books in the drawer, only half a photograph. You are still wearing the suit you returned home in. Shen Bo’s smile is blurred; a crease crosses Mr. Gu’s face.\nOn the back: “Remember our real names.”\nFootsteps pass outside. They do not stop."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收起合影",
+            "en": "Keep the photograph"
+          },
+          "items": [
+            "photo"
+          ],
+          "note": {
+            "zh": "在旧屋找到合影。顾先生也在照片里，也许诊所里能见到他。",
+            "en": "Found an old photograph. Mr. Gu is in it too. He may be at the clinic."
+          }
+        }
+      ]
+    },
+    "deskAgain": {
+      "speaker": {
+        "zh": "旧书桌",
+        "en": "The old desk"
+      },
+      "portrait": "narrator",
+      "text": {
+        "zh": "照片的位置留下一块浅色的木头。\n书可以搬走，人的轮廓却留在灰尘里。",
+        "en": "A pale patch remains where the photograph lay.\nBooks can be taken away; people leave their shapes in the dust."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收起思绪",
+            "en": "Step back"
+          }
+        }
+      ]
+    },
+    "mirror": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "镜子裂成两半。左边是归国时的我，右边是现在的我。\n在里昂学建筑的时候，我以为只要房子足够结实，人就能安稳地住进去。\n后来才知道，门也会从外面锁上。",
+        "en": "The mirror is split in two. On the left is the man who came home; on the right is the man I am now.\nWhen I studied architecture in Lyon, I thought that sturdy houses could keep people safe.\nLater, I learned that doors could be locked from outside."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收起思绪",
+            "en": "Step back"
+          }
+        }
+      ]
+    },
+    "lin": {
+      "speaker": {
+        "zh": "林岚",
+        "en": "Lin Lan"
+      },
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
+      "portrait": "lin",
+      "text": {
+        "zh": "“你终于来了。”\n林岚没有抬头，指尖停在一枚铅字上。\n“检举信印了三次。第三份校样里，你的名字，比别的字新。有人后来加上去的。”\n她看了一眼门：“你信我吗？”",
+        "en": "“You finally came.”\nLin Lan keeps her eyes on a piece of lead type.\n“The accusation was printed three times. In the third proof, your name is newer than the surrounding type. Someone added it later.”\nShe glances at the door. “Do you trust me?”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "“我信。也请你相信我。”",
+            "en": "“I do. And I need you to trust me.”"
+          },
+          "flags": [
+            "trusted"
+          ],
+          "next": "linProof",
+          "note": {
+            "zh": "选择相信林岚。她愿意帮助我把真相保存下来。",
+            "en": "I chose to trust Lin Lan. She will help preserve the truth."
+          }
+        },
+        {
+          "label": {
+            "zh": "“让我先看看校样。”",
+            "en": "“Let me see the proof first.”"
+          },
+          "next": "linProof"
+        }
+      ]
+    },
+    "linProof": {
+      "speaker": {
+        "zh": "林岚",
+        "en": "Lin Lan"
+      },
+      "portrait": "lin",
+      "text": {
+        "zh": "她从印刷机下面抽出一张薄纸。\n“你弟弟找到了它，后来就被带走了。转运名册还在档案室。他不是出卖你的人。”\n你读着那行熟悉又陌生的名字。十一年的沉默，第一次有了一个破口。",
+        "en": "She draws a thin sheet from beneath the press.\n“Your brother found this. Then they took him away. The transfer register is still in the archive. He was not the one who betrayed you.”\nYou read the familiar, unfamiliar name. For the first time, eleven years of silence have a crack in them."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "带走校样，寻找名册",
+            "en": "Take the proof. Find the register."
+          },
+          "items": [
+            "proof"
+          ],
+          "note": {
+            "zh": "校样证明检举信被篡改。去档案室寻找沈泊的转运名册；罗医生也许知道那一夜的事情。",
+            "en": "The proof shows the accusation was altered. Search the archive for Shen Bo’s transfer record, and ask Dr. Luo about that night."
+          }
+        }
+      ]
+    },
+    "linAgain": {
+      "speaker": {
+        "zh": "林岚",
+        "en": "Lin Lan"
+      },
+      "portrait": "lin",
+      "text": {
+        "zh": "“独自藏起一张纸，是秘密。让另一个人记得它，才有可能成为证据。”\n她整理着散落的铅字，给你让出灯下的位置。\n“我会在这里等。直到天亮。”",
+        "en": "“A paper hidden alone is a secret. When another person remembers it, it may become evidence.”\nShe gathers the scattered type, making room for you beneath the lamp.\n“I’ll wait here. Until morning.”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "“我愿意和你一起保存这些。”",
+            "en": "“I want us to preserve these together.”"
+          },
+          "flags": [
+            "trusted"
+          ],
+          "note": {
+            "zh": "与林岚约定：由两个人分别保存证据。",
+            "en": "Lin Lan and I agreed to keep separate copies of the evidence."
+          }
+        },
+        {
+          "label": {
+            "zh": "暂且告别",
+            "en": "Say goodbye"
+          }
+        }
+      ]
+    },
+    "typecase": {
+      "speaker": {
+        "zh": "铅字盒",
+        "en": "The type case"
+      },
+      "portrait": "narrator",
+      "text": {
+        "zh": "几千枚反写的字，整整齐齐地躺在木格里。“有罪”和“无罪”只差一枚铅字，却足以改变一个人的一生。\n旁边摆着一只纸船，船底印着一半没用完的地址。",
+        "en": "Thousands of reversed characters lie neatly in wooden compartments. One piece of type separates “guilty” from “innocent,” and can change a life.\nBeside them sits a paper boat, made from half an unused address label."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收起思绪",
+            "en": "Step back"
+          }
+        }
+      ]
+    },
+    "doctor": {
+      "speaker": {
+        "zh": "罗医生",
+        "en": "Dr. Luo"
+      },
+      "role": {
+        "zh": "夜班医生",
+        "en": "The night doctor"
+      },
+      "portrait": "doctor",
+      "text": {
+        "zh": "“那天晚上你在这里。你替我扶着伤者，直到天亮。我记得。”\n她从白大褂里拿出钢笔。\n“我可以写下来。但我用了真名，别人就可能来问，是谁把这张纸带出去的。”",
+        "en": "“You were here that night. You held the wounded steady for me until morning. I remember.”\nShe takes a fountain pen from her coat.\n“I can write it down. But if I sign my name, someone may come asking who carried the paper out.”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "“我会护住您的名字，由我承担。”",
+            "en": "“I’ll protect your name and take responsibility.”"
+          },
+          "flags": [
+            "protected"
+          ],
+          "next": "doctorSigned",
+          "note": {
+            "zh": "答应保护罗医生。证明清白不该以另一个人的受难为代价。",
+            "en": "I promised to protect Dr. Luo. Clearing my name should not come at the cost of another person."
+          }
+        },
+        {
+          "label": {
+            "zh": "“请写下您记得的全部。”",
+            "en": "“Please write down everything you remember.”"
+          },
+          "next": "doctorSigned"
+        }
+      ]
+    },
+    "doctorSigned": {
+      "speaker": {
+        "zh": "罗医生",
+        "en": "Dr. Luo"
+      },
+      "portrait": "doctor",
+      "text": {
+        "zh": "钢笔在纸上停了一瞬，随后写下她的全名。\n“有些事，不应该只有做噩梦的人记得。”\n她把证言折好，又递来一张船票：“顾先生替你留的。天亮前有一班去吴淞的船。走不走，你自己定。”",
+        "en": "The pen hesitates, then writes her full name.\n“Some things should be remembered by more than the people who dream of them.”\nShe folds the testimony and offers a ferry ticket. “Mr. Gu kept this for you. A boat to Wusong leaves before dawn. You decide whether to take it.”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收下证言与船票",
+            "en": "Accept the testimony and ticket"
+          },
+          "items": [
+            "testimony",
+            "ticket"
+          ],
+          "note": {
+            "zh": "罗医生证明那一夜我在诊所。她还交给我一张末班船票。",
+            "en": "Dr. Luo confirms I was at the clinic that night. She also gave me a ticket for the last ferry."
+          }
+        }
+      ]
+    },
+    "doctorAgain": {
+      "speaker": {
+        "zh": "罗医生",
+        "en": "Dr. Luo"
+      },
+      "portrait": "doctor",
+      "text": {
+        "zh": "“纸会受潮，字会褪色。你自己也要活下去。”\n她把炉上的水倒进杯里。门帘后，顾先生轻轻咳了一声。",
+        "en": "“Paper gets wet. Ink fades. You must stay alive too.”\nShe pours water from the stove. Behind the curtain, Mr. Gu coughs softly."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "承诺不向别人透露医生的名字",
+            "en": "Promise to keep the doctor’s name private"
+          },
+          "flags": [
+            "protected"
+          ]
+        },
+        {
+          "label": {
+            "zh": "暂且告别",
+            "en": "Say goodbye"
+          }
+        }
+      ]
+    },
+    "gu": {
+      "speaker": {
+        "zh": "顾文山",
+        "en": "Gu Wenshan"
+      },
+      "role": {
+        "zh": "昔日的老师",
+        "en": "Your former teacher"
+      },
+      "portrait": "gu",
+      "text": {
+        "zh": "“他们说，忘了就能睡个好觉。”\n顾先生坐在窗边，手指在膝上画着一座不存在的桥。\n“可我已经不记得，我妻子笑起来是什么样子了。小沈，你还记得我们去过江边吗？”",
+        "en": "“They say forgetting lets you sleep.”\nMr. Gu sits at the window, tracing a bridge that is not there on his knee.\n“But I can no longer remember my wife’s smile. Yan, do you remember when we went to the river?”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "拿出半张合影：“我们都在这里。”",
+            "en": "Show the photograph. “We are all here.”"
+          },
+          "flags": [
+            "remembered"
+          ],
+          "next": "guMemory",
+          "note": {
+            "zh": "把合影给顾先生看。他记起了沈泊，也记起了妻子的名字。",
+            "en": "I showed Mr. Gu the photograph. He remembered Shen Bo, and his wife’s name."
+          },
+          "requires": {
+            "item": "photo"
+          }
+        },
+        {
+          "label": {
+            "zh": "“我会替您记得。”",
+            "en": "“I will remember for you.”"
+          },
+          "next": "guPromise"
+        },
+        {
+          "label": {
+            "zh": "暂且告别",
+            "en": "Say goodbye"
+          }
+        }
+      ]
+    },
+    "guMemory": {
+      "speaker": {
+        "zh": "顾文山",
+        "en": "Gu Wenshan"
+      },
+      "portrait": "gu",
+      "text": {
+        "zh": "“青芜。她叫青芜。”\n他指着照片外的空白，忽然笑了。\n“是她替我们拍的。你弟弟非要把一只纸船放进水里。”\n窗外的雨小了一些。你们谁也没有说话，但房间不再那么空。",
+        "en": "“Qingwu. Her name was Qingwu.”\nHe points beyond the edge of the photograph and suddenly smiles.\n“She took the picture. Your brother insisted on setting a paper boat on the water.”\nThe rain eases. Neither of you speaks, but the room feels less empty."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "暂且告别",
+            "en": "Say goodbye"
+          }
+        }
+      ]
+    },
+    "guPromise": {
+      "speaker": {
+        "zh": "顾文山",
+        "en": "Gu Wenshan"
+      },
+      "portrait": "gu",
+      "text": {
+        "zh": "“替我回去看看吧。你家从前有一张照片。也许照片比我记得清楚。”\n他又低下头，把那座看不见的桥画完。",
+        "en": "“Go back and look, will you? There was a photograph in your home. It may remember more clearly than I do.”\nHe lowers his head and finishes the invisible bridge."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "暂且告别",
+            "en": "Say goodbye"
+          }
+        }
+      ]
+    },
+    "cabinet": {
+      "speaker": {
+        "zh": "转运名册",
+        "en": "The transfer register"
+      },
+      "portrait": "narrator",
+      "text": {
+        "zh": "在一排排用铅笔划掉的名字中，你找到了沈泊。\n“十一月十四日，转送外地。随身物品：书一本，旧围巾一条。”\n签收栏空着。你不知道他是否还活着，却终于知道，他没有出卖你。",
+        "en": "Among rows of names crossed out in pencil, you find Shen Bo.\n“November 14. Transferred out of the city. Personal effects: one book, one old scarf.”\nThe receipt column is empty. You do not know if he is alive, but you finally know he did not betray you."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "逐字抄下，保留原件",
+            "en": "Copy every word. Leave the original."
+          },
+          "items": [
+            "record"
+          ],
+          "flags": [
+            "copied"
+          ],
+          "note": {
+            "zh": "抄下转运名册，原件仍在档案室。沈泊的去向没有记录。",
+            "en": "Copied the transfer register and left the original in place. Shen Bo’s destination is unrecorded."
+          }
+        },
+        {
+          "label": {
+            "zh": "抄下名册，也留下自己的证言",
+            "en": "Copy the register. Add your own account."
+          },
+          "items": [
+            "record"
+          ],
+          "flags": [
+            "copied",
+            "confessed"
+          ],
+          "note": {
+            "zh": "抄下名册，并在空白纸上留下自己的证言。我不再把沉默当作唯一的保护。",
+            "en": "Copied the register and left my own account on a blank sheet. Silence will no longer be my only protection."
+          }
+        }
+      ]
+    },
+    "cabinetAgain": {
+      "speaker": {
+        "zh": "转运名册",
+        "en": "The transfer register"
+      },
+      "portrait": "narrator",
+      "text": {
+        "zh": "原件还在。\n你用手指轻轻抚平卷起的纸角。至少今晚，弟弟的名字没有被抹去。",
+        "en": "The original remains.\nYou smooth a curled corner of the paper. At least tonight, your brother’s name has not been erased."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收起思绪",
+            "en": "Step back"
+          }
+        }
+      ]
+    },
+    "archiveWall": {
+      "speaker": {
+        "zh": "停摆的钟",
+        "en": "The stopped clock"
+      },
+      "portrait": "narrator",
+      "text": {
+        "zh": "墙上的钟停在四点十七分。\n这里的时间依照卷宗编号前进。一个人出生、读书、归来，然后变成一行待查的字。\n你听见自己的呼吸，像一页不肯翻过去的纸。",
+        "en": "The clock stopped at seventeen past four.\nHere time advances by file number. A person is born, studies, comes home, then becomes a line marked “pending investigation.”\nYour breathing sounds like a page that refuses to turn."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收起思绪",
+            "en": "Step back"
+          }
+        }
+      ]
+    },
+    "water": {
+      "speaker": {
+        "zh": "黄浦江",
+        "en": "The Huangpu River"
+      },
+      "portrait": "narrator",
+      "text": {
+        "zh": "江水像一封没有写完的信。\n对岸的灯隔着雾亮了一下，随即又暗了下去。你想起弟弟放走的纸船。原来有些东西并不是消失了，只是还没有到岸。",
+        "en": "The river is an unfinished letter.\nA light across the water flares through the mist, then fades. You remember your brother’s paper boat. Perhaps some things have not vanished. Perhaps they have not reached the shore."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收起思绪",
+            "en": "Step back"
+          }
+        }
+      ]
+    },
+    "finale": {
+      "speaker": {
+        "zh": "天亮之前",
+        "en": "Before the dawn"
+      },
+      "role": {
+        "zh": "最后的选择",
+        "en": "The final choice"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "远处响起一声汽笛。\n口袋里的纸已经被体温焐热。你不能改变已经发生的事，却还可以决定，让什么渡过这条河。\n这一次，没有人替你作答。",
+        "en": "A ferry horn sounds in the distance.\nThe papers in your pocket are warm against your skin. You cannot change what has happened. But you can still choose what crosses this river.\nThis time, no one answers for you."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "与林岚分存证据，留下名字",
+            "en": "Keep separate copies with Lin Lan. Preserve the names."
+          },
+          "ending": "witness",
+          "requires": {
+            "rule": "witness"
+          }
+        },
+        {
+          "label": {
+            "zh": "留在上海，照顾仍在这里的人",
+            "en": "Stay in Shanghai. Care for those who remain."
+          },
+          "ending": "embers",
+          "requires": {
+            "rule": "embers"
+          }
+        },
+        {
+          "label": {
+            "zh": "带着信和真相，登上末班船",
+            "en": "Board the last ferry with the letter and the truth."
+          },
+          "ending": "departure",
+          "requires": {
+            "all": [
+              {
+                "item": "ticket"
+              },
+              {
+                "item": "record"
+              }
+            ]
+          }
+        },
+        {
+          "label": {
+            "zh": "把证据投入炉火，重新沉默",
+            "en": "Burn the evidence. Return to silence."
+          },
+          "ending": "silence"
+        },
+        {
+          "label": {
+            "zh": "还不是时候，回去再看看",
+            "en": "Not yet. There are places to revisit."
+          }
+        }
+      ]
+    }
+  },
+  "scenes": [
+    {
+      "id": "lane",
+      "name": {
+        "zh": "槐生里",
+        "en": "Huaisheng Lane"
+      },
+      "subtitle": {
+        "zh": "雨落旧巷",
+        "en": "Rain in the old lane"
+      },
+      "description": {
+        "zh": "门后的灯，还为谁亮着。",
+        "en": "For whom does the light behind the door still burn?"
+      },
+      "time": "21:10",
+      "hotspots": [
+        {
+          "id": "aunt",
+          "label": {
+            "zh": "周姨",
+            "en": "Aunt Zhou"
+          },
+          "kind": "person",
+          "dialogue": {
+            "when": {
+              "flag": "aunt"
+            },
+            "then": "auntAgain",
+            "otherwise": "aunt"
+          }
+        },
+        {
+          "id": "wall",
+          "label": {
+            "zh": "旧墙上的纸船",
+            "en": "Boat on the wall"
+          },
+          "kind": "object",
+          "dialogue": "wall"
+        },
+        {
+          "id": "home",
+          "label": {
+            "zh": "沈家旧屋",
+            "en": "The old home"
+          },
+          "kind": "exit",
+          "target": "home"
+        },
+        {
+          "id": "press",
+          "label": {
+            "zh": "长明印刷铺",
+            "en": "Changming Press"
+          },
+          "kind": "exit",
+          "target": "press"
+        },
+        {
+          "id": "clinic",
+          "label": {
+            "zh": "仁安诊所",
+            "en": "Ren’an Clinic"
+          },
+          "kind": "exit",
+          "target": "clinic"
+        },
+        {
+          "id": "archive",
+          "label": {
+            "zh": "旧档案室",
+            "en": "The Old Archive"
+          },
+          "kind": "exit",
+          "target": "archive"
+        },
+        {
+          "id": "river",
+          "label": {
+            "zh": "黄浦江岸",
+            "en": "The Huangpu Shore"
+          },
+          "kind": "exit",
+          "target": "river"
+        }
+      ]
+    },
+    {
+      "id": "home",
+      "name": {
+        "zh": "沈家旧屋",
+        "en": "The Shen Home"
+      },
+      "subtitle": {
+        "zh": "无人收拾的昨日",
+        "en": "An undisturbed yesterday"
+      },
+      "description": {
+        "zh": "灰尘记得每一件离开的东西。",
+        "en": "The dust remembers everything that was taken."
+      },
+      "time": "21:40",
+      "hotspots": [
+        {
+          "id": "desk",
+          "label": {
+            "zh": "旧书桌",
+            "en": "Old desk"
+          },
+          "kind": "object",
+          "dialogue": {
+            "when": {
+              "item": "photo"
+            },
+            "then": "deskAgain",
+            "otherwise": "desk"
+          }
+        },
+        {
+          "id": "mirror",
+          "label": {
+            "zh": "裂开的镜子",
+            "en": "Cracked mirror"
+          },
+          "kind": "object",
+          "dialogue": "mirror"
+        },
+        {
+          "id": "lane",
+          "label": {
+            "zh": "回到槐生里",
+            "en": "Return to the lane"
+          },
+          "kind": "exit",
+          "target": "lane"
+        }
+      ]
+    },
+    {
+      "id": "press",
+      "name": {
+        "zh": "长明印刷铺",
+        "en": "Changming Press"
+      },
+      "subtitle": {
+        "zh": "字里有声",
+        "en": "A voice in the type"
+      },
+      "description": {
+        "zh": "有些字，只有在黑暗里才能看清。",
+        "en": "Some words can only be read in the dark."
+      },
+      "time": "22:20",
+      "hotspots": [
+        {
+          "id": "lin",
+          "label": {
+            "zh": "林岚",
+            "en": "Lin Lan"
+          },
+          "kind": "person",
+          "dialogue": {
+            "when": {
+              "item": "proof"
+            },
+            "then": "linAgain",
+            "otherwise": "lin"
+          }
+        },
+        {
+          "id": "typecase",
+          "label": {
+            "zh": "铅字盒",
+            "en": "Type case"
+          },
+          "kind": "object",
+          "dialogue": "typecase"
+        },
+        {
+          "id": "lane",
+          "label": {
+            "zh": "回到槐生里",
+            "en": "Return to the lane"
+          },
+          "kind": "exit",
+          "target": "lane"
+        }
+      ]
+    },
+    {
+      "id": "clinic",
+      "name": {
+        "zh": "仁安诊所",
+        "en": "Ren’an Clinic"
+      },
+      "subtitle": {
+        "zh": "灯下的人",
+        "en": "Those beneath the lamp"
+      },
+      "description": {
+        "zh": "灯还亮着，就不是最后一夜。",
+        "en": "While the lamp burns, this is not the last night."
+      },
+      "time": "23:15",
+      "hotspots": [
+        {
+          "id": "doctor",
+          "label": {
+            "zh": "罗医生",
+            "en": "Dr. Luo"
+          },
+          "kind": "person",
+          "dialogue": {
+            "when": {
+              "item": "testimony"
+            },
+            "then": "doctorAgain",
+            "otherwise": "doctor"
+          }
+        },
+        {
+          "id": "gu",
+          "label": {
+            "zh": "顾先生",
+            "en": "Mr. Gu"
+          },
+          "kind": "person",
+          "dialogue": "gu"
+        },
+        {
+          "id": "lane",
+          "label": {
+            "zh": "回到槐生里",
+            "en": "Return to the lane"
+          },
+          "kind": "exit",
+          "target": "lane"
+        }
+      ]
+    },
+    {
+      "id": "archive",
+      "name": {
+        "zh": "旧档案室",
+        "en": "The Old Archive"
+      },
+      "subtitle": {
+        "zh": "纸上的余生",
+        "en": "Lives reduced to paper"
+      },
+      "description": {
+        "zh": "一个名字，不应该只有一行。",
+        "en": "A name deserves more than a single line."
+      },
+      "time": "01:30",
+      "hotspots": [
+        {
+          "id": "cabinet",
+          "label": {
+            "zh": "转运名册",
+            "en": "Transfer register"
+          },
+          "kind": "object",
+          "dialogue": {
+            "when": {
+              "item": "record"
+            },
+            "then": "cabinetAgain",
+            "otherwise": "cabinet"
+          }
+        },
+        {
+          "id": "archiveWall",
+          "label": {
+            "zh": "停摆的钟",
+            "en": "Stopped clock"
+          },
+          "kind": "object",
+          "dialogue": "archiveWall"
+        },
+        {
+          "id": "lane",
+          "label": {
+            "zh": "回到槐生里",
+            "en": "Return to the lane"
+          },
+          "kind": "exit",
+          "target": "lane"
+        }
+      ]
+    },
+    {
+      "id": "river",
+      "name": {
+        "zh": "黄浦江岸",
+        "en": "The Huangpu Shore"
+      },
+      "subtitle": {
+        "zh": "天亮之前",
+        "en": "Before the dawn"
+      },
+      "description": {
+        "zh": "雾的另一边，未必是答案。",
+        "en": "Beyond the mist, there may be no answer."
+      },
+      "time": "04:17",
+      "hotspots": [
+        {
+          "id": "finale",
+          "label": {
+            "zh": "末班渡船",
+            "en": "The last ferry"
+          },
+          "kind": "exit",
+          "dialogue": "finale"
+        },
+        {
+          "id": "water",
+          "label": {
+            "zh": "望向江面",
+            "en": "Look across the river"
+          },
+          "kind": "object",
+          "dialogue": "water"
+        },
+        {
+          "id": "lane",
+          "label": {
+            "zh": "回到槐生里",
+            "en": "Return to the lane"
+          },
+          "kind": "exit",
+          "target": "lane"
+        }
+      ]
+    }
+  ],
+  "endings": {
+    "witness": {
+      "number": "I",
+      "title": {
+        "zh": "留名",
+        "en": "Names That Remain"
+      },
+      "subtitle": {
+        "zh": "纸会沉默，记忆不会。",
+        "en": "Paper may fall silent. Memory will not."
+      },
+      "text": {
+        "zh": "你没有登船。黎明前，你和林岚把校样、名册与证言分别抄成两份，藏在不同的地方。\n没有人在第二天宣布你无罪。日子依旧艰难，但从此，真相不再只寄居于一个人的记忆。\n多年以后，有人在旧书夹页里读到沈泊的名字。那不是一行编号，也不是一项指控。那是一个曾经放过纸船的人。",
+        "en": "You do not board. Before dawn, you and Lin Lan make two copies of the proof, register, and testimony, hiding them separately.\nNo one declares you innocent the next day. Life remains difficult. But the truth no longer lives in only one person’s memory.\nYears later, someone finds Shen Bo’s name between the pages of an old book. Not a number. Not an accusation. A person who once launched paper boats."
+      }
+    },
+    "departure": {
+      "number": "II",
+      "title": {
+        "zh": "渡雾",
+        "en": "Across the Mist"
+      },
+      "subtitle": {
+        "zh": "离开，也是一种活下去。",
+        "en": "Leaving is another way to go on living."
+      },
+      "text": {
+        "zh": "你把信收进贴近心口的衣袋。船离岸时，上海没有回头看你。\n去吴淞的水路很短，往后的路却没有人能告诉你。船票不能保证安全，也没有带来弟弟的消息。\n但你带走了他的名字，和那封没有署日期的信。有一天，你会在另一个有灯的地方，把这一夜写完。",
+        "en": "You place the letter close to your heart. As the ferry leaves, Shanghai does not look back.\nThe journey to Wusong is short. No one can tell you what follows. The ticket guarantees no safety and brings no news of your brother.\nBut you carry his name and the undated letter. One day, somewhere with a light, you will finish writing this night."
+      }
+    },
+    "silence": {
+      "number": "III",
+      "title": {
+        "zh": "无声",
+        "en": "The Quiet Ash"
+      },
+      "subtitle": {
+        "zh": "火熄以后，雨还在下。",
+        "en": "The fire dies. The rain goes on."
+      },
+      "text": {
+        "zh": "纸在炉里卷曲，名字比纸更早消失。\n你告诉自己，活下去就好。第二天，你像往常一样低着头走过街口。没有人拦住你，也没有人叫你的名字。\n很多年后，你仍会梦见那一夜。梦里的江面漂着一只纸船。每当你伸出手，它就变成一小片灰。",
+        "en": "The paper curls in the stove. The names disappear before the paper does.\nYou tell yourself survival is enough. The next day you pass the street corner with your head lowered. No one stops you. No one calls your name.\nYears later, you still dream of that night. A paper boat drifts on the river. Whenever you reach for it, it becomes a little ash."
+      }
+    },
+    "embers": {
+      "number": "IV",
+      "title": {
+        "zh": "余灯",
+        "en": "A Lamp Kept Lit"
+      },
+      "subtitle": {
+        "zh": "留一盏灯，等一个未归的人。",
+        "en": "Keep a lamp for someone yet to return."
+      },
+      "text": {
+        "zh": "你回到诊所，把名册收进干燥的抽屉。你答应罗医生，替她走夜路；答应顾先生，常来听他讲青芜的事。\n你不再把整座城市都当作审判自己的房间。它也有生病的人、等门的人，和一盏可以添油的灯。\n每到下雨，周姨都会多留一把伞。你没有找到沈泊。但如果他回来，他仍有门可敲。",
+        "en": "You return to the clinic and place the register in a dry drawer. You promise to make Dr. Luo’s night visits, and to listen when Mr. Gu speaks of Qingwu.\nThe city is no longer only a room in which you are judged. It also holds the ill, the waiting, and a lamp that can be refilled.\nWhen it rains, Aunt Zhou keeps an extra umbrella. You have not found Shen Bo. But if he returns, there will still be a door to knock on."
+      }
+    }
+  },
+  "chapters": [
+    {
+      "index": 4,
+      "title": {
+        "zh": "第四章 · 天亮之前",
+        "en": "CHAPTER IV · BEFORE THE DAWN"
+      },
+      "when": {
+        "item": "record"
+      }
+    },
+    {
+      "index": 3,
+      "title": {
+        "zh": "第三章 · 纸上的人",
+        "en": "CHAPTER III · LIVES ON PAPER"
+      },
+      "when": {
+        "item": "proof"
+      }
+    },
+    {
+      "index": 2,
+      "title": {
+        "zh": "第二章 · 未寄出的信",
+        "en": "CHAPTER II · THE UNSENT LETTER"
+      },
+      "when": {
+        "item": "key"
+      }
+    },
+    {
+      "index": 1,
+      "title": {
+        "zh": "第一章 · 雨归",
+        "en": "CHAPTER I · HOMECOMING"
+      }
+    }
+  ],
+  "quests": [
+    {
+      "title": {
+        "zh": "一把旧钥匙",
+        "en": "An old key"
+      },
+      "detail": {
+        "zh": "向槐生里的周姨打听消息",
+        "en": "Speak to Aunt Zhou in the lane"
+      },
+      "complete": {
+        "item": "key"
+      }
+    },
+    {
+      "title": {
+        "zh": "被改写的名字",
+        "en": "An altered name"
+      },
+      "detail": {
+        "zh": "去印刷铺找林岚，拿到第三份校样",
+        "en": "Find Lin Lan and the third proof at the press"
+      },
+      "complete": {
+        "item": "proof"
+      }
+    },
+    {
+      "title": {
+        "zh": "纸上的去向",
+        "en": "A trail on paper"
+      },
+      "detail": {
+        "zh": "在档案室寻找沈泊的转运名册",
+        "en": "Find Shen Bo’s transfer register in the archive"
+      },
+      "complete": {
+        "item": "record"
+      }
+    },
+    {
+      "title": {
+        "zh": "活着的证人",
+        "en": "A living witness"
+      },
+      "detail": {
+        "zh": "向仁安诊所的罗医生询问那一夜",
+        "en": "Ask Dr. Luo at the clinic about that night"
+      },
+      "complete": {
+        "item": "testimony"
+      }
+    },
+    {
+      "title": {
+        "zh": "记得我们",
+        "en": "Remember us"
+      },
+      "detail": {
+        "zh": "在旧屋找到合影，交给诊所的顾先生看",
+        "en": "Show Mr. Gu the photograph from your old home"
+      },
+      "complete": {
+        "flag": "remembered"
+      }
+    },
+    {
+      "title": {
+        "zh": "渡过长夜",
+        "en": "Through the long night"
+      },
+      "detail": {
+        "zh": "带着你的选择，前往黄浦江岸",
+        "en": "Take your choices to the Huangpu shore"
+      },
+      "complete": {
+        "endingReached": true
+      }
+    }
+  ]
+}

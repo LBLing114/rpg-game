@@ -1,4 +1,5 @@
 import { dialogues, has, scenes } from "./story";
+import { groundPosition, getSpawn } from "./grid";
 import {
   type Choice,
   type EndingId,
@@ -9,13 +10,7 @@ import {
 
 export const SAVE_KEY = "wudu-save-v1";
 export const MANUAL_KEY = "wudu-manual-v1";
-// The river is seen from behind its railing; walking stays on the near quay.
-export function groundPosition(scene: SceneId, x: number, y: number) {
-  return {
-    x: Math.max(85, Math.min(630, x)),
-    y: Math.max(scene === "river" ? 315 : 245, Math.min(332, y)),
-  };
-}
+export { groundPosition } from "./grid";
 export function newGame(): State {
   return {
     version: 1,
@@ -25,8 +20,7 @@ export function newGame(): State {
     visited: ["lane"],
     log: [],
     ending: null,
-    x: 355,
-    y: 278,
+    ...getSpawn("lane"),
   };
 }
 export function unlock(s: State, scene: SceneId): boolean {
@@ -53,7 +47,7 @@ export function travel(s: State, id: SceneId): State {
   return {
     ...s,
     scene: id,
-    ...groundPosition(id, 355, 278),
+    ...getSpawn(id),
     visited: Array.from(new Set([...s.visited, id])),
   };
 }

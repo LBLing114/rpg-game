@@ -50,3 +50,32 @@ export class Ambience {
     return this.enabled;
   }
 }
+
+/** Small console-like menu and text sounds, enabled only after a user gesture. */
+export class InterfaceAudio {
+  context: AudioContext | null = null;
+  enabled = true;
+  private lastTick = 0;
+  unlock() {
+    if (!this.enabled) return;
+    try {
+      this.context ??= new AudioContext();
+      if (this.context.state === "suspended") void this.context.resume().catch(() => {});
+    } catch { /* Text and controls remain usable without audio support. */ }
+  }
+  play(kind: "text" | "confirm" | "cancel" = "confirm") {
+    if (!this.enabled || !this.context || this.context.state !== "running") return;
+    const now = this.context.currentTime;
+    if (kind === "text" && now - this.lastTick < .07) return;
+    this.lastTick = now;
+    const osc = this.context.createOscillator(), gain = this.context.createGain();
+    osc.type = kind === "text" ? "triangle" : "sine";
+    const duration = kind === "text" ? .017 : .075;
+    osc.frequency.setValueAtTime(kind === "text" ? 620 : kind === "cancel" ? 280 : 760, now);
+    if (kind === "confirm") osc.frequency.exponentialRampToValueAtTime(1100, now + duration);
+    gain.gain.setValueAtTime(kind === "text" ? .014 : .055, now);
+    gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
+    osc.connect(gain);gain.connect(this.context.destination);osc.start(now);osc.stop(now + duration);
+    osc.onended = () => { osc.disconnect();gain.disconnect(); };
+  }
+}
