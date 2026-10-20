@@ -114,15 +114,17 @@ h1 { font: 17px/1.5 var(--serif); color: #d6d7d2; letter-spacing: 2px; display: 
 .has-dialogue .touch-controls, .has-ending .touch-controls { display: none; }
 .quick-menu { position: absolute; z-index: 5; right: 16px; bottom: 16px; display: flex; gap: 6px; }
 .quick-menu button { min-width: 38px; min-height: 38px; border: 1px solid #a9afbc; border-radius: 3px; background: #151d30d9; padding: 7px; }
-.dialogue-panel { display: none; position: absolute; z-index: 6; bottom: 14px; left: 14px; right: 14px; max-height: 49%; padding: 18px 20px; overflow: auto; scrollbar-width: thin; scrollbar-color: #9fa7b3 #1a2130; border: 2px solid var(--window-border); border-radius: 7px; background: var(--window); box-shadow: var(--window-shadow); text-shadow: 0 1px 2px #000; }
-.has-dialogue .dialogue-panel { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 19px; }
+.dialogue-panel { display: none; position: absolute; z-index: 6; bottom: 14px; left: 14px; right: 14px; padding: 22px 24px; overflow: visible; scrollbar-width: thin; scrollbar-color: #9fa7b3 #1a2130; border: 2px solid var(--window-border); border-radius: 7px; background: var(--window); box-shadow: var(--window-shadow); text-shadow: 0 1px 2px #000; }
+.has-dialogue .dialogue-panel { display: grid; grid-template-columns: min(22%, 204px) minmax(0, 1fr); gap: 22px; min-height: 208px; }
+.stage.has-dialogue:after { content: ""; position: absolute; inset: 35% 0 0; z-index: 4; pointer-events: none; background: linear-gradient(transparent, #10101d50 60%, #0b0d1d99); }
 .has-ending .dialogue-panel { display: block; }
-.dialogue-face { text-align: center; padding-top: 2px; }
-.portrait { display: block; width: 96px; height: 96px; margin: 0 auto 10px; border: 1px solid #adb2b9; outline: 1px solid #101723; outline-offset: 1px; border-radius: 2px; image-rendering: pixelated; background: #29323b; box-shadow: 0 3px 10px #0004; }
-.speaker-badge h2 { font: 18px/1.5 var(--serif); color: #f2e2bd; letter-spacing: 2px; }
+.dialogue-face { position: absolute; left: 18px; bottom: 12px; width: min(22%, 204px); text-align: center; pointer-events: none; }
+.portrait { display: block; width: 100%; height: auto; aspect-ratio: 3 / 5; margin: 0; image-rendering: pixelated; filter: drop-shadow(3px 5px 1px #080b1880); }
+.speaker-badge { position: relative; margin-top: -26px; padding: 9px 5px 6px; border-top: 1px solid #b9a17988; background: linear-gradient(90deg, #131b2c00, #131b2cf5 15%, #131b2cf5 85%, #131b2c00); }
+.speaker-badge h2 { font: 22px/1.5 var(--serif); color: #f2e2bd; letter-spacing: 2px; }
 .speaker-badge span, .dialogue-face > span, .dialogue-face .role { display: block; font-size: 9px; line-height: 1.6; letter-spacing: .5px; color: #a9b2c2; margin-top: 3px; }
-.dialogue-body { min-width: 0; }
-.dialogue-text { position: relative; font: 15px/1.85 var(--serif); color: #eeede4; min-height: 2em; letter-spacing: .5px; overflow-wrap: anywhere; }
+.dialogue-body { grid-column: 2; min-width: 0; max-height: min(340px, 39vh); overflow: auto; scrollbar-width: thin; scrollbar-color: #a49c8c #182034; padding-right: 3px; }
+.dialogue-text { position: relative; font: 16px/1.85 var(--serif); color: #eeede4; min-height: 2em; letter-spacing: .5px; overflow-wrap: anywhere; }
 .dialogue-text p { margin-bottom: 8px; }
 .dialogue-text p:last-child { margin-bottom: 0; }
 .typing-layout, .typing-visible { white-space: pre-wrap; font: inherit; letter-spacing: inherit; line-height: inherit; }
@@ -265,9 +267,10 @@ html[lang="en"] .choice { font-family: Georgia, serif; letter-spacing: 0; }
   .site-header { gap: 24px; }
   .heading-meta > span:last-child { display: none; }
   .dialogue-panel { padding: 16px; }
-  .has-dialogue .dialogue-panel { grid-template-columns: 96px minmax(0, 1fr); gap: 16px; }
+  .has-dialogue .dialogue-panel { grid-template-columns: 150px minmax(0, 1fr); gap: 16px; }
+  .dialogue-face { width: 150px; left: 14px; }
   .dialogue-text, html[lang="en"] .dialogue-text { font-size: 14px; }
-  .portrait { width: 88px; height: 88px; }
+  .portrait { width: 100%; height: auto; }
   .control-strip > div { gap: 10px; }
   .key-stack { display: none; }
 }
@@ -325,8 +328,12 @@ html[lang="en"] .choice { font-family: Georgia, serif; letter-spacing: 0; }
   .quest-hud .icon { width: 11px; height: 11px; }
   .quest-hud small { display: none; }
   .dialogue-panel { position: relative; inset: auto; margin: 0; border-radius: 5px; max-height: none; overflow: visible; padding: 14px 13px; min-height: 170px; border-color: #d1d2d4; box-shadow: inset 0 0 0 1px #242b3d, inset 0 0 0 3px #6d7482; background: linear-gradient(135deg, #1e2536, #141b2a); }
-  .has-dialogue .dialogue-panel { grid-template-columns: 66px minmax(0, 1fr); gap: 11px; }
-  .portrait { width: 62px; height: 62px; margin-bottom: 8px; }
+  .has-dialogue .dialogue-panel { grid-template-columns: 100px minmax(0, 1fr); gap: 12px; }
+  .dialogue-face { position: relative; inset: auto; width: 100%; align-self: start; }
+  .dialogue-body { max-height: none; overflow: visible; padding: 0; }
+  .stage.has-dialogue:after { display: none; }
+  .speaker-badge { margin-top: -10px; padding: 6px 2px; }
+  .portrait { width: 100%; height: auto; margin: 0; }
   .speaker-badge h2 { font-size: 14px; letter-spacing: 1px; }
   .speaker-badge span, .dialogue-face > span, .dialogue-face .role { font-size: 8px; line-height: 1.5; letter-spacing: 0; }
   .dialogue-text, html[lang="en"] .dialogue-text { font-size: 13px; line-height: 1.85; letter-spacing: .1px; }
@@ -395,8 +402,8 @@ html[lang="en"] .choice { font-family: Georgia, serif; letter-spacing: 0; }
   .scene-toolbar > div:first-child > .icon { display: none; }
   .scene-toolbar button, .rpg-toolbar button { font-size: 9px; padding: 5px 4px; }
   .scene-toolbar button .icon, .rpg-toolbar .icon { width: 12px; height: 12px; }
-  .has-dialogue .dialogue-panel { grid-template-columns: 53px minmax(0, 1fr); gap: 9px; padding: 13px 11px; }
-  .portrait { width: 50px; height: 50px; }
+  .has-dialogue .dialogue-panel { grid-template-columns: 88px minmax(0, 1fr); gap: 10px; padding: 13px 11px; }
+  .portrait { width: 100%; height: auto; }
   .speaker-badge h2 { font-size: 13px; }
   .scene-number { display: none; }
   .night-clock > .clock-divider, .night-clock > .clock-divider + span { display: none; }

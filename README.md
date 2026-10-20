@@ -2,16 +2,20 @@
 
 一款可直接游玩的原创 **RPG Maker 风格 2D 网格探索 / 视觉小说 Web 游戏**。故事发生在 1968 年深秋的上海：归国后遭受政治迫害的沈砚，循着失踪弟弟的一封信回到旧里弄，在监视与沉默中寻找真相。
 
-采用 **TypeScript + HTML5 Canvas + Vite**，以 32 × 32 像素网格、俯视地图、四向行走、底部头像对话框呈现。它模拟经典 RPG Maker 的游玩方式，**不是需要 RPG Maker 软件打开的编辑器工程**。全部人物、地点与具体情节均为原创虚构；无战斗、无倒计时。
+采用 **TypeScript + HTML5 Canvas + Vite**，以 32 × 32 像素网格、俯视地图、四向行走、半身立绘与底部对话框呈现。它模拟经典 RPG Maker 的游玩方式，**不是需要 RPG Maker 软件打开的编辑器工程**。全部人物、地点与具体情节均为原创虚构；无战斗、无倒计时。
 
 ![雾渡：上海里弄像素地图与 RPG 对话窗口](docs/preview.png)
+
+美术包含五位角色的透明半身立绘、石库门建筑、旧式家具与六类地形纹理。角色行走图采用独立的 32×48 像素蒙版和四步动画，与立绘服装配色一致。详见[美术资源与替换说明](src/assets/README.md)。
+
+![沈家旧屋：木地板、旧家具与像素角色](docs/interior.png)
 
 ## 直接打开游戏
 
 1. [下载 main 分支的完整游戏 ZIP](https://github.com/LBLing114/rpg-game/archive/refs/heads/main.zip) 并**解压**，或在仓库点击 **Code → Download ZIP**。
 2. 用 Chrome、Edge 或 Firefox 打开根目录的 **`play.html`**。
 
-`play.html` 是包含代码、剧情、样式和程序化美术的单文件游戏，无需安装 Node.js。也可在 GitHub 的 `play.html` 页面点击 **Download raw file** 单独下载；不要保存 GitHub 预览网页。浏览器可能限制本地文件存档，稳定保存进度可使用下方本地服务。
+`play.html` 是包含代码、剧情、样式和全部美术的单文件游戏，无需安装 Node.js。也可在 GitHub 的 `play.html` 页面点击 **Download raw file** 单独下载；不要保存 GitHub 预览网页。浏览器可能限制本地文件存档，稳定保存进度可使用下方本地服务。
 
 ## 开发与本地预览
 
@@ -38,7 +42,7 @@ npm run preview -- --port 4173
 - **六张地图**：槐生里、沈家旧屋、长明印刷铺、仁安诊所、旧档案室、黄浦江岸。使用砖墙、旧海报、石板路、室内木地板和家具，没有大片草地。
 - **完整序章**：四章流程、多个角色与推理分支、六个任务、七件可查看和使用的剧情道具、四种结局。
 - **网格探索**：平滑四向移动、地形与家具碰撞、点击地面寻路、走近人物后交互；角色与场景按脚底 Y 坐标遮挡。
-- **经典对话**：深色半透明白边窗口、左侧像素头像、逐字文字、分支选择、可开启的文字与菜单提示音。
+- **经典对话**：深色半透明白边窗口、五位角色的透明半身立绘、逐字文字、分支选择、可开启的文字与菜单提示音。
 - **双语与存档**：界面和全文中英文切换；自动存档、独立手动槽、已发现结局收集；支持键盘、鼠标和触屏。
 
 | 操作 | 键盘 | 鼠标 / 触屏 |
@@ -65,7 +69,10 @@ src/
   data/storyData.json  双语剧情、对话分支、任务、物品、结局与条件
   story.ts        JSON 数据适配与条件判断
   grid.ts         32px 网格、六张地图、碰撞、路径查找与交互位置
-  art.ts          程序化像素绘制、人物动画、Y 排序与天气
+  art.ts          图块与物件合成、Y 排序与天气
+  characters.ts   四向行走精灵、像素蒙版与动画
+  illustrations.ts  图集加载、裁切与纹理缓存
+  assets/         角色立绘、建筑、家具、地形及美术说明
   engine.ts       状态转换、地点解锁、存档校验
   main.ts         界面、逐字对话、操作与道具使用
   audio.ts        合成环境音与交互音效
@@ -113,10 +120,10 @@ npm run test:e2e # Chromium 中完成剧情与交互检查
 
 **The Other Shore** is an original bilingual narrative RPG set in a fictional Shanghai lane in 1968. Shen Yan, a returning overseas student facing political persecution, follows a letter from his missing brother. Explore six urban and interior maps, collect seven story items, complete six quests, and reach four endings. There is no combat or time limit.
 
-This is a **TypeScript / Canvas / Vite web game inspired by classic RPG Maker presentation**, with 32px grid movement, collision and click pathfinding, Y-sorted pixel art, portraits and typewriter dialogue. It does not require the RPG Maker editor.
+This is a **TypeScript / Canvas / Vite web game inspired by classic RPG Maker presentation**, with 32px grid movement, collision and click pathfinding, Y-sorted pixel art, five illustrated character busts, and typewriter dialogue. It does not require the RPG Maker editor.
 
 Download and open **`play.html`** to play immediately, or run `npm install && npm run dev` and open the printed localhost address on the same computer. For a cloud server, use its forwarded port URL. Run `npm run build` to generate both `dist/` and `play.html`; use `npm run preview` to preview the production build.
 
 Use **WASD / arrows** to walk, **Enter / Space / E** to interact or reveal dialogue, **1–5** for choices, **I** for belongings, **J** for quests, **M** for the map, and **Escape** for settings. Click terrain to navigate, or an event marker to approach and interact. Inventory items have a use action and a location hint. **中 / EN** switches language without resetting progress. Audio is optional. Saves stay in the current browser.
 
-Edit `src/data/storyData.json` to extend bilingual dialogue, choices, items, quests and endings; conditions are JSON data, not executable strings. Map geometry and event coordinates live in `src/grid.ts`. Run `npm test`, `npm run build`, and `npm run test:e2e` after changes. All artwork and audio are generated locally; no external runtime assets or services are required.
+Edit `src/data/storyData.json` to extend bilingual dialogue, choices, items, quests and endings; conditions are JSON data, not executable strings. Map geometry and event coordinates live in `src/grid.ts`. Run `npm test`, `npm run build`, and `npm run test:e2e` after changes. Artwork is bundled with the project and audio is synthesized locally; no external runtime services are required. Four original atlases supply character busts, Shanghai architecture, furniture, and ground textures, while walking sprites use hand-authored pixel masks. The web build caches image assets separately; the offline play.html embeds all of them.

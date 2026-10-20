@@ -99,6 +99,8 @@ test("standalone HTML runs entirely inline and reaches an ending without network
   // The managed cloud browser blocks file:// navigation. Execute the authorized
   // standalone file in a blank document, with no server or external assets.
   await page.setContent(await readFile(resolve("play.html"), "utf8"));
+  await expect(page.locator('#world')).toHaveAttribute('data-art-ready', 'true');
+  await expect(page.locator('.portrait')).toHaveAttribute('data-illustration', 'shen');
   await expect(page.locator(".typing-layout")).toContainText("上海，一九六八年");
   await choice(page);
   await travel(page, "press");
@@ -324,8 +326,9 @@ test("initial RPG stage renders pixel artwork, portraits, no runtime errors or m
   await expect(page.locator(".typing-layout")).toContainText("上海，一九六八年");
   await expect(page.locator("#world")).toHaveAttribute("width", String(WORLD_WIDTH));
   await expect(page.locator("#world")).toHaveAttribute("height", String(WORLD_HEIGHT));
-  await expect(page.locator(".dialogue-face canvas.portrait")).toHaveAttribute("width", "96");
-  await expect(page.locator(".dialogue-face canvas.portrait")).toHaveAttribute("height", "96");
+  await expect(page.locator(".dialogue-face canvas.portrait")).toHaveAttribute("width", "192");
+  await expect(page.locator(".dialogue-face canvas.portrait")).toHaveAttribute("height", "320");
+  await expect(page.locator('#world')).toHaveAttribute('data-art-ready', 'true');
   await reveal(page);
   await page.screenshot({ path: "test-results/desktop.png", fullPage: true });
   const colors = await page.locator("#world").evaluate((el: HTMLCanvasElement) => {
