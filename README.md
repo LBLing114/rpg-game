@@ -37,6 +37,8 @@ npm run preview -- --port 4173
 
 运行时无需 CDN、外部图片或字体、账号、API 密钥或后端；安装完成后可离线游玩。
 
+页面只显示游戏画面，不再包含外部导航、章节栏、装饰外框或页脚。右上角 **☰ 菜单**（或 **Esc**）可打开背包、手记、地图、结局、语言、设置与存档及游玩指南。画面保持原始比例，按窗口尺寸缩放。
+
 ## 内容与操作
 
 - **六张地图**：槐生里、沈家旧屋、长明印刷铺、仁安诊所、旧档案室、黄浦江岸。使用砖墙、旧海报、石板路、室内木地板和家具，没有大片草地。
@@ -52,11 +54,11 @@ npm run preview -- --port 4173
 | 显示整段文字 | Enter / Space / E | 点击对话框的继续按钮 |
 | 推进单选段落 | 文字显示完成后 Enter / Space / E | 点击对应选项 |
 | 选择分支 | 文字显示完成后 1–5 | 点击选项 |
-| 背包 / 使用道具 | I | 点击背包，再选择物品和使用按钮 |
-| 任务手记 | J | 点击手记 |
-| 街区地图 | M | 点击地图，选择已解锁地点 |
-| 设置 / 关闭菜单 | Esc | 设置 / 关闭按钮 |
-| 中英文与音效 | 设置或界面按钮 | 中 / EN、音效按钮 |
+| 背包 / 使用道具 | I | 菜单 → 背包，再选择物品和使用按钮 |
+| 任务手记 | J | 菜单 → 手记 |
+| 街区地图 | M | 菜单 → 地图，选择已解锁地点 |
+| 打开 / 关闭菜单 | Esc | 右上角 ☰ 菜单 / 关闭按钮 |
+| 中英文与音效 | 菜单中的设置 | 菜单 → English / 中文；设置 → 音效 |
 
 先和周姨交谈取得旧屋钥匙，再到印刷铺寻找校样。地图会显示地点解锁条件。背包中的物品会提示使用地点；到达相应场景使用，可引导角色走到目标并开启相关对话。场景时间仅用于叙事，没有限时选择。
 
@@ -124,6 +126,6 @@ This is a **TypeScript / Canvas / Vite web game inspired by classic RPG Maker pr
 
 Download and open **`play.html`** to play immediately, or run `npm install && npm run dev` and open the printed localhost address on the same computer. For a cloud server, use its forwarded port URL. Run `npm run build` to generate both `dist/` and `play.html`; use `npm run preview` to preview the production build.
 
-Use **WASD / arrows** to walk, **Enter / Space / E** to interact or reveal dialogue, **1–5** for choices, **I** for belongings, **J** for quests, **M** for the map, and **Escape** for settings. Click terrain to navigate, or an event marker to approach and interact. Inventory items have a use action and a location hint. **中 / EN** switches language without resetting progress. Audio is optional. Saves stay in the current browser.
+Use **WASD / arrows** to walk, **Enter / Space / E** to interact or reveal dialogue, **1–5** for choices, **I** for belongings, **J** for quests, **M** for the map, and **Escape** for the in-game menu. Click terrain to navigate, or an event marker to approach and interact. Inventory items have a use action and a location hint. The top-right **Menu** contains language, settings, saves and fullscreen controls. **English / 中文** switches language without resetting progress. Audio is optional. Saves stay in the current browser.
 
 Edit `src/data/storyData.json` to extend bilingual dialogue, choices, items, quests and endings; conditions are JSON data, not executable strings. Map geometry and event coordinates live in `src/grid.ts`. Run `npm test`, `npm run build`, and `npm run test:e2e` after changes. Artwork is bundled with the project and audio is synthesized locally; no external runtime services are required. Four original atlases supply character busts, Shanghai architecture, furniture, and ground textures, while walking sprites use hand-authored pixel masks. The web build caches image assets separately; the offline play.html embeds all of them.

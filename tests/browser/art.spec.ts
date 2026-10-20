@@ -23,7 +23,9 @@ test('all five transparent busts load, keep their proportions, and persist acros
     });
     expect(pixels.clear).toBeGreaterThan(1000);
     expect(pixels.painted).toBeGreaterThan(8000);
+    await page.locator("#game-menu").click();
     await page.locator('[data-action="lang"]').click();
+    await page.keyboard.press("Escape");
     await expect(bust).toHaveAttribute('data-illustration',portrait);
     // On a narrow phone the full bust stays beside the text instead of being
     // squeezed into the previous square face-graphic slot.

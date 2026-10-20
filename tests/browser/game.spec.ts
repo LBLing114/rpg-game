@@ -39,7 +39,7 @@ async function travel(page: Page, id: SceneId) {
   await page.locator(`.modal [data-scene="${id}"]`).click();
   await expect(page.locator(".modal")).toHaveCount(0);
   const scene = scenes.find((s) => s.id === id)!;
-  await expect(page.locator("#scene-toolbar")).toContainText(
+  await expect(page.locator("#scene-caption")).toContainText(
     new RegExp(`${scene.name.zh}|${scene.name.en}`),
   );
 }
@@ -59,6 +59,10 @@ async function clickGround(page: Page, point: Point) {
     bounds.x + point.x / WORLD_WIDTH * bounds.width,
     bounds.y + point.y / WORLD_HEIGHT * bounds.height,
   );
+}
+async function menuAction(page: Page, action: string) {
+  await page.locator('#game-menu').click();
+  await page.locator(`.modal [data-action="${action}"]`).click();
 }
 async function begin(page: Page) {
   await page.goto("/");
@@ -168,7 +172,8 @@ test("language, bag, journal, manual save, reload, reset and restore", async ({ 
   await interact(page, "aunt");
   await choice(page, 1);
   await choice(page);
-  await page.locator('[data-action="lang"]').first().click();
+  await menuAction(page, "lang");
+  await page.keyboard.press("Escape");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await page.keyboard.press("i");
   await expect(page.locator("#modal-title")).toHaveText("Belongings");
@@ -178,17 +183,17 @@ test("language, bag, journal, manual save, reload, reset and restore", async ({ 
   await page.keyboard.press("j");
   await expect(page.locator(".journal-entry.complete")).toHaveCount(1);
   await page.keyboard.press("Escape");
-  await page.locator('[data-action="settings"]').first().click();
+  await menuAction(page, "settings");
   await page.locator('[data-action="save"]').click();
   await page.keyboard.press("Escape");
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   expect((await readSave(page)).state.inventory).toContain("key");
-  await page.locator('[data-action="settings"]').first().click();
+  await menuAction(page, "settings");
   await page.locator('[data-action="reset"]').click();
   await page.locator('[data-action="confirm-reset"]').click();
   expect((await readSave(page)).state.inventory).toEqual(["letter"]);
-  await page.locator('[data-action="settings"]').first().click();
+  await menuAction(page, "settings");
   await page.locator('[data-action="load"]').click();
   await page.locator('[data-action="confirm-load"]').click();
   expect((await readSave(page)).state.inventory).toContain("key");
@@ -309,7 +314,7 @@ test("mobile dialogue stays inside the stage and supports story and inventory co
   await interact(page, "aunt");
   await choice(page);
   await choice(page);
-  await page.locator('[data-action="bag"]').first().click();
+  await menuAction(page, "bag");
   await expect(page.locator("#modal-title")).toHaveText("随身之物");
   await page.locator('[data-select-item="key"]').click();
   await expect(page.locator(".item-detail h3")).toHaveText("黄铜钥匙");
@@ -323,6 +328,11 @@ test("initial RPG stage renders pixel artwork, portraits, no runtime errors or m
   page.on("requestfailed", (r) => failed.push(r.url()));
   await page.goto("/");
   await expect(page.locator("#stage #dialogue")).toBeVisible();
+  await expect(page.locator("header, footer, .scene-toolbar, .chapter-heading, .scene-frame, .control-strip")).toHaveCount(0);
+  await expect(page.locator("#stage #game-menu")).toBeVisible();
+  const bounds = await page.locator("#stage").boundingBox();
+  expect(bounds!.width).toBe(1440);
+  expect(bounds!.height).toBe(960);
   await expect(page.locator(".typing-layout")).toContainText("上海，一九六八年");
   await expect(page.locator("#world")).toHaveAttribute("width", String(WORLD_WIDTH));
   await expect(page.locator("#world")).toHaveAttribute("height", String(WORLD_HEIGHT));
@@ -346,15 +356,18 @@ test("corrupt save recovers safely and audio/reduced-motion controls work", asyn
   await page.addInitScript(() => localStorage.setItem("wudu-save-v1", "{bad"));
   await page.goto("/");
   await expect(page.locator(".typing-layout")).toContainText("上海，一九六八年");
-  await page.locator('[data-action="settings"]').first().click();
+  await menuAction(page, "settings");
   await page.locator('.modal [data-action="audio"]').click();
   await expect(page.locator('.modal [data-action="audio"]')).toHaveAttribute("aria-pressed", "true");
   await page.locator('.modal [data-action="motion"]').click();
   await expect(page.locator('.modal [data-action="motion"]')).toHaveAttribute("aria-pressed", "false");
 });
 
-test("keyboard toolbar controls work during dialogue and text/sound preferences apply", async ({ page }) => {
+test("keyboard in-game menu controls work during dialogue and text/sound preferences apply", async ({ page }) => {
   await page.goto("/");
+  await page.locator('#game-menu').focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#modal-title")).toHaveText("雾渡");
   await page.locator('[data-action="lang"]').focus();
   await page.keyboard.press("Enter");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
@@ -369,6 +382,8 @@ test("keyboard toolbar controls work during dialogue and text/sound preferences 
   await expect(page.locator('[data-action="text-speed"]')).toHaveText("Instant");
   await page.keyboard.press("Escape");
   await expect(page.locator(".choices")).toBeVisible();
+  await expect(page.locator("#game-menu")).toBeFocused();
+  await page.locator("#world").focus();
   await page.keyboard.press("Enter");
   await expect(page.locator(".dialogue-text")).toHaveCount(0);
   expect(await page.evaluate(() => localStorage.getItem("wudu-text-speed"))).toBe("0");

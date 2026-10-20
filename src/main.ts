@@ -40,6 +40,7 @@ import {
 } from "./types";
 
 const icons: Record<string, string> = {
+  menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
   fullscreen: '<path d="M3 9V3h6m6 0h6v6M3 15v6h6m6 0h6v-6"/>',
   boat: '<path d="M3 15h18l-4 5H7zM11 3v11m3-10 6 9h-6z"/>',
   book: '<path d="M3 4h6c2 0 3 1 3 3v14c0-2-1-3-3-3H3zm18 0h-6c-2 0-3 1-3 3v14c0-2 1-3 3-3h6z"/>',
@@ -125,28 +126,17 @@ let reveal: Typewriter | null = null;
 let revealKey = "";
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
-  <header class="site-header" id="header"></header>
-  <main class="shell">
-    <section class="chapter-heading" id="heading"></section>
-    <div class="game-layout">
-      <div class="main-column">
-        <section class="scene-frame" aria-label="Game world">
-          <div class="scene-toolbar" id="scene-toolbar"></div>
-          <div class="stage" id="stage">
-            <canvas id="world" tabindex="0" aria-label="Pixel game scene"></canvas>
-            <div class="stage-atmosphere" aria-hidden="true"></div>
-            <div class="scene-caption" id="scene-caption"></div>
-            <div id="hotspots"></div>
-            <div class="scene-bottom" id="scene-bottom"></div>
-            <button id="quest-hud" class="quest-hud" data-action="journal"></button>
-            <div class="touch-controls" id="touch-controls"></div>
-            <section class="dialogue-panel" id="dialogue" aria-label="Story dialogue"></section>
-          </div>
-        </section>
-        <div class="control-strip" id="controls"></div>
-      </div>
+  <main class="game-shell">
+    <div class="stage" id="stage">
+      <canvas id="world" tabindex="0" aria-label="Pixel game scene"></canvas>
+      <div class="stage-atmosphere" aria-hidden="true"></div>
+      <div class="scene-caption" id="scene-caption"></div>
+      <div id="hotspots"></div>
+      <button id="game-menu" class="game-menu" data-action="menu" aria-haspopup="dialog"></button>
+      <button id="quest-hud" class="quest-hud" data-action="journal"></button>
+      <div class="touch-controls" id="touch-controls"></div>
+      <section class="dialogue-panel" id="dialogue" aria-label="Story dialogue"></section>
     </div>
-    <footer class="footer" id="footer"></footer>
   </main>
   <div id="modal-root"></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -193,22 +183,11 @@ function persist(manual = false) {
 }
 function render() {
   const scene = scenes.find((s) => s.id === state.scene)!;
-  const ch = chapter(state);
   document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
   document.title = tr("雾渡 · The Other Shore", "The Other Shore · 雾渡");
-  document.querySelector("#header")!.innerHTML = `
-    <a class="brand" href="#" data-action="home" aria-label="${tr("雾渡首页", "The Other Shore home")}"><span class="brand-mark">${icon("boat")}</span><span class="brand-name">雾渡<span>THE OTHER SHORE</span></span></a>
-    <nav class="main-nav" aria-label="${tr("主导航", "Main navigation")}"><button class="active" data-action="story">${tr("故 事", "Story")}<span class="nav-dot"></span></button><button data-action="journal">${tr("手 记", "Journal")}</button><button data-action="endings">${tr("余 音", "Endings")}<small>${collected.length}/4</small></button></nav>
-    <div class="header-tools"><button class="lang-button" data-action="lang" aria-label="${tr("Switch to English", "切换到中文")}"><span class="${lang === "zh" ? "selected" : ""}">中</span><span class="separator">/</span><span class="${lang === "en" ? "selected" : ""}">EN</span></button><span class="tool-divider"></span><button class="icon-button" data-action="audio" aria-label="${tr("切换环境音", "Toggle ambience")}" title="${tr("环境音（默认关闭）", "Ambience (off by default)")}">${icon(ambience.enabled ? "sound" : "mute")}</button><button class="icon-button" data-action="settings" aria-label="${tr("设置与存档", "Settings and saves")}">${icon("settings")}</button></div>
-  `;
-  document.querySelector("#heading")!.innerHTML =
-    `<div><div class="eyebrow"><span></span>${t(ch.title)}</div><h1>${t(scene.subtitle)}<span class="heading-seal">${tr("沪", "沪")}</span></h1><p>${t(scene.description)}</p></div><div class="heading-meta"><span>SHANGHAI · 1968</span><span>${icon("rain")}${tr("深秋 · 夜雨", "LATE AUTUMN · RAIN")}</span></div>`;
-  document.querySelector("#scene-toolbar")!.innerHTML =
-    `<div>${icon("pin")}<span>${t(scene.name)}</span><span class="toolbar-slash">/</span><small>${tr("上海", "SHANGHAI")}</small></div><div class="rpg-toolbar"><button data-action="bag">${icon("bag")}${tr("背包", "Bag")}<kbd>I</kbd></button><button data-action="journal">${icon("book")}${tr("手记", "Journal")}<kbd>J</kbd></button><button data-action="map">${icon("map")}${tr("地图", "Map")}<kbd>M</kbd></button><button data-action="fullscreen" aria-label="${tr("切换全屏", "Toggle fullscreen")}">${icon("fullscreen")}</button></div>`;
+  document.querySelector("#game-menu")!.innerHTML = `${icon("menu")}<span>${tr("菜单", "Menu")}</span>`;
   document.querySelector("#scene-caption")!.innerHTML =
     `<span class="scene-number">0${scenes.indexOf(scene) + 1} — ${tr("夜行", "NIGHT WALK")}</span><span>${t(scene.name)}</span>`;
-  document.querySelector("#scene-bottom")!.innerHTML =
-    `<span class="night-clock">${icon("moon")}${scene.time}<span class="clock-divider">·</span>${tr("长夜未明", "BEFORE DAYBREAK")}</span><span class="exploration-tag"><i></i>${currentDialogue ? tr("对话中", "IN CONVERSATION") : tr("自由探索", "EXPLORING")}</span>`;
   document.querySelector("#hotspots")!.innerHTML = scene.hotspots
     .map(
       (h) =>
@@ -221,10 +200,6 @@ function render() {
   document.querySelector("#stage")!.classList.toggle("has-dialogue", !!currentDialogue);
   document.querySelector("#stage")!.classList.toggle("has-ending", !!state.ending);
   document.querySelector("#touch-controls")!.innerHTML = `<button data-move="up" aria-label="${tr('向上','Move up')}">▲</button><button data-move="left" aria-label="${tr('向左','Move left')}">◀</button><button data-move="down" aria-label="${tr('向下','Move down')}">▼</button><button data-move="right" aria-label="${tr('向右','Move right')}">▶</button><button data-action="interact" aria-label="${tr('交互','Interact')}">◎</button>`;
-  document.querySelector("#controls")!.innerHTML =
-    `<div><span><kbd>W</kbd><span class="key-stack"><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span> / ${tr("方向键 移动", "Arrows to move")}</span><span><kbd>Enter / Space</kbd>${tr("交互", "Interact")}</span><span><kbd>1–5</kbd>${tr("选择", "Choose")}</span></div><button data-action="help">${icon("help")}${tr("游玩指南", "How to play")}</button>`;
-  document.querySelector("#footer")!.innerHTML =
-    `<span>${tr("一个关于记忆、选择与未归之人的故事。", "A story of memory, choice, and those yet to return.")}</span><span class="autosave"><i></i>${tr("进度自动保存于此浏览器", "Progress saved in this browser")}</span>`;
   document
     .querySelector("#world")!
     .setAttribute(
@@ -393,7 +368,22 @@ function renderModal() {
     title = "",
     eyebrow = "",
     wide = false;
-  if (modal === "journal") {
+  if (modal === "menu") {
+    title = tr("雾渡", "The Other Shore");
+    eyebrow = t(chapter(state).title);
+    const scene = scenes.find(s => s.id === state.scene)!;
+    const entries = [
+      ["bag", "bag", tr("背包", "Belongings"), "I"],
+      ["journal", "book", tr("手记", "Journal"), "J"],
+      ["map", "map", tr("地图", "Map"), "M"],
+      ["endings", "boat", tr("余音", "Endings"), `${collected.length}/4`],
+      ["settings", "settings", tr("设置与存档", "Settings & saves"), ""],
+      ["lang", "book", lang === "zh" ? "English" : "中文", ""],
+      ["help", "help", tr("游玩指南", "How to play"), ""],
+      ["fullscreen", "fullscreen", tr("切换全屏", "Toggle fullscreen"), ""],
+    ];
+    content = `<p class="modal-intro">${t(scene.name)} · ${scene.time} · ${tr("上海，1968", "Shanghai, 1968")}</p><div class="menu-grid">${entries.map(([action, symbol, label, key]) => `<button data-action="${action}">${icon(symbol)}<span>${label}</span>${key ? `<kbd>${key}</kbd>` : ""}</button>`).join("")}</div><p class="menu-note">${tr("进度自动保存于此浏览器。", "Progress is saved automatically in this browser.")}</p><button class="primary-button menu-resume" data-action="close">${tr("继续游戏", "Resume game")}${icon("arrow")}</button>`;
+  } else if (modal === "journal") {
     title = tr("旅人手记", "Traveler’s journal");
     eyebrow = "NOTES FROM A LONG NIGHT";
     content = `<p class="modal-intro">${tr("写下的东西，就不再只属于黑夜。", "What is written no longer belongs only to the night.")}</p><div class="journal-entries">${quests(
@@ -466,7 +456,7 @@ function renderModal() {
   } else {
     title = tr("在雨夜中行走", "Walking through the night");
     eyebrow = "A SMALL GUIDE";
-    content = `<p class="modal-intro">${tr("《雾渡》是一部约 20–35 分钟的原创叙事 RPG 原型。没有战斗，也没有倒计时。可以慢慢阅读，反复走访。", "The Other Shore is an original narrative RPG prototype, about 20–35 minutes long. There is no combat or countdown. Read at your own pace and revisit freely.")}</p><div class="help-rows"><p><kbd>WASD / ↑↓←→</kbd>${tr("在场景的街道或地板上移动", "Move along the street or floor")}</p><p><kbd>Enter / Space / E</kbd>${tr("与附近人物、物件或出口交互；显示全文", "Interact with nearby events; reveal the full passage")}</p><p><kbd>1–5</kbd>${tr("选择相应对话；空格推进单选段落", "Choose a dialogue option; Space advances single-choice passages")}</p><p><kbd>J / I / M</kbd>${tr("打开手记 / 行囊 / 地图", "Open journal / belongings / map")}</p><p><kbd>Esc</kbd>${tr("关闭菜单；对话需要做出选择", "Close a menu; dialogue requires a choice")}</p></div><p class="modal-intro">${tr("鼠标或触屏：点击场景标记交互，点击地面移动，打开地图选择地点旅行。背包中可查看和使用物品。场景时刻是章节氛围，不是游戏计时器。", "Mouse or touch: select markers to interact, the ground to walk, or open the map to travel. Inspect and use items in the bag. Scene times convey atmosphere; they are not a timer.")}</p><p class="fiction-note">${tr("背景：中国文化大革命时期，1968 年的上海。沈砚、沈泊、林岚及所有具体事件均为原创虚构。包含政治迫害、失踪与创伤的非血腥描写。", "Setting: Shanghai in 1968, during China’s Cultural Revolution. Shen Yan, Shen Bo, Lin Lan, and all specific events are original fiction. Contains non-graphic depictions of political persecution, disappearance, and trauma.")}</p>`;
+    content = `<p class="modal-intro">${tr("《雾渡》是一部约 20–35 分钟的原创叙事 RPG 原型。没有战斗，也没有倒计时。可以慢慢阅读，反复走访。", "The Other Shore is an original narrative RPG prototype, about 20–35 minutes long. There is no combat or countdown. Read at your own pace and revisit freely.")}</p><div class="help-rows"><p><kbd>WASD / ↑↓←→</kbd>${tr("在场景的街道或地板上移动", "Move along the street or floor")}</p><p><kbd>Enter / Space / E</kbd>${tr("与附近人物、物件或出口交互；显示全文", "Interact with nearby events; reveal the full passage")}</p><p><kbd>1–5</kbd>${tr("选择相应对话；空格推进单选段落", "Choose a dialogue option; Space advances single-choice passages")}</p><p><kbd>J / I / M</kbd>${tr("打开手记 / 行囊 / 地图", "Open journal / belongings / map")}</p><p><kbd>Esc</kbd>${tr("打开 / 关闭菜单；对话需要做出选择", "Open / close the menu; dialogue requires a choice")}</p></div><p class="modal-intro">${tr("鼠标或触屏：点击场景标记交互，点击地面移动，打开地图选择地点旅行。背包中可查看和使用物品。场景时刻是章节氛围，不是游戏计时器。", "Mouse or touch: select markers to interact, the ground to walk, or open the map to travel. Inspect and use items in the bag. Scene times convey atmosphere; they are not a timer.")}</p><p class="fiction-note">${tr("背景：中国文化大革命时期，1968 年的上海。沈砚、沈泊、林岚及所有具体事件均为原创虚构。包含政治迫害、失踪与创伤的非血腥描写。", "Setting: Shanghai in 1968, during China’s Cultural Revolution. Shen Yan, Shen Bo, Lin Lan, and all specific events are original fiction. Contains non-graphic depictions of political persecution, disappearance, and trauma.")}</p>`;
   }
   document.querySelector("#modal-root")!.innerHTML =
     `<div class="modal-backdrop"><section class="modal ${wide ? "wide" : ""} ${modal === "ending" ? "ending-modal" : ""}" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="icon-button modal-close" data-action="close" aria-label="${tr("关闭", "Close")}">${icon("close")}</button><span class="eyebrow">${eyebrow}</span><h2 id="modal-title">${title}</h2>${content}</section></div>`;
@@ -485,6 +475,7 @@ async function action(name: string) {
     storageSet('wudu-text-speed', String(textSpeed)); render(); return;
   }
   if (name === 'fullscreen') {
+    closeModal();
     try {
       if (document.fullscreenElement) await document.exitFullscreen();
       else await document.querySelector<HTMLElement>('#app')!.requestFullscreen();
@@ -681,10 +672,10 @@ document.addEventListener("keydown", (event) => {
     return;
   }
   if (key === "escape") {
-    openModal("settings");
+    openModal("menu");
     return;
   }
-  // Preserve native keyboard activation for the toolbar while dialogue is open.
+  // Preserve native keyboard activation for the in-game menu while dialogue is open.
   const focusedButton = (event.target as HTMLElement).closest('button, a');
   if (['enter', ' '].includes(key) && focusedButton &&
       !focusedButton.matches('[data-choice], [data-action="advance"], [data-action="interact"]')) return;
