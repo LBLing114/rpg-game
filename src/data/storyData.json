@@ -7,7 +7,14 @@
     "protected",
     "remembered",
     "copied",
-    "confessed"
+    "confessed",
+    "homeClue",
+    "typeClue",
+    "medicalClue",
+    "archiveClue",
+    "sharedPlan",
+    "farewellAunt",
+    "riverReady"
   ],
   "evidenceItems": [
     "proof",
@@ -22,6 +29,9 @@
         },
         {
           "flag": "trusted"
+        },
+        {
+          "flag": "sharedPlan"
         }
       ]
     },
@@ -92,8 +102,8 @@
         "en": "Torn photograph"
       },
       "description": {
-        "zh": "1956 年，上海。你、沈泊和顾先生站在江边。背后只有一句：“记得我们本来的名字。”",
-        "en": "Shanghai, 1956. You, Shen Bo, and Mr. Gu stand by the river. On the back: “Remember our real names.”"
+        "zh": "1957 年归国后的合影：你、沈泊与顾先生站在江边，青芜在镜头外。夹着 1967 年 11 月 13 日送纸回执及“先印空栏，后补姓名”的注记。",
+        "en": "A 1957 homecoming photograph: you, Shen Bo and Mr. Gu by the river, Qingwu behind the camera. Enclosed: a November 13, 1967 delivery receipt noting “blank field first, name later.”"
       },
       "icon": "photo",
       "use": {
@@ -115,8 +125,8 @@
         "en": "Third proof"
       },
       "description": {
-        "zh": "林岚保存的印刷校样。你的名字被另一种铅字补进检举信；原稿里没有署名。这是一份伪造的指控。",
-        "en": "A printing proof kept by Lin Lan. Your name was inserted into the accusation in a different typeface. The original was unsigned. The accusation was forged."
+        "zh": "第三份校样：姓名被另行压印。结合回执与铅条缺口，可确认材料在声称定稿之后被修改；尚不能确定所有责任人。",
+        "en": "Third proof: a separate name impression. Receipt and chipped rule establish alteration after the claimed completion date, without identifying everyone responsible."
       },
       "icon": "paper",
       "use": {
@@ -138,8 +148,8 @@
         "en": "Transfer register"
       },
       "description": {
-        "zh": "档案名册的抄件：沈泊于十一月十四日被转往外地。签收栏空白。他并非传言中的告密者，下落仍不明。",
-        "en": "A copy of the register: Shen Bo was transferred out of Shanghai on November 14. No one signed for his arrival. He was not the informer in the rumors. His fate remains unknown."
+        "zh": "四十七号及附一的完整抄件：沈泊因追问材料来源被列为关联人员，于 1967 年 11 月 14 日转出。签收空白，后续下落仍待查证。",
+        "en": "Exact copies of file 47 and supplement 47-A: Shen Bo questioned the material’s source and was dispatched November 14, 1967. Receipt blank; subsequent whereabouts unverified."
       },
       "icon": "book",
       "use": {
@@ -161,8 +171,8 @@
         "en": "Doctor’s testimony"
       },
       "description": {
-        "zh": "罗医生亲笔证明：所谓检举发生的那一夜，你一直在诊所救助伤者。落款用了她的真名。",
-        "en": "Dr. Luo’s signed account: on the night of the alleged accusation, you were helping the wounded at her clinic. She has signed her real name."
+        "zh": "罗医生署名证言：1967 年 11 月 12 日夜至次晨，在数个具体时段见沈砚协助救治；明确保留不能确认的时间，隐去患者信息。",
+        "en": "Dr. Luo’s signed account: Shen Yan assisted at specific times during the night of November 12–13, 1967. Unobserved intervals remain uncertain; patient information is excluded."
       },
       "icon": "paper",
       "use": {
@@ -214,22 +224,16 @@
       },
       "portrait": "shen",
       "text": {
-        "zh": "上海，一九六八年，深秋。\n归国的第十一年，名字成了罪证，家成了不敢敲响的门。今晚，一封没有邮戳的信把我带回槐生里。\n弟弟失踪后，我第一次认出了他的笔迹。",
-        "en": "Shanghai, late autumn, 1968.\nEleven years after returning from overseas, my name has become an accusation, my home a door I dare not knock on. Tonight, a letter without a postmark brings me back to Huaisheng Lane.\nFor the first time since my brother vanished, I recognize his handwriting."
+        "zh": "上海，一九六八年，深秋。\n文化大革命已经持续两年。街角的高音喇叭反复响着，学校停过课，熟悉的老师和邻居陆续不再露面。出身、海外经历，甚至一封旧信，都可能成为被审查的理由。\n在槐生里，人们渐渐学会隔着门说话，也学会不问隔壁那扇门为什么封上。今晚，我又站在了那扇门前。",
+        "en": "Shanghai, late autumn, 1968.\nTwo years into the Cultural Revolution, loudspeakers repeat their messages at street corners. Classes have been disrupted; familiar teachers and neighbors have disappeared from daily life. Family background, time abroad, even an old letter can become grounds for investigation.\nIn Huaisheng Lane, people have learned to speak through closed doors—and not to ask why the next one has been sealed. Tonight, I stand before my own."
       },
       "choices": [
         {
           "label": {
-            "zh": "把信收好，走进雨里",
-            "en": "Pocket the letter. Step into the rain."
+            "zh": "继续听下去",
+            "en": "Continue"
           },
-          "flags": [
-            "intro"
-          ],
-          "note": {
-            "zh": "回到槐生里。先向门前的周姨打听旧屋与弟弟的消息。",
-            "en": "Back in Huaisheng Lane. Ask Aunt Zhou about the old home and your brother."
-          }
+          "next": "introReturn"
         }
       ]
     },
@@ -240,18 +244,18 @@
       },
       "role": {
         "zh": "守门的人",
-        "en": "The one who stayed"
+        "en": "Keeper of the door"
       },
       "portrait": "aunt",
       "text": {
-        "zh": "“小沈？……别站在灯底下。”\n她把一只搪瓷杯放下，目光停在你磨破的袖口。\n“你弟弟走前，把钥匙留给我。他说，哥哥总有一天会回来。那孩子……从没说过你一句坏话。”",
-        "en": "“Yan? … Don’t stand beneath the light.”\nShe sets down an enamel cup, looking at your frayed sleeve.\n“Your brother left me the key. He said you would come home one day. That boy… he never spoke a word against you.”"
+        "zh": "“小沈？……别站在灯底下。”\n周姨把搪瓷杯移到暗处，给你让出一个位置。她没有问你过得怎样，只用手摸了摸你外套的袖口，像确认面前的不是一个关于你的传言。\n“你弟弟留的钥匙，我还收着。可你先听我说：家里有些东西已经被搬走，有些东西，最好由你自己认出来。”",
+        "en": "“Xiao Shen? Step away from the light.”\nAunt Zhou moves her enamel cup into the shadows to make room for you. Instead of asking how you have been, she touches your worn sleeve, as if checking that you are more than a rumor about yourself.\n“I still have your brother’s key. But listen first. Some things have been taken from the house. Others are best recognized with your own eyes.”"
       },
       "choices": [
         {
           "label": {
-            "zh": "接过钥匙：我想回家看看",
-            "en": "Take the key. “I want to see home.”"
+            "zh": "“我想先回家看看。”",
+            "en": "“I want to see our home.”"
           },
           "items": [
             "key"
@@ -259,16 +263,12 @@
           "flags": [
             "aunt"
           ],
-          "next": "auntKey",
-          "note": {
-            "zh": "周姨归还了钥匙。沈家旧屋就在里弄尽头。",
-            "en": "Aunt Zhou returned the key. The family home is at the end of the lane."
-          }
+          "next": "auntKey"
         },
         {
           "label": {
-            "zh": "压低声音：谁送来的信？",
-            "en": "Lower your voice. “Who brought the letter?”"
+            "zh": "“是谁把信送来的？”",
+            "en": "“Who brought the letter?”"
           },
           "next": "auntLetter"
         }
@@ -279,16 +279,20 @@
         "zh": "周姨",
         "en": "Aunt Zhou"
       },
+      "role": {
+        "zh": "守门的人",
+        "en": "Keeper of the door"
+      },
       "portrait": "aunt",
       "text": {
-        "zh": "“一个印刷铺的姑娘，姓林。她的手上都是洗不掉的墨。”\n周姨把钥匙塞进你掌心。\n“这些年，我学会了少问一句。但有些门，总得留着钥匙。”",
-        "en": "“A girl from the printing shop. Lin, I think. Ink on her hands that would not wash away.”\nAunt Zhou presses the key into your palm.\n“I’ve learned to ask fewer questions. But some doors still deserve a key.”"
+        "zh": "“印刷铺的林岚。她拎着一包废纸来找我，说里面有东西不能再等。我问是不是沈泊有消息，她摇头，摇得很慢。”\n周姨从衣襟里拿出钥匙。她告诉你，林岚不是新来的姑娘，沈泊从前送纸时常和她搭话。只是这一年，两人都成了里弄不愿提起的名字。\n“她为什么信你，你去问她。别把我的猜测，当成她说过的话。”",
+        "en": "“Lin Lan from the print shop. She came with a bundle of waste paper and said something inside could wait no longer. I asked whether she had news of Shen Bo. She shook her head, very slowly.”\nAunt Zhou takes out the key. Lin is not a stranger: she often spoke with Shen Bo on his delivery rounds. For a year, both names have been difficult to mention here.\n“Ask her why she trusts you. Do not mistake my guess for her own words.”"
       },
       "choices": [
         {
           "label": {
-            "zh": "握住钥匙，向她道谢",
-            "en": "Accept the key and thank her"
+            "zh": "接过钥匙，继续听她说",
+            "en": "Take the key and listen"
           },
           "items": [
             "key"
@@ -296,10 +300,7 @@
           "flags": [
             "aunt"
           ],
-          "note": {
-            "zh": "信由印刷铺的林岚送来。周姨替我保留了旧屋钥匙。",
-            "en": "Lin Lan from the printing shop delivered the letter. Aunt Zhou kept the key for me."
-          }
+          "next": "auntKey"
         }
       ]
     },
@@ -308,17 +309,22 @@
         "zh": "周姨",
         "en": "Aunt Zhou"
       },
+      "role": {
+        "zh": "守门的人",
+        "en": "Keeper of the door"
+      },
       "portrait": "aunt",
       "text": {
-        "zh": "“印刷铺还亮着灯。送信的姑娘在等你。”\n她抬起头，像在听墙里的雨声。\n“要是有人问起，我今晚谁也没见过。你记得我就好。”",
-        "en": "“The printing shop still has its light on. The girl who delivered the letter is waiting.”\nShe looks up, as if listening to rain inside the walls.\n“If anyone asks, I saw no one tonight. It is enough that you remember me.”"
+        "zh": "黄铜钥匙的齿缝里还有蓝漆。周姨说，封门后她每隔几天就去拧一次锁，怕锁芯生锈。“有人说我多事。我就说，漏水了总得有人进去关窗。”\n她把钥匙递过来时没有松手。“你母亲走的时候托我照应你们。照应不是什么大事。有时候只是不让一把锁坏掉。”\n你看见她手背上新添的烫伤，却不知道该从哪一句道谢开始。",
+        "en": "Blue paint remains between the brass key’s teeth. Aunt Zhou says she turned the lock every few days after the door was sealed so it would not rust. “People said I meddled. I told them someone had to close the windows when rain got in.”\nShe does not immediately release the key. “Your mother asked me to look after you. Sometimes that only means keeping a lock from breaking.”\nA new burn marks her hand. You cannot find a large enough way to thank her."
       },
       "choices": [
         {
           "label": {
-            "zh": "暂且告别",
-            "en": "Say goodbye"
-          }
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "auntDoor"
         }
       ]
     },
@@ -327,16 +333,30 @@
         "zh": "周姨",
         "en": "Aunt Zhou"
       },
+      "role": {
+        "zh": "守门的人",
+        "en": "Keeper of the door"
+      },
       "portrait": "aunt",
       "text": {
-        "zh": "“门开着。人还在，家就不算空。”\n她用袖子擦去门牌上的雨水。你终于看清那三个褪色的字：槐生里。",
-        "en": "“The door is open. As long as someone remains, a home is not empty.”\nShe wipes rain from the enamel street plate. The faded characters emerge: Huaisheng Lane."
+        "zh": "周姨仍坐在原来的位置，杯里的茶早已凉了。她问你吃过没有，话说到一半，目光落在你衣袋露出的纸角上。\n“有消息了？”她没有马上伸手去接，仿佛怕自己的急切把纸弄碎。你可以把已经核对的事情告诉她，也可以先在这里坐一会儿。她等的不是一份完整结案书，只是你还肯回来开口。",
+        "en": "Aunt Zhou remains in her chair with cold tea. She begins to ask whether you have eaten, then notices the paper at your pocket.\n“News?” She does not reach for it, as if haste might break it. You can share what you verified or simply sit a while. She is not waiting for a closed case, only for you to return and speak."
       },
       "choices": [
         {
           "label": {
-            "zh": "暂且告别",
-            "en": "Say goodbye"
+            "zh": "把名册里确认的事告诉她",
+            "en": "Tell her what the register confirms"
+          },
+          "requires": {
+            "item": "record"
+          },
+          "next": "auntFarewell"
+        },
+        {
+          "label": {
+            "zh": "“还没有查完，我会再来。”",
+            "en": "“I am still looking. I will return.”"
           }
         }
       ]
@@ -362,27 +382,25 @@
     },
     "desk": {
       "speaker": {
-        "zh": "旧书桌",
-        "en": "The old desk"
+        "zh": "沈砚",
+        "en": "Shen Yan"
       },
-      "portrait": "narrator",
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
       "text": {
-        "zh": "抽屉里没有书，只有半张合影。照片上的你仍穿着归国那天的西装。沈泊笑得模糊，顾先生的脸被一道折痕穿过。\n你把照片翻过来：“记得我们本来的名字。”\n窗外有人走过。脚步没有停。",
-        "en": "There are no books in the drawer, only half a photograph. You are still wearing the suit you returned home in. Shen Bo’s smile is blurred; a crease crosses Mr. Gu’s face.\nOn the back: “Remember our real names.”\nFootsteps pass outside. They do not stop."
+        "zh": "门开时，屋里先动的是灰尘。书桌还靠着原来的窗，抽屉里只有半张合影和几张垫底的图纸。照片上，我穿着归国时的西装，沈泊的领口歪着，顾先生抬手替他整理。\n照片背面写着“一九五七年，江边”，下面是弟弟后来补的一句话：“记得我们本来的名字。”拍照的人没有站进画面，却在纸边留下了半个指印。",
+        "en": "The dust is the first thing to move when the door opens. In the desk drawer lie half a photograph and a few old plans. I wear my homecoming suit; Shen Bo’s collar is crooked, and Mr. Gu is reaching to straighten it.\nThe reverse says “At the river, 1957.” Later my brother added: “Remember our original names.” The photographer is outside the frame, but half a fingerprint remains at its edge."
       },
       "choices": [
         {
           "label": {
-            "zh": "收起合影",
-            "en": "Keep the photograph"
+            "zh": "继续听下去",
+            "en": "Continue"
           },
-          "items": [
-            "photo"
-          ],
-          "note": {
-            "zh": "在旧屋找到合影。顾先生也在照片里，也许诊所里能见到他。",
-            "en": "Found an old photograph. Mr. Gu is in it too. He may be at the clinic."
-          }
+          "next": "deskInventory"
         }
       ]
     },
@@ -399,8 +417,15 @@
       "choices": [
         {
           "label": {
-            "zh": "收起思绪",
-            "en": "Step back"
+            "zh": "重新核对桌里的回执与短笺",
+            "en": "Review the receipt and notes"
+          },
+          "next": "deskInventory"
+        },
+        {
+          "label": {
+            "zh": "暂且离开",
+            "en": "Leave for now"
           }
         }
       ]
@@ -435,30 +460,52 @@
       },
       "portrait": "lin",
       "text": {
-        "zh": "“你终于来了。”\n林岚没有抬头，指尖停在一枚铅字上。\n“检举信印了三次。第三份校样里，你的名字，比别的字新。有人后来加上去的。”\n她看了一眼门：“你信我吗？”",
-        "en": "“You finally came.”\nLin Lan keeps her eyes on a piece of lead type.\n“The accusation was printed three times. In the third proof, your name is newer than the surrounding type. Someone added it later.”\nShe glances at the door. “Do you trust me?”"
+        "zh": "“你终于来了。我不是来告诉你一切都会好的。”\n林岚把门掩上，说清点旧纸的通知昨天才送来。第三份校样一直藏在机器底座里，明早那里也要拆开。她等不起一个更安全的晚上了。\n“先去看你家书桌的回执，再看我这里的铅字盒。两样线索齐了，我们再把这张纸摊开。我需要一个会核对的人，不是一个只肯听好消息的人。”",
+        "en": "“You came. I am not here to promise that things will be all right.”\nLin closes the door. Yesterday she learned that the shop’s old paper would be inventoried. The third proof is hidden beneath a machine that will be dismantled tomorrow. She cannot wait for a safer night.\n“Check the receipt in your desk and the type case here. Then we can open the proof. I need someone who will examine it, not someone who only wants good news.”"
       },
       "choices": [
         {
           "label": {
-            "zh": "“我信。也请你相信我。”",
-            "en": "“I do. And I need you to trust me.”"
+            "zh": "核对两处线索：“我信你，也愿意认真查。”",
+            "en": "Compare both clues: “I trust you, and I will check.”"
           },
           "flags": [
             "trusted"
           ],
-          "next": "linProof",
-          "note": {
-            "zh": "选择相信林岚。她愿意帮助我把真相保存下来。",
-            "en": "I chose to trust Lin Lan. She will help preserve the truth."
-          }
+          "requires": {
+            "all": [
+              {
+                "flag": "homeClue"
+              },
+              {
+                "flag": "typeClue"
+              }
+            ]
+          },
+          "next": "linProof"
         },
         {
           "label": {
-            "zh": "“让我先看看校样。”",
-            "en": "“Let me see the proof first.”"
+            "zh": "核对两处线索：“让证据先说话。”",
+            "en": "Compare both clues: “Let the evidence speak first.”"
+          },
+          "requires": {
+            "all": [
+              {
+                "flag": "homeClue"
+              },
+              {
+                "flag": "typeClue"
+              }
+            ]
           },
           "next": "linProof"
+        },
+        {
+          "label": {
+            "zh": "先去旧屋书桌与铅字盒调查",
+            "en": "Investigate the old desk and type case first"
+          }
         }
       ]
     },
@@ -467,24 +514,22 @@
         "zh": "林岚",
         "en": "Lin Lan"
       },
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
       "portrait": "lin",
       "text": {
-        "zh": "她从印刷机下面抽出一张薄纸。\n“你弟弟找到了它，后来就被带走了。转运名册还在档案室。他不是出卖你的人。”\n你读着那行熟悉又陌生的名字。十一年的沉默，第一次有了一个破口。",
-        "en": "She draws a thin sheet from beneath the press.\n“Your brother found this. Then they took him away. The transfer register is still in the archive. He was not the one who betrayed you.”\nYou read the familiar, unfamiliar name. For the first time, eleven years of silence have a crack in them."
+        "zh": "她从机器底座下抽出油纸包，里面的第三份校样薄得透光。右下角的编号是“三”，正文和前两份一样，唯独姓名栏墨迹很新。\n“我只排过正文。十三日晚有人把姓名那一块重新送来，让我补上。我认出了你的名字，也看见指令没有签字。”\n她没有替自己辩解。“我还是排了。你如果要记下今晚的事，这一段也应该记下。”",
+        "en": "She pulls an oil-paper packet from beneath the machine. Proof number three is almost translucent. Its body matches the first two, but the name field is freshly inked.\n“I set the body text. On the evening of the thirteenth someone brought a replacement name field. I recognized your name. The instruction was unsigned.”\nShe offers no defense. “I set it anyway. If you record tonight, that part belongs in the record too.”"
       },
       "choices": [
         {
           "label": {
-            "zh": "带走校样，寻找名册",
-            "en": "Take the proof. Find the register."
+            "zh": "继续听下去",
+            "en": "Continue"
           },
-          "items": [
-            "proof"
-          ],
-          "note": {
-            "zh": "校样证明检举信被篡改。去档案室寻找沈泊的转运名册；罗医生也许知道那一夜的事情。",
-            "en": "The proof shows the accusation was altered. Search the archive for Shen Bo’s transfer record, and ask Dr. Luo about that night."
-          }
+          "next": "linNight"
         }
       ]
     },
@@ -493,49 +538,74 @@
         "zh": "林岚",
         "en": "Lin Lan"
       },
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
       "portrait": "lin",
       "text": {
-        "zh": "“独自藏起一张纸，是秘密。让另一个人记得它，才有可能成为证据。”\n她整理着散落的铅字，给你让出灯下的位置。\n“我会在这里等。直到天亮。”",
-        "en": "“A paper hidden alone is a secret. When another person remembers it, it may become evidence.”\nShe gathers the scattered type, making room for you beneath the lamp.\n“I’ll wait here. Until morning.”"
+        "zh": "林岚把你的几份纸依次排开。“找到去向了吗？”你告诉她，只找到被转出的日期，没找到签收。她没有用一句“总会有消息”填满那段沉默。\n“如果你愿意，我们今晚就做两份副本。每份都写明抄自哪里，哪些部分还不知道。分开保存，才不会因为一个人搬家、被带走，或者仅仅一场漏雨，就全部丢掉。”",
+        "en": "Lin arranges your papers. “Did you find where he went?” You explain that you found dispatch, but no receipt. She does not fill the silence with a promise of future news.\n“If you agree, we can make two copies tonight. Each should identify its sources and uncertainties. Store them separately, so one move, one detention, or simply a leaking roof cannot erase everything.”"
       },
       "choices": [
         {
           "label": {
-            "zh": "“我愿意和你一起保存这些。”",
-            "en": "“I want us to preserve these together.”"
+            "zh": "带齐三份材料，商议分存",
+            "en": "Compare all three documents and arrange separate copies"
           },
           "flags": [
             "trusted"
           ],
-          "note": {
-            "zh": "与林岚约定：由两个人分别保存证据。",
-            "en": "Lin Lan and I agreed to keep separate copies of the evidence."
-          }
+          "requires": {
+            "all": [
+              {
+                "item": "record"
+              },
+              {
+                "item": "testimony"
+              }
+            ]
+          },
+          "next": "linCopies"
+        },
+        {
+          "label": {
+            "zh": "“我愿意相信你。等材料齐了再来。”",
+            "en": "“I trust you. I will return with the remaining papers.”"
+          },
+          "flags": [
+            "trusted"
+          ]
         },
         {
           "label": {
             "zh": "暂且告别",
-            "en": "Say goodbye"
+            "en": "Leave for now"
           }
         }
       ]
     },
     "typecase": {
       "speaker": {
-        "zh": "铅字盒",
-        "en": "The type case"
+        "zh": "林岚",
+        "en": "Lin Lan"
       },
-      "portrait": "narrator",
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
+      "portrait": "lin",
       "text": {
-        "zh": "几千枚反写的字，整整齐齐地躺在木格里。“有罪”和“无罪”只差一枚铅字，却足以改变一个人的一生。\n旁边摆着一只纸船，船底印着一半没用完的地址。",
-        "en": "Thousands of reversed characters lie neatly in wooden compartments. One piece of type separates “guilty” from “innocent,” and can change a life.\nBeside them sits a paper boat, made from half an unused address label."
+        "zh": "“可以看，别碰那盏灯。”林岚把铅字盒推过来。旧字边缘圆钝，新字则亮得发冷。盒子右上角单独放着“沈”和“砚”，旁边是几根排横线的铅条。\n她给你一块废纸，让你用指腹轻轻拓一下。拓出的旧横线左端缺了一角。那缺口不像字义，可以被人换一种说法；它留在每一次压印里。",
+        "en": "“Look, but leave the lamp alone.” Lin Lan slides over the type case. Old characters have rounded edges; new ones shine coldly. “Shen” and “Yan” sit separately beside metal rules.\nShe gives you scrap paper for a light rubbing. The old rule has a chipped left end. Unlike a sentence that can be explained away, that defect leaves the same mark each time it is printed."
       },
       "choices": [
         {
           "label": {
-            "zh": "收起思绪",
-            "en": "Step back"
-          }
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "typeImpression"
         }
       ]
     },
@@ -550,30 +620,38 @@
       },
       "portrait": "doctor",
       "text": {
-        "zh": "“那天晚上你在这里。你替我扶着伤者，直到天亮。我记得。”\n她从白大褂里拿出钢笔。\n“我可以写下来。但我用了真名，别人就可能来问，是谁把这张纸带出去的。”",
-        "en": "“You were here that night. You held the wounded steady for me until morning. I remember.”\nShe takes a fountain pen from her coat.\n“I can write it down. But if I sign my name, someone may come asking who carried the paper out.”"
+        "zh": "罗医生把听诊器放在桌上。“你先看过药柜旁的值夜登记了吗？一年过去，人会把听来的话和亲眼看见的事混在一起。我也一样。”\n他愿意谈那一夜，却先问你准备怎样保存证言。“如果我的名字出现在外面，别人就可能来问这些病人是谁。要证明你没有做过什么，不该拿他们去交换。”",
+        "en": "Dr. Luo sets his stethoscope down. “Have you read the night register by the medicine cabinet? After a year, people confuse what they heard with what they saw. I am no exception.”\nHe will discuss that night, but asks how you intend to preserve his account. “If my name circulates, someone may ask who these patients were. Proving your innocence should not cost them their privacy.”"
       },
       "choices": [
         {
           "label": {
-            "zh": "“我会护住您的名字，由我承担。”",
-            "en": "“I’ll protect your name and take responsibility.”"
+            "zh": "核对登记：“我会保护证人与患者。”",
+            "en": "Compare the register: “I will protect witnesses and patients.”"
           },
           "flags": [
             "protected"
           ],
-          "next": "doctorSigned",
-          "note": {
-            "zh": "答应保护罗医生。证明清白不该以另一个人的受难为代价。",
-            "en": "I promised to protect Dr. Luo. Clearing my name should not come at the cost of another person."
-          }
+          "requires": {
+            "flag": "medicalClue"
+          },
+          "next": "doctorNight"
         },
         {
           "label": {
-            "zh": "“请写下您记得的全部。”",
-            "en": "“Please write down everything you remember.”"
+            "zh": "核对登记：“先把您亲见的事写下来。”",
+            "en": "Compare the register: “First write what you saw.”"
           },
-          "next": "doctorSigned"
+          "requires": {
+            "flag": "medicalClue"
+          },
+          "next": "doctorNight"
+        },
+        {
+          "label": {
+            "zh": "先查看药柜旁的值夜登记",
+            "en": "Read the register by the medicine cabinet first"
+          }
         }
       ]
     },
@@ -582,25 +660,22 @@
         "zh": "罗医生",
         "en": "Dr. Luo"
       },
+      "role": {
+        "zh": "夜班医生",
+        "en": "The night doctor"
+      },
       "portrait": "doctor",
       "text": {
-        "zh": "钢笔在纸上停了一瞬，随后写下她的全名。\n“有些事，不应该只有做噩梦的人记得。”\n她把证言折好，又递来一张船票：“顾先生替你留的。天亮前有一班去吴淞的船。走不走，你自己定。”",
-        "en": "The pen hesitates, then writes her full name.\n“Some things should be remembered by more than the people who dream of them.”\nShe folds the testimony and offers a ferry ticket. “Mr. Gu kept this for you. A boat to Wusong leaves before dawn. You decide whether to take it.”"
+        "zh": "钢笔写得很慢。罗医生先写日期，再写自己亲见的事，把“整夜未离开”改成了“在数个时段见其协助救治”。你看着那句话变得不那么绝对，反而觉得它更牢靠。\n最后他签了全名，另添一行：“其余时间不能独立确认。”\n“有些事，不应该只有做噩梦的人记得。”他把纸放到灯边晾干，没有催你说谢谢。",
+        "en": "He writes slowly, beginning with the date and his direct observations. He changes “never left all night” to “seen assisting at several times during the night.” Less absolute, the sentence feels more dependable.\nHe signs his full name, adding: “Other intervals cannot be independently confirmed.”\n“Some things should be remembered by more than the people who dream of them.” He leaves the ink to dry without asking for thanks."
       },
       "choices": [
         {
           "label": {
-            "zh": "收下证言与船票",
-            "en": "Accept the testimony and ticket"
+            "zh": "继续听下去",
+            "en": "Continue"
           },
-          "items": [
-            "testimony",
-            "ticket"
-          ],
-          "note": {
-            "zh": "罗医生证明那一夜我在诊所。她还交给我一张末班船票。",
-            "en": "Dr. Luo confirms I was at the clinic that night. She also gave me a ticket for the last ferry."
-          }
+          "next": "doctorFarewell"
         }
       ]
     },
@@ -611,8 +686,8 @@
       },
       "portrait": "doctor",
       "text": {
-        "zh": "“纸会受潮，字会褪色。你自己也要活下去。”\n她把炉上的水倒进杯里。门帘后，顾先生轻轻咳了一声。",
-        "en": "“Paper gets wet. Ink fades. You must stay alive too.”\nShe pours water from the stove. Behind the curtain, Mr. Gu coughs softly."
+        "zh": "“纸会受潮，字会褪色。你自己也要活下去。”\n他把炉上的水倒进杯里。门帘后，顾先生轻轻咳了一声。",
+        "en": "“Paper gets wet. Ink fades. You must stay alive too.”\nHe pours water from the stove. Behind the curtain, Mr. Gu coughs softly."
       },
       "choices": [
         {
@@ -652,9 +727,6 @@
             "zh": "拿出半张合影：“我们都在这里。”",
             "en": "Show the photograph. “We are all here.”"
           },
-          "flags": [
-            "remembered"
-          ],
           "next": "guMemory",
           "note": {
             "zh": "把合影给顾先生看。他记起了沈泊，也记起了妻子的名字。",
@@ -684,17 +756,22 @@
         "zh": "顾文山",
         "en": "Gu Wenshan"
       },
+      "role": {
+        "zh": "旧日的老师",
+        "en": "A former teacher"
+      },
       "portrait": "gu",
       "text": {
-        "zh": "“青芜。她叫青芜。”\n他指着照片外的空白，忽然笑了。\n“是她替我们拍的。你弟弟非要把一只纸船放进水里。”\n窗外的雨小了一些。你们谁也没有说话，但房间不再那么空。",
-        "en": "“Qingwu. Her name was Qingwu.”\nHe points beyond the edge of the photograph and suddenly smiles.\n“She took the picture. Your brother insisted on setting a paper boat on the water.”\nThe rain eases. Neither of you speaks, but the room feels less empty."
+        "zh": "“青芜。她叫青芜。”顾先生指着照片外的空白，说那是妻子站的位置。她嫌三个男人站得太直，举着相机让大家放松一点。沈泊于是把领口扯歪，逗得你们都笑了。\n他问你还记不记得那天的风。你本来只想问档案的事，却在这句问话前坐下来。原来一张照片，也可以先用来让一个人安静地高兴一会儿。",
+        "en": "“Qingwu. Her name was Qingwu.” Gu points beyond the photograph, where his wife stood. The three men looked too stiff, so she told them to relax. Shen Bo crooked his collar and made everyone laugh.\nGu asks if you remember the wind that day. You meant to question him about records, but sit down instead. A photograph can first be allowed to make someone quietly happy."
       },
       "choices": [
         {
           "label": {
-            "zh": "暂且告别",
-            "en": "Say goodbye"
-          }
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "guBridge"
         }
       ]
     },
@@ -719,46 +796,40 @@
     },
     "cabinet": {
       "speaker": {
-        "zh": "转运名册",
-        "en": "The transfer register"
+        "zh": "沈砚",
+        "en": "Shen Yan"
       },
-      "portrait": "narrator",
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
       "text": {
-        "zh": "在一排排用铅笔划掉的名字中，你找到了沈泊。\n“十一月十四日，转送外地。随身物品：书一本，旧围巾一条。”\n签收栏空着。你不知道他是否还活着，却终于知道，他没有出卖你。",
-        "en": "Among rows of names crossed out in pencil, you find Shen Bo.\n“November 14. Transferred out of the city. Personal effects: one book, one old scarf.”\nThe receipt column is empty. You do not know if he is alive, but you finally know he did not betray you."
+        "zh": "桌上摞着一批没有装订的转运名册。有些名字用铅笔划过，有些在边上补了新的编号。\n我知道自己想找到哪个名字，却不能只认出熟悉的两个字就停下。靠墙书架的索引给出编号和附件，诊所的证言则能帮助区分指控日期和实际发生的事。把这些摆在一起，才可以开始核对。",
+        "en": "Unbound transfer registers cover the desk. Pencil marks strike through some names; new numbers sit beside others.\nRecognizing two familiar characters is not enough. The wall-shelf index identifies the file and supplement. The clinic statement separates the accusation’s date from observed events. These must be compared before drawing a conclusion."
       },
       "choices": [
         {
           "label": {
-            "zh": "逐字抄下，保留原件",
-            "en": "Copy every word. Leave the original."
+            "zh": "按索引核对四十七号与附一",
+            "en": "Compare file 47 and supplement 47-A"
           },
-          "items": [
-            "record"
-          ],
-          "flags": [
-            "copied"
-          ],
-          "note": {
-            "zh": "抄下转运名册，原件仍在档案室。沈泊的去向没有记录。",
-            "en": "Copied the transfer register and left the original in place. Shen Bo’s destination is unrecorded."
-          }
+          "requires": {
+            "all": [
+              {
+                "flag": "archiveClue"
+              },
+              {
+                "item": "testimony"
+              }
+            ]
+          },
+          "next": "cabinetFiles"
         },
         {
           "label": {
-            "zh": "抄下名册，也留下自己的证言",
-            "en": "Copy the register. Add your own account."
-          },
-          "items": [
-            "record"
-          ],
-          "flags": [
-            "copied",
-            "confessed"
-          ],
-          "note": {
-            "zh": "抄下名册，并在空白纸上留下自己的证言。我不再把沉默当作唯一的保护。",
-            "en": "Copied the register and left my own account on a blank sheet. Silence will no longer be my only protection."
+            "zh": "先查看靠墙书架的档案索引",
+            "en": "Read the index on the wall shelf first"
           }
         }
       ]
@@ -884,6 +955,1400 @@
             "zh": "还不是时候，回去再看看",
             "en": "Not yet. There are places to revisit."
           }
+        }
+      ]
+    },
+    "introReturn": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我叫沈砚。十一年前，我从法国里昂结束建筑学业回国，带回两只皮箱、一套绘图工具，还有替普通人盖好房子的愿望。弟弟沈泊来码头接我。他没有问外国是什么样，只问箱子里有没有给他的书。\n后来，我在设计单位画住宅图。那些图上，每一家都有窗、有门，有一个可以安稳睡觉的房间。我以为生活也会照着图纸建成。",
+        "en": "My name is Shen Yan. Eleven years ago I returned from architecture school in Lyon with two suitcases, drawing instruments, and the wish to build decent homes for ordinary people. My younger brother Shen Bo met me at the dock. He asked nothing about France—only whether I had brought him books.\nAt the design institute, I drew homes with windows, doors, and rooms where people could sleep safely. I thought life would be built according to the plans."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "introPersecution"
+        }
+      ]
+    },
+    "introPersecution": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "一九六六年以后，留学经历被反复追问，外文书被搬走，我也失去了原来的工作。去年，一封印着我名字的检举材料又把几位同事牵连进去。材料说，是我组织他们私下传递消息；有人甚至说，亲弟弟已经承认了一切。\n我写了许多份说明，没有一份换来答复。如今我住在单位安排的窄房里，白天做杂务，出门时总觉得身后有人。",
+        "en": "After 1966, my studies abroad became a subject of repeated questioning. Foreign books were taken away, and I lost my work. Last year, a printed accusation carrying my name implicated several colleagues. It claimed I organized secret exchanges of information. A rumor said my own brother had confirmed everything.\nI wrote explanation after explanation. None brought an answer. Now I sleep in a narrow room assigned by my work unit, do odd jobs, and feel watched whenever I go out."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "introBrother"
+        }
+      ]
+    },
+    "introBrother": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "沈泊替印刷铺送纸，也替邻居修收音机。他总说，坏掉的东西要先拆开看，不能只凭外壳判断。去年十一月，他在追查那份材料时被带走。此后没有家书，也没有确切的去向。\n我曾在心里怪过他，甚至不敢承认自己怪过他。母亲留下的旧屋还在槐生里，可这一年，我宁愿绕远路，也不愿经过那块门牌。",
+        "en": "Shen Bo delivered paper for a printing shop and repaired neighbors’ radios. He said a broken thing had to be opened before anyone could judge it by its casing. Last November he was taken away while investigating that accusation. Since then there has been no family letter and no certain account of where he went.\nIn secret I blamed him, then feared admitting that blame. Our mother’s old home still stands in Huaisheng Lane. For a year I have taken longer roads to avoid its doorplate."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "introLetter"
+        }
+      ]
+    },
+    "introLetter": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "今天傍晚，一封没有邮戳的信被塞进我的饭盒。信上的字是沈泊写的：“别信那封检举信。找出第三份校样，天亮前到江边。”\n信纸背面另有新添的一行小字：“印刷铺明早清点旧纸。我姓林，今晚等你。”这不是弟弟刚刚寄来的消息，而是有人把他留下的东西送到了我手里。那个人为何等到今天，我还不知道。",
+        "en": "This evening an unstamped letter appeared in my lunch tin. The handwriting was Shen Bo’s: “Do not believe the accusation. Find the third proof. Come to the river before dawn.”\nA newer line on the reverse read: “The shop’s waste paper will be inventoried tomorrow. My name is Lin. I will wait tonight.” This is not a fresh message from my brother. Someone has finally delivered something he left behind. I do not yet know why they waited until now."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "introGoal"
+        }
+      ]
+    },
+    "introGoal": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我能做的，不是凭一封信推翻所有指控，而是先弄清三件事：名字怎样被印上去，弟弟为何被带走，那些仍然活着的人愿意说出多少。\n周姨替我们保管着旧屋钥匙。先找她，再去长明印刷铺见送信的人。天亮前的渡船也许是一条退路，也许只是弟弟未走完的路。\n我把信贴身放好。今夜，我要先听人把话说完。",
+        "en": "A letter alone cannot overturn everything. First I must establish three things: how my name reached the page, why my brother was taken, and how much those still here are willing to tell.\nAunt Zhou kept the key to our old home. I will find her, then meet the letter’s messenger at Changming Press. The ferry before dawn might be a way out—or merely a journey my brother never completed.\nI place the letter inside my coat. Tonight, I will let people finish speaking."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "走进槐生里，寻找周姨",
+            "en": "Enter the lane and find Aunt Zhou"
+          },
+          "flags": [
+            "intro"
+          ],
+          "note": {
+            "zh": "1968 年深秋：林岚送来了沈泊留下的旧信。先向周姨取钥匙，再找校样、证人和转运记录。",
+            "en": "Late autumn, 1968: Lin Lan delivered Shen Bo’s old letter. Find Aunt Zhou, then the proof, witnesses, and transfer records."
+          }
+        }
+      ]
+    },
+    "auntDoor": {
+      "speaker": {
+        "zh": "周姨",
+        "en": "Aunt Zhou"
+      },
+      "role": {
+        "zh": "守门的人",
+        "en": "Keeper of the door"
+      },
+      "portrait": "aunt",
+      "text": {
+        "zh": "“屋里那张书桌，抽屉底下垫着你的旧图纸。沈泊走前在那里坐了一夜，铅笔削了三回。”\n周姨记得，第二天清早他托人把一张送纸回执送回来。回执上有日期，盖着印刷铺的收货章。她没敢动，仍压在桌里的信封下面。\n“别人说他做了什么，我不敢替他担保。我只能告诉你，他什么时候回来，什么时候出去。这是我亲眼看见的。”",
+        "en": "“Your old drawings line the desk drawer. Shen Bo sat there all night before he vanished. He sharpened his pencil three times.”\nThe following morning he sent back a paper-delivery receipt, dated and stamped by the shop. Aunt Zhou left it under an envelope in the desk.\n“I cannot vouch for everything people say he did. I can tell you when I saw him leave and return. Those things I witnessed myself.”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "auntMemory"
+        }
+      ]
+    },
+    "auntMemory": {
+      "speaker": {
+        "zh": "周姨",
+        "en": "Aunt Zhou"
+      },
+      "role": {
+        "zh": "守门的人",
+        "en": "Keeper of the door"
+      },
+      "portrait": "aunt",
+      "text": {
+        "zh": "她问你还记不记得小时候停电的夜晚。你和沈泊把蜡油滴在铁皮盒里，说要做一盏不会灭的灯。最后弄脏了半张桌子，被母亲罚着擦了一下午。\n“那时候沈泊也替你挡着。明明是你先点的火，他说是自己想试试。”\n周姨忽然停住。“我不是说，他这一回也一定替你挡了什么。我只是怕你连从前的他，也一并忘了。”",
+        "en": "She asks whether you remember making a lamp during a childhood power cut. You and Shen Bo dripped wax into a tin, determined to build a light that would never go out. Your mother made you scrub the stained table all afternoon.\n“He took the blame though you lit the first match.”\nShe stops herself. “That does not prove he protected you this time. I only fear you might forget the person he was before all this.”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "auntRumour"
+        }
+      ]
+    },
+    "auntRumour": {
+      "speaker": {
+        "zh": "周姨",
+        "en": "Aunt Zhou"
+      },
+      "role": {
+        "zh": "守门的人",
+        "en": "Keeper of the door"
+      },
+      "portrait": "aunt",
+      "text": {
+        "zh": "墙外传来自行车铃。周姨等声音过去，才说起那句“弟弟检举了哥哥”的传言。最早是谁讲的，她已经记不清；后来每个人都说，是从别人那里听来的。\n“话传了几遍，听着就像真的。我也有过想信的时候。信了，就不用惦记一个失踪的人了。”\n她抬眼看你：“你可以怪我。但今晚要是找到了什么，回来告诉我一声。我不想再只听墙外的话。”",
+        "en": "A bicycle bell passes outside. Aunt Zhou waits, then speaks of the rumor that your brother denounced you. She cannot remember who first said it. Later, everyone claimed to have heard it from someone else.\n“After enough repetitions it sounded true. Part of me wanted to believe. Believing meant I would no longer have to worry about a missing man.”\nShe looks up. “Blame me if you must. But if you learn something tonight, tell me. I no longer want my news to come through walls.”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "auntResolve"
+        }
+      ]
+    },
+    "auntResolve": {
+      "speaker": {
+        "zh": "周姨",
+        "en": "Aunt Zhou"
+      },
+      "role": {
+        "zh": "守门的人",
+        "en": "Keeper of the door"
+      },
+      "portrait": "aunt",
+      "text": {
+        "zh": "她终于松开钥匙。“先看书桌，再去印刷铺。那里的铅字盒还在，你弟弟最爱拆开看这些东西。”\n你把路线在心里念了一遍：旧屋的回执、印刷铺的铅字、送信的林岚。这些听起来都很小，不像能改变命运的东西。但它们至少有位置、有来处，可以由你亲手核对。\n周姨重新端起杯子，替你留了一点灯光。",
+        "en": "She releases the key. “Look in the desk first, then visit the press. Its type case is still there. Your brother liked to see how things worked.”\nYou repeat the route: the receipt at home, the type at the shop, Lin Lan who brought the letter. None sounds large enough to alter a life. But each has a place and an origin you can check for yourself.\nAunt Zhou lifts her cup again, leaving you a little light."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "去旧屋查看书桌",
+            "en": "Examine the desk at home"
+          },
+          "note": {
+            "zh": "周姨只确认亲眼所见。旧屋书桌有送纸回执；印刷铺铅字盒可核对材料。",
+            "en": "Aunt Zhou distinguishes observation from rumor. Check the receipt in the old desk and the type case at the press."
+          }
+        }
+      ]
+    },
+    "deskInventory": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "被搬走的书留下深浅不同的空格。抽屉底的住宅图纸上，有一处被沈泊用红笔圈住：门厅外的一小块雨棚。他在旁边写：“等人的地方也该有屋顶。”\n我突然记起，那是他送纸回家后说的话。工人们在印刷铺门外排队结账，雨下了一下午，没有人让他们进去。那时我忙着改图，只回答了一句“以后再说”。",
+        "en": "The removed books have left rectangles of different shades. On a housing plan Shen Bo circled a small canopy outside an entrance. Beside it he wrote, “People waiting deserve a roof too.”\nI remember him saying that after a delivery. Workers had waited outside the shop for their pay through an afternoon of rain. Nobody let them in. Busy correcting a drawing, I replied, “We can talk about it later.”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "deskLetters"
+        }
+      ]
+    },
+    "deskLetters": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "信封里是几封没有寄出的短笺。最上面一封只有开头：“哥，我没有说过他们印出来的那些话。”后面的纸被擦得很薄，像写信的人一次次改变了说法。\n我想把这句话当成答案，又知道笔迹只能证明他写过，不能证明所有事。照片、短笺和回执应该一起保存。我把手放平，才发现指尖一直在抖。",
+        "en": "Inside the envelope are several unsent notes. One begins, “Brother, I never said the words they printed.” The paper below is rubbed thin, as if its writer repeatedly tried another explanation.\nI want the sentence to settle everything. Yet handwriting proves he wrote it, not that every question is answered. The photograph, notes, and receipt must be kept together. Only when I flatten my hand do I notice its trembling."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "deskDate"
+        }
+      ]
+    },
+    "deskDate": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "回执写着“一九六七年十一月十三日，晚，送纸二令”，收货处是长明印刷铺。背面有弟弟的铅笔小字：“先印空栏，后补姓名。看横线是否断开。”\n这不是一份完整的指控，只是一个能被验证的方法。旧材料声称在十一月十二日已经定稿，而沈泊十三日晚仍见到改版。究竟是补印，还是换过内容，需要去看实际的铅字和纸张。",
+        "en": "The receipt records two reams delivered to Changming Press on the evening of November 13, 1967. On the reverse Shen Bo wrote: “Blank field printed first; name added later. Check whether the rule is broken.”\nThis is a testable lead, not a complete accusation. The document was supposedly finalized on November 12, yet Shen Bo saw changes on the thirteenth. A routine reprint or an alteration? I must compare the actual type and paper."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "deskResolve"
+        }
+      ]
+    },
+    "deskResolve": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我把回执和半张合影夹进信里，按原样放回其余东西。窗外传来关窗声，我这才松开一直屏住的气。\n离开前，我再看了一眼雨棚的红圈。如果沈泊回来，我想先听他说完那张图。现在要做的是去印刷铺：找铅字盒，看一看旧字的缺口，再请林岚解释第三份校样。",
+        "en": "I place the receipt and photograph inside the letter and leave the other objects as they were. A window closes outside; I realize I have been holding my breath.\nBefore leaving, I look again at the circled canopy. If Shen Bo comes back, I want to hear what he meant to say about that plan. For now I must inspect the type case, look for defects in the old characters, and ask Lin Lan about the third proof."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收好合影与回执线索",
+            "en": "Keep the photograph and receipt"
+          },
+          "items": [
+            "photo"
+          ],
+          "flags": [
+            "homeClue"
+          ],
+          "note": {
+            "zh": "送纸回执：1967 年 11 月 13 日晚。背注：先印空栏，后补姓名；需要用铅字与校样核对。",
+            "en": "Delivery receipt: evening of November 13, 1967. Note: blank field first, name later. Compare the type and proof."
+          }
+        }
+      ]
+    },
+    "typeImpression": {
+      "speaker": {
+        "zh": "林岚",
+        "en": "Lin Lan"
+      },
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
+      "portrait": "lin",
+      "text": {
+        "zh": "盒底压着一张工序签：先校正文，再检查署名栏，最后编号归档。林岚说，正常补印不会把姓名压到已经干透的横线上；如果必须重排，应该重新校对整行。\n你在废纸上试着对齐两道痕迹。姓名的墨色更浓，而横线在字下仍能连起来。这说明两者不是同一次压下的，但还不能仅凭墨色判断动机。",
+        "en": "A work slip lists the sequence: proofread the text, check the name field, then number and file. Lin explains that a proper reprint would not stamp a name over a dry rule; a reset line should be checked in full.\nYou align two impressions. The name is darker, but the rule continues beneath it. They were printed separately. Ink color alone, however, cannot tell you why."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "typeClue"
+        }
+      ]
+    },
+    "typeClue": {
+      "speaker": {
+        "zh": "林岚",
+        "en": "Lin Lan"
+      },
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
+      "portrait": "lin",
+      "text": {
+        "zh": "林岚收起拓纸，暂时没有给你校样。“把这个记住：先后顺序是一件事，谁做的、为什么做，是另一件事。不要因为终于找到对自己有利的东西，就把不知道的部分补成想要的答案。”\n你记下了旧铅条的缺口、姓名与横线的重叠位置。现在可以把旧屋的送纸日期也摆出来，和她认真谈一次。",
+        "en": "Lin puts away the rubbing but not yet the proof. “Remember: sequence is one question. Who did it and why are other questions. Do not fill the gaps with the answer you want just because you found something in your favor.”\nYou note the chipped rule and the overlap beneath the name. With the delivery date from home, you are ready for a proper conversation."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下铅字线索，找林岚核对",
+            "en": "Record the type evidence and speak to Lin"
+          },
+          "flags": [
+            "typeClue"
+          ],
+          "note": {
+            "zh": "铅字盒：旧横线有缺口，姓名另行压印。需与 11 月 13 日送纸回执和第三份校样一起判断。",
+            "en": "Type case: chipped old rule; name printed separately. Compare these with the November 13 receipt and third proof."
+          }
+        }
+      ]
+    },
+    "linNight": {
+      "speaker": {
+        "zh": "林岚",
+        "en": "Lin Lan"
+      },
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
+      "portrait": "lin",
+      "text": {
+        "zh": "“沈泊送纸时看见了。他问我，为什么第二份还空着的地方，第三份已经有了姓名。我说让他少管，他却一直站在门边。”\n林岚拿起那枚“沈”字，指腹被边缘压白。“后来他说，要是人人都说自己只负责这一小步，最后就没有人负责整张纸了。”\n第二天，他没有再来送纸。铺里的人说换了送货工，再也没提原因。",
+        "en": "“Shen Bo saw it during his delivery. He asked why a field blank in the second proof carried a name in the third. I told him to mind his work. He stayed by the door.”\nShe grips the character for Shen until her fingertip turns pale. “He said that if everyone was responsible for only one small step, nobody would answer for the whole page.”\nThe next day someone else delivered the paper. Nobody explained the change."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "linDoubt"
+        }
+      ]
+    },
+    "linDoubt": {
+      "speaker": {
+        "zh": "林岚",
+        "en": "Lin Lan"
+      },
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
+      "portrait": "lin",
+      "text": {
+        "zh": "“我把校样藏了一年。”林岚的声音没有抬高，“怕被发现，也怕有一天真的把它当成废纸。我不是等到不害怕了才送信，是再等下去，它就没了。”\n你第一次发现，她的手一直压在衣袋上。那里装着一本空白小册，第一页写的是母亲买药的账。她需要保住工作，也需要有一样东西能证明，自己没有把那一夜彻底忘记。",
+        "en": "“I hid it for a year,” Lin says quietly. “I feared discovery, and feared eventually treating it as waste myself. I delivered the letter not because I stopped being afraid, but because waiting would destroy it.”\nHer hand rests over a pocket notebook. Its first page lists her mother’s medicine expenses. She needs her job. She also needs something that proves she has not entirely erased that night."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "linCompare"
+        }
+      ]
+    },
+    "linCompare": {
+      "speaker": {
+        "zh": "林岚",
+        "en": "Lin Lan"
+      },
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
+      "portrait": "lin",
+      "text": {
+        "zh": "你把三条线索放在灯下：旧屋回执证明沈泊十三日晚送过纸；铅字盒说明姓名另行压印；第三份校样的旧横线，在姓名下面仍然连着。\n这些并不能告诉你发出指令的人是谁，也不能证明所有传闻都假。但它们足够反驳“十二日已完成、以后未改动”这一说法。\n林岚等你自己开口。你决定怎样描述已经找到的事实？",
+        "en": "You arrange three observations beneath the lamp: the receipt places Shen Bo here on the thirteenth; the type shows a separate name impression; the old rule remains continuous beneath the name in proof three.\nNone identifies the person who ordered the change or disproves every rumor. Together they contradict the claim that the document was completed on the twelfth and never altered.\nLin waits. How will you describe what the evidence establishes?"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "开始核对推理",
+            "en": "Compare the evidence"
+          },
+          "next": "proofQuestion"
+        }
+      ]
+    },
+    "proofQuestion": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "校样上那道有缺口的横线，和铅字盒里的旧铅条对得上。姓名的边缘压过横线，说明补字发生在原版之后。回执又给这次改动留下了可以交叉核对的日期。\n我需要的是一句经得起追问的话。它可以没有我想象中那么有力，但不能比证据走得更远。",
+        "en": "The chipped rule in the proof matches the old strip in the case. The name overlaps it: the addition came after the original impression. The receipt supplies a date to cross-check.\nI need a statement that can survive questions. It may be less powerful than I wish, but it must not claim more than the evidence supports."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "姓名在定稿日期后补入，材料的形成过程被隐瞒了",
+            "en": "The name was added after the stated completion date; the process was concealed"
+          },
+          "next": "linInference"
+        },
+        {
+          "label": {
+            "zh": "墨色较新，说明整封信都是林岚一人伪造的",
+            "en": "New ink proves Lin fabricated the entire letter alone"
+          },
+          "next": "proofMistake"
+        },
+        {
+          "label": {
+            "zh": "有弟弟的回执，就能证明他此刻仍然安全",
+            "en": "The receipt proves my brother is safe now"
+          },
+          "next": "proofMistake"
+        }
+      ]
+    },
+    "proofMistake": {
+      "speaker": {
+        "zh": "林岚",
+        "en": "Lin Lan"
+      },
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
+      "portrait": "lin",
+      "text": {
+        "zh": "“我们知道的还没有那么多。”\n林岚把回执放回原位。“墨色和压痕说明了印刷先后，不能凭空告诉你谁下令。送纸的回执只能说明他那晚来过，更不能说明他现在在哪里。”\n她没有收走校样。“再看一遍。要替一个人说清楚，就别让另一个没有根据的结论盖住他。”",
+        "en": "“We do not know that much.”\nLin sets the receipt down again. “Ink and impressions establish an order of printing, not who gave an order. The receipt places him here that evening. It cannot tell us where he is now.”\nShe leaves the proof in front of you. “Try again. To speak clearly for one person, do not bury him beneath another unsupported conclusion.”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "重新比较能被证明的事实",
+            "en": "Reconsider what can be established"
+          },
+          "next": "proofQuestion"
+        }
+      ]
+    },
+    "linInference": {
+      "speaker": {
+        "zh": "林岚",
+        "en": "Lin Lan"
+      },
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
+      "portrait": "lin",
+      "text": {
+        "zh": "“对。不是所有空白都要由我们填上。”林岚把三份编号抄在同一张纸上，在姓名旁画了一条细线。\n“你弟弟发现的，是这道后来补上的痕迹。至少他在追查它，不是传言里那个主动把你交出去的人。至于他后来遭遇什么，还得继续查。”\n她告诉你，罗医生记得材料所指的那一夜；档案室的卷宗则可能保留沈泊被带走以后的记录。",
+        "en": "“Yes. We need not fill every blank ourselves.” Lin copies the three proof numbers together and marks the added name.\n“Your brother was investigating this alteration. That differs from the story of a willing informer. What happened afterward still needs to be established.”\nDr. Luo remembers the night cited in the accusation. Archive records may trace what followed Shen Bo’s detention."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "linSeal"
+        }
+      ]
+    },
+    "linSeal": {
+      "speaker": {
+        "zh": "林岚",
+        "en": "Lin Lan"
+      },
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
+      "portrait": "lin",
+      "text": {
+        "zh": "林岚用原来的油纸包住校样，又在外面添了一层干纸。“拿着。到了诊所，先看值夜登记，再问医生。别先把你想听的答案说给他。”\n她没有要求你原谅她。你也没有说这张纸能换来原谅。门开时，机油和湿纸的气味一起涌进雨里。\n临走前，她说：“查到名册以后再回来。独自藏着一份纸，终究只是一个人的秘密。”",
+        "en": "Lin rewraps the proof in oil paper and adds a dry outer sheet. “Take it. At the clinic, read the night register before questioning the doctor. Do not begin by telling him the answer you want.”\nShe does not ask forgiveness, and you do not offer a document in its place. Rain meets the smell of machine oil as the door opens.\n“Come back after finding the transfer record,” she says. “One hidden paper is still only one person’s secret.”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收下校样，去诊所查看值夜登记",
+            "en": "Take the proof and inspect the clinic register"
+          },
+          "items": [
+            "proof"
+          ],
+          "note": {
+            "zh": "推理：姓名在声称的定稿日期后被补印。不能据此认定全部责任；需核对诊所证人与档案记录。",
+            "en": "Deduction: the name was added after the claimed completion date. Responsibility is not fully established; check witnesses and archive records."
+          }
+        }
+      ]
+    },
+    "medicalRegister": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "药柜旁放着一册值夜登记。纸张边缘泛黄，页与页之间夹着用过的处方。罗医生指着装订线，让你只看相关的一页，不要抄走其他病人的名字。\n一九六七年十一月十二日，登记从傍晚一直延续到次日清晨。每条记录下面都留着不同深浅的笔迹，像许多人把一夜的疲倦接着写了下去。",
+        "en": "A night register lies beside the medicine cabinet, prescriptions tucked between yellowed pages. Dr. Luo asks you to inspect the relevant page without copying other patients’ names.\nEntries for November 12, 1967 run from evening into the following morning. Different pressures of handwriting follow one another, as though the exhaustion of a whole night had passed through several hands."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "medicalNames"
+        }
+      ]
+    },
+    "medicalNames": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "你找到了自己的姓，写在“协助搬运”一栏；后面没有政治判断，也没有对海外经历的解释，只有“沈，左袖湿，留至晨”。\n我从未想过，这种像顺手一记的小事，会有一天比我写过的长篇说明更接近当时的自己。罗医生说，登记本也会有遗漏，它不是一个能回答所有问题的人。要和记忆一起核对。",
+        "en": "Your surname appears under “assisted with carrying”: “Shen, left sleeve wet, remained until morning.” No judgment of your background, only that ordinary detail.\nI never expected a casual note to resemble the person I was more closely than all my written explanations. Luo warns that registers can omit things too. A book cannot answer every question; it must be checked against memory."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "medicalHours"
+        }
+      ]
+    },
+    "medicalHours": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "登记的下一页夹着供药单。午夜后有人签收绷带，清晨四时又补了一次灯油。材料却说，我在同一夜离开诊所，去别处组织了秘密聚会。\n账目不能替我证明整夜的每一分钟，却给出了连续工作的几个节点。医生是否一直看见我，谁还能作证，这些问题都该问清，而不是把空白当作自动成立的保证。",
+        "en": "A supply sheet records bandages received after midnight and lamp oil replenished at four. The accusation places me elsewhere that night, organizing a secret gathering.\nThese entries cannot account for every minute, but they establish several points in a continuous shift. Did the doctor see me throughout? Who else remembers? Those are questions to ask, not blanks to treat as automatic guarantees."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "medicalSeal"
+        }
+      ]
+    },
+    "medicalSeal": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "你只记下日期、供药时间和有关自己的那一行，把病人的姓名留在原处。册子合上时，诊所里传来水壶将开的细响。\n现在再去问罗医生，可以问得具体一些：他亲眼看见了什么，哪些时间是依据登记回想的，哪些事情他也不知道。事实不一定能让这间屋子安全，却至少不该让旁人的病历成为新的风险。",
+        "en": "You copy the date, supply times, and the line concerning yourself, leaving patients’ names where they belong. A kettle begins to hiss as you close the book.\nNow you can ask precise questions: what Luo saw, which times the register helped him recall, and what he cannot know. Facts may not make this room safe, but its patients should not be exposed in the search for them."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下时间线，向罗医生求证",
+            "en": "Record the timeline and question Dr. Luo"
+          },
+          "flags": [
+            "medicalClue"
+          ],
+          "note": {
+            "zh": "值夜登记：1967 年 11 月 12 日至次日清晨；沈砚协助搬运。只抄相关时间，未抄患者姓名。",
+            "en": "Night register: November 12–13, 1967; Shen Yan assisted with carrying. Relevant times copied without patient names."
+          }
+        }
+      ]
+    },
+    "doctorNight": {
+      "speaker": {
+        "zh": "罗医生",
+        "en": "Dr. Luo"
+      },
+      "role": {
+        "zh": "夜班医生",
+        "en": "The night doctor"
+      },
+      "portrait": "doctor",
+      "text": {
+        "zh": "“你来的时候左袖湿了。门口的水管漏着，你先去把阀门拧紧，才进屋帮忙。”\n医生说，那一夜伤者陆续送来，床不够，地上也铺了毯子。你留下来扶人、提水、看着药瓶滴空。直到窗外有了第一点亮色，他还看见你坐在门边，拿着一只已经凉透的杯子。\n这不是材料里那个组织秘密行动的人，只是一个不知道还能怎样帮忙的人。",
+        "en": "“Your left sleeve was wet. The pipe outside leaked; you tightened its valve before coming in.”\nThe injured arrived through the night. With no beds left, blankets covered the floor. You carried water, supported people, and watched medicine bottles empty. At first light he still saw you by the door with a cold cup in your hands.\nNot the organizer described in the accusation, but someone searching for another useful thing to do."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "doctorWitness"
+        }
+      ]
+    },
+    "doctorWitness": {
+      "speaker": {
+        "zh": "罗医生",
+        "en": "Dr. Luo"
+      },
+      "role": {
+        "zh": "夜班医生",
+        "en": "The night doctor"
+      },
+      "portrait": "doctor",
+      "text": {
+        "zh": "“我不能说，我每一分钟都盯着你。我没有。”他把登记翻到供药单那页，“但午夜后的绷带是你接的，四点的灯油也是你拿进来的。我记得你找不到剪刀，用牙咬断了绳头。”\n他说到这里，自己也有些惊讶。留下来的不是一句整齐的辩护，而是很具体、很不体面的细节。\n你请他把这些细节写下，也把不能确认的部分写下。",
+        "en": "“I cannot say I watched you every minute. I did not.” He turns to the supply sheet. “But you received the bandages after midnight and carried in the oil at four. You could not find scissors, so you bit through the string.”\nHe seems surprised by the detail. Memory offers no polished defense, only a small, awkward action.\nYou ask him to write that—and the limits of what he can confirm."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "doctorBoundaries"
+        }
+      ]
+    },
+    "doctorBoundaries": {
+      "speaker": {
+        "zh": "罗医生",
+        "en": "Dr. Luo"
+      },
+      "role": {
+        "zh": "夜班医生",
+        "en": "The night doctor"
+      },
+      "portrait": "doctor",
+      "text": {
+        "zh": "医生问，你若带着证言离开，会不会把它交给第一个愿意听的人。你想说会，却想起登记本里那些不属于你的名字。\n“证据要有人保存，人才有机会被重新听见。”他说，“但公开和保存不是同一件事。你若肯先遮去患者信息，再找可靠的人分存，我愿意留下全名。”\n他等了一会儿，确认你听清楚了条件，才拧开钢笔。",
+        "en": "The doctor asks whether you will hand his statement to the first person willing to listen. You almost say yes, then remember the names in the register that are not yours to give away.\n“Evidence needs keepers. But keeping it is not the same as publishing it. Remove patient information and find trustworthy hands. Under those conditions, I will sign my full name.”\nHe waits until you understand before uncapping his pen."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "doctorSigned"
+        }
+      ]
+    },
+    "doctorFarewell": {
+      "speaker": {
+        "zh": "罗医生",
+        "en": "Dr. Luo"
+      },
+      "role": {
+        "zh": "夜班医生",
+        "en": "The night doctor"
+      },
+      "portrait": "doctor",
+      "text": {
+        "zh": "医生把证言交给你，又拿来一张今晨去吴淞的船票。“顾先生托熟人换的。不是逃出这个时代的通行证，只是让你多一个可以去的地方。”\n他提醒你，档案室索引在靠墙的书架，转运名册在中间桌上；先查索引日期，才不会把名字相同的卷宗当成同一个人。\n“顾先生就在帘子旁。如果你带着旧照片，给他看看。别只向活着的人索取证词。”",
+        "en": "Luo gives you the statement and a ticket for this morning’s boat to Wusong. “Mr. Gu arranged it through an acquaintance. It will not carry you outside this era. It offers one more place to go.”\nIn the archive, he says, the index is on a wall shelf and the transfer register on the central desk. Check dates first; matching names need not identify the same person.\n“Gu is by the curtain. If you have an old photograph, show him. The living have more to offer than testimony.”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收下证言与船票",
+            "en": "Take the statement and ferry ticket"
+          },
+          "items": [
+            "testimony",
+            "ticket"
+          ],
+          "note": {
+            "zh": "罗医生确认几个具体时段见沈砚协助救治；未作整夜无间断的保证。去档案室先查索引，再查名册。",
+            "en": "Luo confirms seeing Shen Yan assist at specific times, not uninterrupted surveillance. Read the archive index before the register."
+          }
+        }
+      ]
+    },
+    "guBridge": {
+      "speaker": {
+        "zh": "顾文山",
+        "en": "Gu Wenshan"
+      },
+      "role": {
+        "zh": "旧日的老师",
+        "en": "A former teacher"
+      },
+      "portrait": "gu",
+      "text": {
+        "zh": "“我教过你画桥。你总把桥墩画得太粗，怕它承不住。”他说，沈泊那天站在旁边听，最后问了一句：“桥另一头的人不让过，怎么办？”\n顾先生笑到一半停住了。“当时我说，那不是工程师的问题。现在想起来，是我不愿回答。”\n他的手在膝上画出两岸，画到中间就停下来。你没有催他把桥补完。",
+        "en": "“I taught you to draw bridges. You made the piers too thick, afraid they would fail.” Shen Bo listened and finally asked, “What if the people on the other side refuse to let us cross?”\nGu’s smile fades. “I told him that was not an engineer’s problem. Looking back, I simply did not want to answer.”\nHe draws two banks on his knee, then stops between them. You do not ask him to finish."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "guMissing"
+        }
+      ]
+    },
+    "guMissing": {
+      "speaker": {
+        "zh": "顾文山",
+        "en": "Gu Wenshan"
+      },
+      "role": {
+        "zh": "旧日的老师",
+        "en": "A former teacher"
+      },
+      "portrait": "gu",
+      "text": {
+        "zh": "他记得沈泊来问过转运单的编号。因为有些外地去向会先记在索引，过几天才补签收，两个日期不能混成一次事件。\n“但我没亲眼看见他离开上海。你别因为我老了，就把我说的话当成一整段历史。”\n你告诉他，自己会把“知道”和“不知道”分开记。他点点头，像听到一位学生终于不再靠漂亮的线条掩盖结构上的空缺。",
+        "en": "He remembers Shen Bo asking how transfer slips were numbered. A destination could be indexed before a later receipt arrived; the two dates did not necessarily describe one event.\n“But I did not see him leave Shanghai. Do not turn my words into a complete history just because I am old.”\nYou promise to separate what is known from what is not. He nods, like a teacher hearing a student stop hiding structural gaps beneath elegant lines."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "guResolve"
+        }
+      ]
+    },
+    "guResolve": {
+      "speaker": {
+        "zh": "顾文山",
+        "en": "Gu Wenshan"
+      },
+      "role": {
+        "zh": "旧日的老师",
+        "en": "A former teacher"
+      },
+      "portrait": "gu",
+      "text": {
+        "zh": "顾先生把照片还给你，指尖却多停了一会儿。“等你找到他，告诉他，青芜还记得那只纸船。”随后他自己摇了摇头，“不，应该是我记得。她已经不在了。”\n你没有替他改掉这句话。你把青芜的名字写进手记，也把他今天认出的那阵风记下。寻找弟弟的这一夜，第一次装进了一个不属于证据的人。",
+        "en": "Gu returns the photograph, reluctant to release it. “When you find him, say Qingwu remembers his paper boat.” Then he corrects himself. “No. I remember. She is gone.”\nYou do not tidy away the sentence. In your notebook you write Qingwu’s name and the wind he recalled today. For the first time tonight, your search makes room for someone who is not evidence."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下青芜的名字，暂且告别",
+            "en": "Remember Qingwu and take your leave"
+          },
+          "flags": [
+            "remembered"
+          ],
+          "note": {
+            "zh": "顾先生认出了拍照的妻子青芜；他提醒索引日期与签收日期不同，也坦言没有目击沈泊离沪。",
+            "en": "Gu remembers his wife Qingwu taking the photograph. Index and receipt dates differ; he did not witness Shen Bo leave Shanghai."
+          }
+        }
+      ]
+    },
+    "archiveLedger": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "书架上有一本被灰尘压弯的索引。封皮写着“一九六七年冬，暂存”。中间桌上的名册按编号排列，不按姓氏。医生说得对，不先找到索引，就只能在一排相似的名字之间猜测。\n“沈泊”后面写着“转字四十七”，日期十一月十四日。另有一条“沈伯”，住址和年龄都不相同。它们只差一个音，却是两个不能互换的人。",
+        "en": "A bowed index book on the shelf reads “Winter 1967, temporary holding.” The register on the central table is arranged by number, not surname. Without the index, matching similar names would be guesswork.\n“Shen Bo” points to transfer file 47, dated November 14. Another similar-sounding name has a different address and age. One syllable cannot make two people interchangeable."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "ledgerDates"
+        }
+      ]
+    },
+    "ledgerDates": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "索引的表头分成三栏：“登记”“转出”“回执”。沈泊这一行，登记和转出都有日期，回执栏却是空白。你想起顾先生说过，编号往前走，不等于人已经被另一处接到。\n纸边有一个曾被水晕开的圆圈。旁注写着“待补”，没有签名。你把这个空白也抄下来，没有用一个自己期待的地点把它填满。",
+        "en": "The index separates “registered,” “sent,” and “receipt.” Shen Bo’s first two columns have dates; the receipt column is blank. A number advancing through a system does not establish that a person arrived elsewhere.\nA water-blurred circle sits beside “awaiting supplement,” without a signature. You copy the blank as well, resisting the urge to fill it with a destination you hope for."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "ledgerCorrection"
+        }
+      ]
+    },
+    "ledgerCorrection": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "下一页有一条更正：“四十七，附件错装，参阅四十七附一。”两份卷宗的纸色不同，后者像是后来才塞进来的。\n这给了你一个具体的查找目标：中间桌上找四十七，再找附一，核对住址、年龄和登记日期。墙上的钟停在四点十七分，那只是坏掉的钟，不能替卷宗提供一个可靠的时间。",
+        "en": "The next page corrects an attachment: “47: enclosure misfiled; see 47-A.” Its paper differs from the original, suggesting a later insertion.\nNow you have a specific search: file 47 and its supplement on the desk, checked against address, age, and date. The wall clock reads 4:17. A broken clock cannot provide a reliable time for these documents."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "ledgerSummary"
+        }
+      ]
+    },
+    "ledgerSummary": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我合上索引，记下四十七与附一。过去一年，我一直在问“沈泊去了哪里”，仿佛问题够用力，答案就会完整地出现。\n现在答案仍不完整，但问题变得具体了：这张单是谁的，说明他在哪一天被转出，哪一栏还没有人签收。\n我朝中间的书桌走去。桌上的纸没有告诉我该相信什么，只给了我接着查下去的顺序。",
+        "en": "I close the index, noting 47 and 47-A. For a year I asked where Shen Bo went, as though asking hard enough would produce a complete answer.\nThe answer remains incomplete, but the questions are precise: whose slip is this, on what date was he sent out, and which field lacks a receipt?\nThe desk papers do not dictate belief. They give me the next things to check."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下编号，检查中间桌上的名册",
+            "en": "Note the file numbers and inspect the desk register"
+          },
+          "flags": [
+            "archiveClue"
+          ],
+          "note": {
+            "zh": "档案索引：沈泊为“转字四十七”，附件“附一”；登记、转出与回执是不同栏，回执空白。",
+            "en": "Archive index: Shen Bo is transfer file 47 with supplement 47-A. Registration, dispatch and receipt are distinct; receipt remains blank."
+          }
+        }
+      ]
+    },
+    "cabinetFiles": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "四十七号的住址、年龄都对得上。转运栏写着“一九六七年十一月十四日，转送外地”，随身物品是一本书、一条旧围巾。没有交代书名，也没有画出那条围巾的颜色。\n我却记得它是深蓝的，是母亲织坏了一行又拆开的那条。纸上越是简短的东西，在我脑子里反而越长。我等手稳下来，才继续翻附一。",
+        "en": "Address and age match in file 47. “Transferred outside the city, November 14, 1967.” Belongings: one book, one old scarf. No title or color is recorded.\nI remember dark blue: Mother knitted a row badly, then unraveled it. The shorter the entry, the longer the memory it opens. I wait for my hand to steady before turning to the supplement."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "cabinetCross"
+        }
+      ]
+    },
+    "cabinetCross": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "附一写着“追问材料来源，暂列关联人员”，后面夹有沈泊要求核对校样的短笺。没有自愿检举的签名，也没有他亲口承认那些指控的记录。\n我把它和校样的补字痕迹、医生的时间线并排放好。它们共同指向弟弟在追查材料形成过程，却没有替我找到幕后所有的人。签收栏仍然空着，空白不会因为我心急而变成好消息。",
+        "en": "The supplement says, “Questioned source of material; provisionally listed as associated person,” with Shen Bo’s request to compare proofs attached. No voluntary denunciation is signed; no confession to the printed claims is recorded.\nBeside the altered proof and clinic timeline, it points to his investigation of the document’s origins. It does not identify everyone responsible. The receipt field remains empty. Urgency cannot turn a blank into good news."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "判断名册能够证明什么",
+            "en": "Decide what the register establishes"
+          },
+          "next": "routeQuestion"
+        }
+      ]
+    },
+    "routeQuestion": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "十一月十三日的送纸回执，十四日的转运登记，附一中的追问材料，以及始终空白的签收栏，终于排成一条没有走完的路。\n我该怎样在手记里写下弟弟的去向，才不会把希望冒充成消息？",
+        "en": "The delivery receipt for the thirteenth, transfer entry for the fourteenth, request for clarification, and empty receipt field form an unfinished route.\nHow can I record my brother’s whereabouts without passing hope off as news?"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "能确认被转出及追查材料；无法确认到达与现状",
+            "en": "Dispatch and his inquiry are documented; arrival and present condition are unknown"
+          },
+          "next": "routeInference"
+        },
+        {
+          "label": {
+            "zh": "没有签收，所以可以确定他已经逃走",
+            "en": "No receipt means he certainly escaped"
+          },
+          "next": "routeMistake"
+        },
+        {
+          "label": {
+            "zh": "编号已经登记，所以可以确定他平安抵达",
+            "en": "A recorded number proves he arrived safely"
+          },
+          "next": "routeMistake"
+        }
+      ]
+    },
+    "routeMistake": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我停下笔。签收栏没有文字，既不能证明逃走，也不能证明抵达。它可能意味着记录没有送回，也可能意味着途中发生了尚不知道的事。\n如果为了让自己好过，就把它写成一个确定的结局，我仍是在替一个不在场的人安排说法。沈泊留下的路，到这里就是断着的。我要先承认这一点。",
+        "en": "I stop writing. A blank receipt proves neither escape nor arrival. A record may never have returned; something unrecorded may have happened on the way.\nIf I supply certainty for my own relief, I am still deciding the story of someone who is not here. Shen Bo’s trail breaks at this point. First I must admit that."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "重新判断，保留未知",
+            "en": "Reconsider and preserve the uncertainty"
+          },
+          "next": "routeQuestion"
+        }
+      ]
+    },
+    "routeInference": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我写下：“现存记录显示，沈泊因追问材料来源被列为关联人员，于一九六七年十一月十四日转出。未见签收。此后的去向尚待查证。”\n这段话没有我曾幻想的团圆，也没有一个能立即惩罚谁的名字。但“他出卖了你”不再是唯一留下的说法。至少还有一份带着出处、日期和不确定之处的记录。\n下一步，是决定怎样把它保存下来。",
+        "en": "I write: “Surviving records list Shen Bo as associated with inquiries into the material’s source, dispatched November 14, 1967. No receipt found. Subsequent whereabouts require verification.”\nThere is no reunion, no name I can immediately hold accountable. But “he betrayed you” is no longer the only account. Another now exists with sources, dates, and stated uncertainties.\nI must decide how to preserve it."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "cabinetDecision"
+        }
+      ]
+    },
+    "cabinetDecision": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "把原件带走，可能让下一位查找的人再也找不到它；只凭记忆离开，又可能把细节改成自己愿意记住的样子。\n我铺开纸，准备连空白栏和附注一起誊抄。最后还空着一块位置，可以留下我自己的说明：那封材料怎样改变了我的生活，我又为什么拖到今天才回来找他。\n写下名字会增加风险，却也意味着不再让所有话都藏在“听说”后面。",
+        "en": "Taking the original may deny it to the next person searching. Leaving with memory alone risks reshaping details into what I want to remember.\nI prepare an exact copy, including blank fields and notes. Space remains for my own account: how the accusation changed my life, and why I waited until now to look for him.\nSigning carries risk. It also stops another account hiding behind “someone said.”"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "完整抄录，保留原件",
+            "en": "Copy it fully and leave the original"
+          },
+          "flags": [
+            "copied"
+          ],
+          "next": "cabinetCopy"
+        },
+        {
+          "label": {
+            "zh": "抄录，并留下署名的个人说明",
+            "en": "Copy it and add my signed personal account"
+          },
+          "flags": [
+            "copied",
+            "confessed"
+          ],
+          "note": {
+            "zh": "我另写了署名说明，区分亲见事实、听来的传言和自己的迟疑。",
+            "en": "I added a signed account distinguishing observation, rumor, and my own hesitation."
+          },
+          "next": "cabinetCopy"
+        }
+      ]
+    },
+    "cabinetCopy": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "最后一个字写完，我把两张纸对着灯逐行检查，确认没有漏掉日期，也没有替空白的回执加上什么。原件放回四十七号下面，附一仍夹在原处。\n校样、证言、名册的抄件终于可以互相核对了。林岚说过，拿到名册后回去找她；周姨也还在等一句亲口带回去的话。江边已经能去，但我可以先把这些未说完的告别做完。",
+        "en": "I compare the copy with the original line by line, including the dates and empty receipt. File 47 and its supplement return to their places.\nThe proof, testimony, and copied register can now be checked against one another. Lin asked me to return; Aunt Zhou is waiting for something I can tell her myself. The river is open to me, but there are unfinished conversations I may choose to complete first."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收好抄件，决定先回访还是去江边",
+            "en": "Keep the copy and decide whom to visit before the river"
+          },
+          "items": [
+            "record"
+          ],
+          "note": {
+            "zh": "名册已完整抄录，原件保留。可回印刷铺商议分存，回槐生里向周姨告别，再去江岸。",
+            "en": "Register copied in full; original left in place. Return to Lin to arrange separate copies, tell Aunt Zhou, then visit the shore."
+          }
+        }
+      ]
+    },
+    "linCopies": {
+      "speaker": {
+        "zh": "林岚",
+        "en": "Lin Lan"
+      },
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
+      "portrait": "lin",
+      "text": {
+        "zh": "林岚裁开两张包纸，把校样、名册和证言分成三个小包。她先遮住诊所患者的信息，只留下能够证明日期的部分；医生的全名另封，不写在外层。\n“外面这一层不是秘密的证明。”她说，“它只是告诉下一位拿到的人，这些纸从哪里来，为什么值得继续核实。”\n你们在每份抄件后留出空行，写上“以后若有新证据，请补在此处”。",
+        "en": "Lin cuts wrapping paper for three small bundles: proof, register, testimony. She masks patient information, preserving the relevant dates. The doctor’s full name is sealed separately, not exposed on the wrapper.\n“This outer page proves no secret. It tells the next reader where the material came from and why it deserves checking.”\nAt the end of each copy you leave room for later evidence."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "linRisk"
+        }
+      ]
+    },
+    "linRisk": {
+      "speaker": {
+        "zh": "林岚",
+        "en": "Lin Lan"
+      },
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
+      "portrait": "lin",
+      "text": {
+        "zh": "她问你，若有一天有人要求只保留对你有利的段落，你会怎么做。你想到自己曾经怪过弟弟，也想到她亲手补过那一行名字。\n“都留下。”你说，“包括我们做错的和没敢做的。”\n林岚低头整理纸角。这一夜没有因此变轻，只是重量不再全压在一个人身上。她把自己的那份塞进药费账册的夹层，你记下另一个干燥的位置。",
+        "en": "She asks what you would do if someone wanted to preserve only the passages favorable to you. You remember blaming your brother, and her hands setting the added name.\n“Keep those parts too. What we did wrong, and what we were afraid to do.”\nThe night grows no lighter, but its weight no longer rests on one person. Her copy enters the lining of her medicine-expense notebook; you choose another dry place."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "linPlan"
+        }
+      ]
+    },
+    "linPlan": {
+      "speaker": {
+        "zh": "林岚",
+        "en": "Lin Lan"
+      },
+      "role": {
+        "zh": "排字工",
+        "en": "The typesetter"
+      },
+      "portrait": "lin",
+      "text": {
+        "zh": "抄写完成时，你们交换了两个约定：不要为了一个漂亮的结论删改材料，也不要把保管证据的人当成随时可以牺牲的工具。\n林岚说，她不能保证未来有人愿意听。你说，至少未来愿意听的人，应当有机会找到原来的话。\n这就是“留下名字”所需要的准备。到了江岸，你仍可以改变主意，但若选择分存，现在已经有人愿意与你一起承担。",
+        "en": "You agree on two things: no editing toward a convenient conclusion, and no treating the keepers of evidence as expendable.\nLin cannot promise a future audience. You answer that whoever does listen should have a chance to find the original accounts.\nThis is the preparation for leaving names behind. At the shore you may still choose another course, but someone is now prepared to share responsibility."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下分存约定",
+            "en": "Record the preservation agreement"
+          },
+          "flags": [
+            "sharedPlan"
+          ],
+          "note": {
+            "zh": "与林岚完成分存准备：保留来源与未知，患者信息隐去，医生姓名另封。江岸可选择“留名”。",
+            "en": "Preservation plan agreed with Lin: keep sources and uncertainties, mask patients, seal Luo’s name separately. The witness ending is available at the shore."
+          }
+        }
+      ]
+    },
+    "auntFarewell": {
+      "speaker": {
+        "zh": "周姨",
+        "en": "Aunt Zhou"
+      },
+      "role": {
+        "zh": "守门的人",
+        "en": "Keeper of the door"
+      },
+      "portrait": "aunt",
+      "text": {
+        "zh": "听见“尚未找到签收”，周姨把手放回膝上。“那就是还不知道。”她把这句话重复了一遍，没有换成更好听的说法。\n你告诉她，弟弟留下过核对材料的请求，并不是传言里那个简单的告密者。她望着门牌，好一会儿才说：“我以后再听见人讲，就把你查到的这一段告诉他。只说查到的。”\n你第一次觉得，一句普通人的纠正，也可以很郑重。",
+        "en": "At “no receipt found,” Aunt Zhou rests her hands on her knees. “Then we do not yet know.” She repeats it without making it sound kinder.\nYou tell her about Shen Bo’s request to examine the document. She studies the doorplate. “When I hear that rumor again, I will tell people what you found. Only what you found.”\nAn ordinary correction can be a solemn thing."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "auntLamp"
+        }
+      ]
+    },
+    "auntLamp": {
+      "speaker": {
+        "zh": "周姨",
+        "en": "Aunt Zhou"
+      },
+      "role": {
+        "zh": "守门的人",
+        "en": "Keeper of the door"
+      },
+      "portrait": "aunt",
+      "text": {
+        "zh": "她从门后拿出一把旧伞，伞骨有两根用线缠过。“去不去江边，留不留上海，都不是我能替你定的。但钥匙你拿着。回来时，不用再站在外面猜屋里有没有人。”\n你接过伞，把门边的灯芯往上挑了一点。没有人说这是团圆。只是有人离开以前，有人明白地告诉他：这里还认得你。",
+        "en": "She brings an umbrella with two ribs bound in thread. “I cannot decide whether you go to the river or stay in Shanghai. Keep the key. When you return, you need not wait outside wondering whether anyone is home.”\nYou take the umbrella and raise the lamp wick a little. Nobody calls this a reunion. Before one person leaves, another has simply told him: this place still knows you."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "向周姨告别",
+            "en": "Say goodbye to Aunt Zhou"
+          },
+          "flags": [
+            "farewellAunt"
+          ],
+          "note": {
+            "zh": "周姨听到了经过核实的消息，答应只转述已知事实。旧屋的钥匙仍由我保管。",
+            "en": "Aunt Zhou heard the verified account and will repeat only what is known. I keep the old house key."
+          }
+        }
+      ]
+    },
+    "riverArrival": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "江岸上的雾比里弄更重。信上那句“天亮前到江边”，属于沈泊一年前没有等到的清晨；口袋里的船票，却是顾先生为今天换来的。两件事直到此刻，才真正分开。\n我不是赶来赴一场仍然有效的约会。弟弟不会因为我终于读懂了信，就按时从雾里走出来。今夜能决定的，是我接下来怎样活，怎样对待留下的人与纸。",
+        "en": "Fog lies thicker at the shore. “Come before dawn” belonged to the morning Shen Bo missed a year ago. The ticket in my pocket is for today, arranged by Gu. Only now do the two things truly separate.\nI am not keeping an appointment that still stands. Understanding a letter will not make my brother emerge on time from the fog. I can decide how to live next, and what to do with the people and papers still here."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "riverWaiting"
+        }
+      ]
+    },
+    "riverWaiting": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "渡船还没有靠稳。你在长椅旁站了一会儿，听见缆绳摩擦木桩。远处有人争论货物少了多少，声音被江面吞掉一半。\n这座城市没有为你的发现停下。校样不会自动推翻指控，证言也不会立刻换来安全。可你已经能说出弟弟被转出的日期，能区分医生看见的事和他不知道的事，能叫出照片外那个人的名字。",
+        "en": "The ferry has not settled against the quay. A rope rasps against a post. Far off, people argue over missing freight; the river swallows half their words.\nThe city has not paused for your discovery. A proof does not automatically overturn an accusation; testimony does not immediately confer safety. Yet you can name your brother’s dispatch date, distinguish Luo’s observations from his uncertainties, and remember the woman outside the photograph."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "riverCosts"
+        }
+      ]
+    },
+    "riverCosts": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "留下材料，意味着继续承担被追问的可能；留下照顾人，意味着以后还有许多看不见尽头的夜路。登船可以换一个落脚处，却不能保证从此无人追问。烧掉手中的纸，也不能让别人的记忆跟着消失。\n我曾以为，找出真相就会知道该走哪条路。现在才明白，知道得更多，只是让我不能再假装每一条路都没有代价。",
+        "en": "Keeping records means living with possible questioning. Staying to care for people means more nights without a clear end. The boat offers another foothold, not a guarantee against pursuit. Burning the papers in your hands cannot burn other people’s memories.\nI thought finding facts would tell me which road to take. Knowing more only makes it harder to pretend that any road is without cost."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续听下去",
+            "en": "Continue"
+          },
+          "next": "riverDecision"
+        }
+      ]
+    },
+    "riverDecision": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "role": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我逐一摸过衣袋里的纸，确认它们还在。倘若还有未做的事，可以回去：和林岚谈分存，听顾先生讲完往事，或者把已知的消息告诉周姨。船鸣属于故事里的这一夜，不会替我倒数。\n准备好以后，就在这里作决定。不是替整个时代写一个答案，也不是替弟弟宣布结局，只是决定我愿意带着什么走到下一天。",
+        "en": "I touch the papers in my pockets. There is still time to return: arrange copies with Lin, hear Gu’s memories, or tell Aunt Zhou what is known. The ship’s horn belongs to the story’s night; it is not a countdown.\nWhen ready, I will choose here. Not an answer for an entire era, not an ending imposed on my brother—only what I am willing to carry into tomorrow."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "面对最后的选择",
+            "en": "Face the final choice"
+          },
+          "flags": [
+            "riverReady"
+          ],
+          "next": "finale"
         }
       ]
     }
@@ -1119,6 +2584,15 @@
           "dialogue": "gu"
         },
         {
+          "id": "register",
+          "label": {
+            "zh": "值夜登记",
+            "en": "Night register"
+          },
+          "kind": "object",
+          "dialogue": "medicalRegister"
+        },
+        {
           "id": "lane",
           "label": {
             "zh": "回到槐生里",
@@ -1159,6 +2633,15 @@
             "then": "cabinetAgain",
             "otherwise": "cabinet"
           }
+        },
+        {
+          "id": "ledger",
+          "label": {
+            "zh": "档案索引",
+            "en": "Archive index"
+          },
+          "kind": "object",
+          "dialogue": "archiveLedger"
         },
         {
           "id": "archiveWall",
@@ -1203,7 +2686,13 @@
             "en": "The last ferry"
           },
           "kind": "exit",
-          "dialogue": "finale"
+          "dialogue": {
+            "when": {
+              "flag": "riverReady"
+            },
+            "then": "finale",
+            "otherwise": "riverArrival"
+          }
         },
         {
           "id": "water",
@@ -1238,8 +2727,8 @@
         "en": "Paper may fall silent. Memory will not."
       },
       "text": {
-        "zh": "你没有登船。黎明前，你和林岚把校样、名册与证言分别抄成两份，藏在不同的地方。\n没有人在第二天宣布你无罪。日子依旧艰难，但从此，真相不再只寄居于一个人的记忆。\n多年以后，有人在旧书夹页里读到沈泊的名字。那不是一行编号，也不是一项指控。那是一个曾经放过纸船的人。",
-        "en": "You do not board. Before dawn, you and Lin Lan make two copies of the proof, register, and testimony, hiding them separately.\nNo one declares you innocent the next day. Life remains difficult. But the truth no longer lives in only one person’s memory.\nYears later, someone finds Shen Bo’s name between the pages of an old book. Not a number. Not an accusation. A person who once launched paper boats."
+        "zh": "你没有登船。黎明前，你按约定把校样、名册与证言的副本分别藏好。林岚保管另一份，原始出处与尚未知晓的部分一并保留。\n没有人在第二天宣布你无罪。日子依旧艰难，但从此，真相不再只寄居于一个人的记忆。\n多年以后，有人在旧书夹页里读到沈泊的名字。那不是一行编号，也不是一项指控。那是一个曾经放过纸船的人。",
+        "en": "You do not board. Before dawn, you hide your copies of the proof, register, and testimony as agreed. Lin keeps the other set, preserving both their sources and their uncertainties.\nNo one declares you innocent the next day. Life remains difficult. But the truth no longer lives in only one person’s memory.\nYears later, someone finds Shen Bo’s name between the pages of an old book. Not a number. Not an accusation. A person who once launched paper boats."
       }
     },
     "departure": {
@@ -1268,8 +2757,8 @@
         "en": "The fire dies. The rain goes on."
       },
       "text": {
-        "zh": "纸在炉里卷曲，名字比纸更早消失。\n你告诉自己，活下去就好。第二天，你像往常一样低着头走过街口。没有人拦住你，也没有人叫你的名字。\n很多年后，你仍会梦见那一夜。梦里的江面漂着一只纸船。每当你伸出手，它就变成一小片灰。",
-        "en": "The paper curls in the stove. The names disappear before the paper does.\nYou tell yourself survival is enough. The next day you pass the street corner with your head lowered. No one stops you. No one calls your name.\nYears later, you still dream of that night. A paper boat drifts on the river. Whenever you reach for it, it becomes a little ash."
+        "zh": "你把随身的抄件与校样放进江边值守棚的炉里。纸卷起来，名字逐渐看不见。\n你知道，档案原件仍在，罗医生和林岚也仍有自己的记忆。这把火烧不掉事实，只烧掉了你准备继续追查的那份凭据。你选择暂时不再去问。\n第二天，你像往常一样低着头走过街口。没有人拦住你，也没有人替你保证安全。\n很多年后，你仍会梦见那道空白的签收栏。梦里，沈泊没有责怪你。他只是等着你，决定要不要重新拿起笔。",
+        "en": "You place your carried copies and proof in the stove of the riverside watch shelter. Paper curls; names disappear.\nThe original register remains in the archive. Luo and Lin still have their own memories. Fire cannot destroy those facts, only the material you intended to pursue. You choose, for now, to stop asking.\nNext morning you walk past the street corner as usual. Nobody stops you; nobody promises safety.\nYears later you still dream of the empty receipt field. In the dream Shen Bo does not accuse you. He waits for you to decide whether to take up a pen again."
       }
     },
     "embers": {
@@ -1283,7 +2772,7 @@
         "en": "Keep a lamp for someone yet to return."
       },
       "text": {
-        "zh": "你回到诊所，把名册收进干燥的抽屉。你答应罗医生，替她走夜路；答应顾先生，常来听他讲青芜的事。\n你不再把整座城市都当作审判自己的房间。它也有生病的人、等门的人，和一盏可以添油的灯。\n每到下雨，周姨都会多留一把伞。你没有找到沈泊。但如果他回来，他仍有门可敲。",
+        "zh": "你回到诊所，把名册收进干燥的抽屉。你答应罗医生，替他走夜路；答应顾先生，常来听他讲青芜的事。\n你不再把整座城市都当作审判自己的房间。它也有生病的人、等门的人，和一盏可以添油的灯。\n每到下雨，周姨都会多留一把伞。你没有找到沈泊。但如果他回来，他仍有门可敲。",
         "en": "You return to the clinic and place the register in a dry drawer. You promise to make Dr. Luo’s night visits, and to listen when Mr. Gu speaks of Qingwu.\nThe city is no longer only a room in which you are judged. It also holds the ill, the waiting, and a lamp that can be refilled.\nWhen it rains, Aunt Zhou keeps an extra umbrella. You have not found Shen Bo. But if he returns, there will still be a door to knock on."
       }
     }
@@ -1334,11 +2823,37 @@
         "en": "An old key"
       },
       "detail": {
-        "zh": "向槐生里的周姨打听消息",
-        "en": "Speak to Aunt Zhou in the lane"
+        "zh": "听周姨说完来信与旧屋的事，取得钥匙。",
+        "en": "Hear Aunt Zhou’s account and obtain the old house key."
       },
       "complete": {
         "item": "key"
+      }
+    },
+    {
+      "title": {
+        "zh": "家里的日期",
+        "en": "A date at home"
+      },
+      "detail": {
+        "zh": "调查旧屋书桌，读完短笺与送纸回执，带走合影。",
+        "en": "Read the notes and delivery receipt in the old desk; keep the photograph."
+      },
+      "complete": {
+        "flag": "homeClue"
+      }
+    },
+    {
+      "title": {
+        "zh": "铅字留下的缺口",
+        "en": "The chipped rule"
+      },
+      "detail": {
+        "zh": "调查印刷铺铅字盒，比较横线与姓名的压印顺序。",
+        "en": "Inspect the type case and compare the rule and name impressions."
+      },
+      "complete": {
+        "flag": "typeClue"
       }
     },
     {
@@ -1347,8 +2862,8 @@
         "en": "An altered name"
       },
       "detail": {
-        "zh": "去印刷铺找林岚，拿到第三份校样",
-        "en": "Find Lin Lan and the third proof at the press"
+        "zh": "带着回执和铅字线索与林岚核对，完成校样推理。",
+        "en": "Discuss both clues with Lin and resolve the proof deduction."
       },
       "complete": {
         "item": "proof"
@@ -1356,15 +2871,15 @@
     },
     {
       "title": {
-        "zh": "纸上的去向",
-        "en": "A trail on paper"
+        "zh": "那一夜的时间线",
+        "en": "That night’s timeline"
       },
       "detail": {
-        "zh": "在档案室寻找沈泊的转运名册",
-        "en": "Find Shen Bo’s transfer register in the archive"
+        "zh": "查看诊所药柜旁的值夜登记，再向罗医生求证。",
+        "en": "Read the night register by the medicine cabinet, then question Luo."
       },
       "complete": {
-        "item": "record"
+        "flag": "medicalClue"
       }
     },
     {
@@ -1373,8 +2888,8 @@
         "en": "A living witness"
       },
       "detail": {
-        "zh": "向仁安诊所的罗医生询问那一夜",
-        "en": "Ask Dr. Luo at the clinic about that night"
+        "zh": "听完医生对事实与记忆界限的说明，取得署名证言。",
+        "en": "Hear the limits of Luo’s recollection and obtain his statement."
       },
       "complete": {
         "item": "testimony"
@@ -1382,16 +2897,71 @@
     },
     {
       "title": {
-        "zh": "记得我们",
-        "en": "Remember us"
+        "zh": "记得我们 · 支线",
+        "en": "Remember us · optional"
       },
       "detail": {
-        "zh": "在旧屋找到合影，交给诊所的顾先生看",
-        "en": "Show Mr. Gu the photograph from your old home"
+        "zh": "向顾先生出示旧屋合影，听完他关于青芜和那座桥的记忆。",
+        "en": "Show Gu the photograph and hear his memories of Qingwu and the bridge."
       },
       "complete": {
         "flag": "remembered"
+      },
+      "optional": true
+    },
+    {
+      "title": {
+        "zh": "四十七号与附一",
+        "en": "File 47 and its supplement"
+      },
+      "detail": {
+        "zh": "先查档案室靠墙书架的索引，记下编号与空白的回执栏。",
+        "en": "Read the wall-shelf archive index; note the file numbers and missing receipt."
+      },
+      "complete": {
+        "flag": "archiveClue"
       }
+    },
+    {
+      "title": {
+        "zh": "一条未完的路",
+        "en": "An unfinished route"
+      },
+      "detail": {
+        "zh": "检查中间桌上的名册，完成去向推理，抄录并保留原件。",
+        "en": "Compare the desk register, resolve the route deduction and copy the original."
+      },
+      "complete": {
+        "item": "record"
+      }
+    },
+    {
+      "title": {
+        "zh": "让纸不只属于一个人 · 支线",
+        "en": "More than one keeper · optional"
+      },
+      "detail": {
+        "zh": "带校样、名册和证言回访林岚，完成分存准备以解锁“留名”。",
+        "en": "Return to Lin with all three documents and plan separate copies to unlock the witness ending."
+      },
+      "complete": {
+        "flag": "sharedPlan"
+      },
+      "optional": true
+    },
+    {
+      "title": {
+        "zh": "门边的灯 · 支线",
+        "en": "The light by the door · optional"
+      },
+      "detail": {
+        "zh": "找到名册后，回槐生里把已确认的消息告诉周姨。",
+        "en": "After finding the register, tell Aunt Zhou what you have confirmed."
+      },
+      "complete": {
+        "flag": "farewellAunt"
+      },
+      "optional": true
     },
     {
       "title": {
@@ -1399,8 +2969,8 @@
         "en": "Through the long night"
       },
       "detail": {
-        "zh": "带着你的选择，前往黄浦江岸",
-        "en": "Take your choices to the Huangpu shore"
+        "zh": "到江岸整理这一夜的发现，再决定自己的去留。可随时回访补齐线索。",
+        "en": "Reflect at the shore and choose your path. Revisit freely before deciding."
       },
       "complete": {
         "endingReached": true

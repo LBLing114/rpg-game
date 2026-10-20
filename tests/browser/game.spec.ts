@@ -18,7 +18,7 @@ import {
 import { scenes } from "../../src/story";
 import type { SceneId } from "../../src/types";
 
-test.setTimeout(60_000);
+test.setTimeout(120_000);
 
 async function reveal(page: Page) {
   if (!(await page.locator(".choices").isVisible())) {
@@ -29,6 +29,16 @@ async function reveal(page: Page) {
 async function choice(page: Page, index = 0) {
   await reveal(page);
   await page.locator(`[data-choice="${index}"]`).click();
+}
+// Follow the actual authored links, checking the DOM after each user choice.
+async function conversation(page: Page, stopAt: string[] = ["finale"]) {
+  for (let i = 0; i < 100; i++) {
+    if (!(await page.locator(".dialogue-text").count())) return;
+    const node = await page.locator("#dialogue").getAttribute("data-node");
+    if (node && stopAt.includes(node)) return;
+    await choice(page);
+  }
+  throw new Error("Dialogue did not reach its intended exit");
 }
 async function interact(page: Page, id: string) {
   await page.locator(`[data-hotspot="${id}"]`).click();
@@ -66,33 +76,43 @@ async function menuAction(page: Page, action: string) {
 }
 async function begin(page: Page) {
   await page.goto("/");
-  await choice(page);
+  await conversation(page);
 }
 
-async function fullJourney(page: Page) {
-  await begin(page);
+async function fullJourney(page: Page, navigate = true) {
+  if (navigate) await begin(page);
+  else await conversation(page);
   await interact(page, "aunt");
-  await choice(page);
-  await choice(page);
+  await conversation(page);
   await travel(page, "home");
   await interact(page, "desk");
-  await choice(page);
+  await conversation(page);
+  await travel(page, "press");
+  await interact(page, "typecase");
+  await conversation(page);
+  await interact(page, "lin");
+  await conversation(page);
+  await travel(page, "clinic");
+  await interact(page, "register");
+  await conversation(page);
+  await interact(page, "doctor");
+  await conversation(page);
+  await interact(page, "gu");
+  await conversation(page);
+  await travel(page, "archive");
+  await interact(page, "ledger");
+  await conversation(page);
+  await interact(page, "cabinet");
+  await conversation(page);
   await travel(page, "press");
   await interact(page, "lin");
-  await choice(page);
-  await choice(page);
-  await travel(page, "clinic");
-  await interact(page, "doctor");
-  await choice(page);
-  await choice(page);
-  await interact(page, "gu");
-  await choice(page);
-  await choice(page);
-  await travel(page, "archive");
-  await interact(page, "cabinet");
-  await choice(page);
+  await conversation(page);
+  await travel(page, "lane");
+  await interact(page, "aunt");
+  await conversation(page);
   await travel(page, "river");
   await interact(page, "finale");
+  await conversation(page);
 }
 
 test("standalone HTML runs entirely inline and reaches an ending without network", async ({ page }) => {
@@ -106,16 +126,7 @@ test("standalone HTML runs entirely inline and reaches an ending without network
   await expect(page.locator('#world')).toHaveAttribute('data-art-ready', 'true');
   await expect(page.locator('.portrait')).toHaveAttribute('data-illustration', 'shen');
   await expect(page.locator(".typing-layout")).toContainText("上海，一九六八年");
-  await choice(page);
-  await travel(page, "press");
-  await interact(page, "lin");
-  await choice(page);
-  await choice(page);
-  await travel(page, "archive");
-  await interact(page, "cabinet");
-  await choice(page);
-  await travel(page, "river");
-  await interact(page, "finale");
+  await fullJourney(page, false);
   await choice(page, 3);
   await expect(page.locator("#modal-title")).toHaveText("无声");
   expect(errors).toEqual([]);
@@ -135,6 +146,8 @@ test("typewriter reveals progressively and Enter/Space reveal before advancing",
   await expect(page.locator(".choices")).toBeVisible();
   expect((await readSave(page)).dialogue).toBe("intro");
   await page.keyboard.press("Space");
+  await expect(page.locator("#dialogue")).toHaveAttribute("data-node", "introReturn");
+  await conversation(page);
   await expect(page.locator(".dialogue-text")).toHaveCount(0);
   expect((await readSave(page)).state.flags).toContain("intro");
   await interact(page, "aunt");
@@ -146,6 +159,7 @@ test("typewriter reveals progressively and Enter/Space reveal before advancing",
   await page.keyboard.press("Enter");
   await expect(page.locator(".choices")).toBeVisible();
   await page.keyboard.press("Enter");
+  await conversation(page);
   await expect(page.locator(".dialogue-text")).toHaveCount(0);
 });
 
@@ -171,7 +185,7 @@ test("language, bag, journal, manual save, reload, reset and restore", async ({ 
   await begin(page);
   await interact(page, "aunt");
   await choice(page, 1);
-  await choice(page);
+  await conversation(page);
   await menuAction(page, "lang");
   await page.keyboard.press("Escape");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
@@ -203,15 +217,15 @@ test("language, bag, journal, manual save, reload, reset and restore", async ({ 
 test("inventory use approaches the intended NPC and unlocks the photograph branch", async ({ page }) => {
   await begin(page);
   await interact(page, "aunt");
-  await choice(page);
-  await choice(page);
+  await conversation(page);
   await travel(page, "home");
   await interact(page, "desk");
-  await choice(page);
+  await conversation(page);
   await travel(page, "press");
+  await interact(page, "typecase");
+  await conversation(page);
   await interact(page, "lin");
-  await choice(page);
-  await choice(page);
+  await conversation(page);
   await travel(page, "clinic");
   await page.keyboard.press("i");
   await page.locator('[data-select-item="photo"]').click();
@@ -221,8 +235,7 @@ test("inventory use approaches the intended NPC and unlocks the photograph branc
   const save = await readSave(page);
   expect(eventIsAdjacent("clinic", "gu", save.state)).toBe(true);
   expect(save.dialogue).toBe("gu");
-  await choice(page);
-  await choice(page);
+  await conversation(page);
   expect((await readSave(page)).state.flags).toContain("remembered");
 });
 
@@ -253,6 +266,7 @@ test("keyboard follows grid tiles, bumps NPC collision, interacts with Enter and
   await reveal(page);
   await page.keyboard.press("Space");
   expect((await readSave(page)).state.inventory).toContain("key");
+  await conversation(page);
   await page.keyboard.press("m");
   await expect(page.locator("#modal-title")).toContainText("地图");
   await page.keyboard.press("Shift+Tab");
@@ -267,8 +281,7 @@ test("keyboard follows grid tiles, bumps NPC collision, interacts with Enter and
 test("mouse pathfinding traverses adjacent walkable tiles around furniture", async ({ page }) => {
   await begin(page);
   await interact(page, "aunt");
-  await choice(page);
-  await choice(page);
+  await conversation(page);
   await travel(page, "home");
   const destination = tileCenter(4, 6);
   await page.locator("#world").evaluate((canvas: HTMLCanvasElement) => {
@@ -310,10 +323,9 @@ test("mobile dialogue stays inside the stage and supports story and inventory co
   expect(dialogue!.x + dialogue!.width).toBeLessThanOrEqual(stage!.x + stage!.width + 1);
   expect(dialogue!.y + dialogue!.height).toBeLessThanOrEqual(stage!.y + stage!.height + 1);
   await page.screenshot({ path: "test-results/mobile.png", fullPage: true });
-  await choice(page);
+  await conversation(page);
   await interact(page, "aunt");
-  await choice(page);
-  await choice(page);
+  await conversation(page);
   await menuAction(page, "bag");
   await expect(page.locator("#modal-title")).toHaveText("随身之物");
   await page.locator('[data-select-item="key"]').click();
@@ -385,7 +397,42 @@ test("keyboard in-game menu controls work during dialogue and text/sound prefere
   await expect(page.locator("#game-menu")).toBeFocused();
   await page.locator("#world").focus();
   await page.keyboard.press("Enter");
-  await expect(page.locator(".dialogue-text")).toHaveCount(0);
+  await expect(page.locator("#dialogue")).toHaveAttribute("data-node", "introReturn");
   expect(await page.evaluate(() => localStorage.getItem("wudu-text-speed"))).toBe("0");
   expect(await page.evaluate(() => localStorage.getItem("wudu-effects"))).toBe("off");
+});
+
+
+test("deduction mistakes remain retryable, opening context is bilingual, and background reading preserves progress", async ({ page }) => {
+  await page.goto("/");
+  await choice(page);
+  await choice(page);
+  await expect(page.locator("#dialogue")).toHaveAttribute("data-node", "introPersecution");
+  await page.reload();
+  await expect(page.locator("#dialogue")).toHaveAttribute("data-node", "introPersecution");
+  const saved = await readSave(page);
+  await menuAction(page, "background");
+  await expect(page.locator(".modal")).toContainText("文化大革命");
+  await expect(page.locator(".modal")).toContainText("法国里昂");
+  await page.keyboard.press("Escape");
+  expect((await readSave(page)).dialogue).toBe(saved.dialogue);
+  await menuAction(page, "lang");
+  await page.keyboard.press("Escape");
+  await menuAction(page, "background");
+  await expect(page.locator(".modal")).toContainText("Cultural Revolution");
+  await page.keyboard.press("Escape");
+  await conversation(page);
+  await interact(page, "aunt"); await conversation(page);
+  await travel(page, "home"); await interact(page, "desk"); await conversation(page);
+  await travel(page, "press"); await interact(page, "typecase"); await conversation(page);
+  await interact(page, "lin"); await conversation(page, ["proofQuestion"]);
+  await choice(page, 1);
+  await expect(page.locator("#dialogue")).toHaveAttribute("data-node", "proofMistake");
+  expect((await readSave(page)).state.inventory).not.toContain("proof");
+  await page.reload();
+  await expect(page.locator("#dialogue")).toHaveAttribute("data-node", "proofMistake");
+  await choice(page);
+  await expect(page.locator("#dialogue")).toHaveAttribute("data-node", "proofQuestion");
+  await conversation(page);
+  expect((await readSave(page)).state.inventory).toContain("proof");
 });

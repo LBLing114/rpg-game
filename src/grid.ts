@@ -45,12 +45,12 @@ export const maps: Record<SceneId, GridMap> = {
   clinic: {
     outdoors:false,spawn:{col:11,row:12},tiles:interior(':'),
     props:[p('medical',3,4,4,1),p('desk',5,8,3,2,'medicine'),p('bed',17,6,3,3,'clinic'),p('curtain',16,5,5,1,undefined,false),p('stove',3,12),p('bench',14,11,2,1),p('lamp',11,4),p('cabinet',19,11,2,1)],
-    events:{doctor:e(8,7,'person','doctor'),gu:e(16,10,'person','gu'),lane:e(11,14,'exit')},
+    events:{doctor:e(8,7,'person','doctor'),gu:e(16,10,'person','gu'),register:e(5,4,'object'),lane:e(11,14,'exit')},
   },
   archive: {
     outdoors:false,spawn:{col:11,row:12},tiles:interior(),
     props:[p('shelf',3,4,4,1),p('shelf',10,4,4,1),p('shelf',17,4,4,1),p('shelf',4,8,3,1),p('shelf',17,8,3,1),p('desk',10,8,3,2,'register'),p('clock',8,4),p('crate',3,12,2,1),p('crate',19,12,2,1),p('lamp',15,6)],
-    events:{cabinet:e(11,9,'object'),archiveWall:e(8,4,'object'),lane:e(11,14,'exit')},
+    events:{cabinet:e(11,9,'object'),archiveWall:e(8,4,'object'),ledger:e(12,4,'object'),lane:e(11,14,'exit')},
   },
   river: {
     outdoors:true,spawn:{col:4,row:12},

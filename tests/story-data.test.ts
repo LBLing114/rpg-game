@@ -58,7 +58,7 @@ describe("standalone authored story module", () => {
     expect(canWitness(player)).toBe(false);
     expect(canEmbers(player)).toBe(false);
     player.inventory.push("proof", "record", "testimony");
-    player.flags.push("trusted", "protected", "remembered");
+    player.flags.push("trusted", "protected", "remembered", "sharedPlan");
     expect(canWitness(player)).toBe(true);
     expect(canEmbers(player)).toBe(true);
   });

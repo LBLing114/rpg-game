@@ -18,7 +18,7 @@ import type {
 const sceneIds: SceneId[] = ["lane", "home", "press", "clinic", "archive", "river"];
 const itemIds: ItemId[] = ["letter", "key", "photo", "proof", "record", "testimony", "ticket"];
 const endingIds: EndingId[] = ["witness", "departure", "silence", "embers"];
-const flagIds: Flag[] = ["intro", "aunt", "trusted", "protected", "remembered", "copied", "confessed"];
+const flagIds: Flag[] = ["intro", "aunt", "trusted", "protected", "remembered", "copied", "confessed", "homeClue", "typeClue", "medicalClue", "archiveClue", "sharedPlan", "farewellAunt", "riverReady"];
 const portraitIds = ["shen", "aunt", "lin", "doctor", "gu", "narrator"];
 
 /** Fail early with a precise content path when an authored module is malformed. */
@@ -232,6 +232,7 @@ export function validateStoryData(input: unknown): asserts input is StoryData {
     bilingual(quest.title, `quests[${i}].title`);
     bilingual(quest.detail, `quests[${i}].detail`);
     condition(quest.complete, `quests[${i}].complete`);
+    if (quest.optional !== undefined && typeof quest.optional !== "boolean") fail(`quests[${i}].optional`, "expected a boolean");
   });
 }
 
@@ -290,8 +291,8 @@ export function chapter(state: State): { index: number; title: Text } {
   const selected = storyData.chapters.find((entry) => !entry.when || meetsCondition(state, entry.when))!;
   return { index: selected.index, title: selected.title };
 }
-export function quests(state: State): { title: Text; detail: Text; done: boolean }[] {
-  return storyData.quests.map(({ title, detail, complete }) => ({
-    title, detail, done: meetsCondition(state, complete),
+export function quests(state: State): { title: Text; detail: Text; done: boolean; optional: boolean }[] {
+  return storyData.quests.map(({ title, detail, complete, optional }) => ({
+    title, detail, optional: !!optional, done: meetsCondition(state, complete),
   }));
 }

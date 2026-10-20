@@ -24,7 +24,14 @@ export type Flag =
   | "protected"
   | "remembered"
   | "copied"
-  | "confessed";
+  | "confessed"
+  | "homeClue"
+  | "typeClue"
+  | "medicalClue"
+  | "archiveClue"
+  | "sharedPlan"
+  | "farewellAunt"
+  | "riverReady";
 export interface State {
   version: 1;
   scene: SceneId;
@@ -129,6 +136,7 @@ export interface StoryChapterData {
 }
 
 export interface StoryQuestData {
+  optional?: boolean;
   title: Text;
   detail: Text;
   complete: StoryCondition;

@@ -195,7 +195,7 @@ function render() {
     )
     .join("");
   renderDialogue();
-  const activeQuest = quests(state).find(q => !q.done);
+  const activeQuest = quests(state).find(q => !q.done && !q.optional);
   document.querySelector("#quest-hud")!.innerHTML = `${icon('book')} ${activeQuest ? t(activeQuest.title) : tr('长夜已渡', 'The night is behind you')}`;
   document.querySelector("#stage")!.classList.toggle("has-dialogue", !!currentDialogue);
   document.querySelector("#stage")!.classList.toggle("has-ending", !!state.ending);
@@ -226,8 +226,9 @@ function renderDialogue() {
   }
   if (!currentDialogue) { el.innerHTML = ""; return; }
   const d = dialogues[currentDialogue];
+  el.dataset.node = currentDialogue;
   const full = d.text[lang];
-  el.innerHTML = `<div class="dialogue-face"><canvas class="portrait" width="192" height="320" aria-hidden="true"></canvas><div class="speaker-badge"><h2>${t(d.speaker)}</h2><span>${d.role ? t(d.role) : tr("雨夜的低语", "A voice in the rain")}</span></div></div><div class="dialogue-body"><div class="dialogue-text" tabindex="0" role="button" aria-label="${tr('显示整段对话','Reveal this passage')}"><div class="typing-layout" aria-hidden="true">${escape(full)}</div><div class="typing-visible" aria-hidden="true"></div><span class="sr-only">${escape(full)}</span></div><button class="typing-hint" data-action="advance">${tr('Enter / Space · 显示全文','Enter / Space · Reveal text')}</button><div class="choices" hidden>${d.choices.map((c, i) => (!c.requires || c.requires(state) ? `<button class="choice" data-choice="${i}"><span class="choice-number">${i+1}</span><span>${t(c.label)}</span><span class="choice-cursor" aria-hidden="true">◀</span></button>` : '')).join('')}</div>${currentDialogue === 'finale' ? `<div class="ending-hints">${tr('证据','Evidence')} ${evidenceCount(state)}/3 · ${tr('信任','Trust')} ${flag(state,'trusted')?'✓':'—'} · ${tr('守护','Care')} ${flag(state,'protected')?'✓':'—'} · ${tr('记忆','Memory')} ${flag(state,'remembered')?'✓':'—'} <button data-action="endings">${tr('结局线索','Ending clues')}</button></div>` : ''}</div>`;
+  el.innerHTML = `<div class="dialogue-face"><canvas class="portrait" width="192" height="320" aria-hidden="true"></canvas><div class="speaker-badge"><h2>${t(d.speaker)}</h2><span>${d.role ? t(d.role) : tr("雨夜的低语", "A voice in the rain")}</span></div></div><div class="dialogue-body"><div class="dialogue-text" tabindex="0" role="button" aria-label="${tr('显示整段对话','Reveal this passage')}"><div class="typing-layout" aria-hidden="true">${escape(full)}</div><div class="typing-visible" aria-hidden="true"></div><span class="sr-only">${escape(full)}</span></div><button class="typing-hint" data-action="advance">${tr('Enter / Space · 显示全文','Enter / Space · Reveal text')}</button><div class="choices" hidden>${d.choices.map((c, i) => (!c.requires || c.requires(state) ? `<button class="choice" data-choice="${i}"><span class="choice-number">${i+1}</span><span>${t(c.label)}</span><span class="choice-cursor" aria-hidden="true">◀</span></button>` : '')).join('')}</div>${currentDialogue === 'finale' ? `<div class="ending-hints">${tr('证据','Evidence')} ${evidenceCount(state)}/3 · ${tr('分存','Copies')} ${flag(state,'sharedPlan')?'✓':'—'} · ${tr('守护','Care')} ${flag(state,'protected')?'✓':'—'} · ${tr('记忆','Memory')} ${flag(state,'remembered')?'✓':'—'} <button data-action="endings">${tr('结局线索','Ending clues')}</button></div>` : ''}</div>`;
   drawPortrait(el.querySelector<HTMLCanvasElement>('.portrait')!.getContext('2d')!, d.portrait || 'shen');
   const visible = el.querySelector<HTMLElement>('.typing-visible')!;
   const hint = el.querySelector<HTMLButtonElement>('.typing-hint')!;
@@ -379,10 +380,16 @@ function renderModal() {
       ["endings", "boat", tr("余音", "Endings"), `${collected.length}/4`],
       ["settings", "settings", tr("设置与存档", "Settings & saves"), ""],
       ["lang", "book", lang === "zh" ? "English" : "中文", ""],
+      ["background", "book", tr("故事背景", "Story background"), ""],
       ["help", "help", tr("游玩指南", "How to play"), ""],
       ["fullscreen", "fullscreen", tr("切换全屏", "Toggle fullscreen"), ""],
     ];
     content = `<p class="modal-intro">${t(scene.name)} · ${scene.time} · ${tr("上海，1968", "Shanghai, 1968")}</p><div class="menu-grid">${entries.map(([action, symbol, label, key]) => `<button data-action="${action}">${icon(symbol)}<span>${label}</span>${key ? `<kbd>${key}</kbd>` : ""}</button>`).join("")}</div><p class="menu-note">${tr("进度自动保存于此浏览器。", "Progress is saved automatically in this browser.")}</p><button class="primary-button menu-resume" data-action="close">${tr("继续游戏", "Resume game")}${icon("arrow")}</button>`;
+  } else if (modal === "background") {
+    title = tr("故事开始之前", "Before the story");
+    eyebrow = "SHANGHAI · 1968";
+    const opening = ["intro", "introReturn", "introPersecution", "introBrother", "introLetter", "introGoal"];
+    content = `<p class="modal-intro">${tr("真实历史时期下的原创虚构人物与事件。重读背景不会改变当前进度。", "Original fictional characters and events in a real historical period. Reading this does not alter your progress.")}</p><div class="memory-log">${opening.map(id => `<p>${t(dialogues[id].text)}</p>`).join("")}</div>`;
   } else if (modal === "journal") {
     title = tr("旅人手记", "Traveler’s journal");
     eyebrow = "NOTES FROM A LONG NIGHT";
@@ -412,8 +419,8 @@ function renderModal() {
     eyebrow = `FOUR WAYS TO REACH THE SHORE · ${collected.length}/4`;
     const conditions: Record<EndingId, Text> = {
       witness: L(
-        "收集校样、名册与证言，并与林岚建立信任。",
-        "Collect the proof, register, and testimony, and trust Lin Lan.",
+        "收集校样、名册与证言；回访林岚，完成分存约定。",
+        "Collect all three documents, return to Lin Lan, and complete the preservation plan.",
       ),
       departure: L(
         "获得转运名册与末班船票。",
@@ -456,7 +463,7 @@ function renderModal() {
   } else {
     title = tr("在雨夜中行走", "Walking through the night");
     eyebrow = "A SMALL GUIDE";
-    content = `<p class="modal-intro">${tr("《雾渡》是一部约 20–35 分钟的原创叙事 RPG 原型。没有战斗，也没有倒计时。可以慢慢阅读，反复走访。", "The Other Shore is an original narrative RPG prototype, about 20–35 minutes long. There is no combat or countdown. Read at your own pace and revisit freely.")}</p><div class="help-rows"><p><kbd>WASD / ↑↓←→</kbd>${tr("在场景的街道或地板上移动", "Move along the street or floor")}</p><p><kbd>Enter / Space / E</kbd>${tr("与附近人物、物件或出口交互；显示全文", "Interact with nearby events; reveal the full passage")}</p><p><kbd>1–5</kbd>${tr("选择相应对话；空格推进单选段落", "Choose a dialogue option; Space advances single-choice passages")}</p><p><kbd>J / I / M</kbd>${tr("打开手记 / 行囊 / 地图", "Open journal / belongings / map")}</p><p><kbd>Esc</kbd>${tr("打开 / 关闭菜单；对话需要做出选择", "Open / close the menu; dialogue requires a choice")}</p></div><p class="modal-intro">${tr("鼠标或触屏：点击场景标记交互，点击地面移动，打开地图选择地点旅行。背包中可查看和使用物品。场景时刻是章节氛围，不是游戏计时器。", "Mouse or touch: select markers to interact, the ground to walk, or open the map to travel. Inspect and use items in the bag. Scene times convey atmosphere; they are not a timer.")}</p><p class="fiction-note">${tr("背景：中国文化大革命时期，1968 年的上海。沈砚、沈泊、林岚及所有具体事件均为原创虚构。包含政治迫害、失踪与创伤的非血腥描写。", "Setting: Shanghai in 1968, during China’s Cultural Revolution. Shen Yan, Shen Bo, Lin Lan, and all specific events are original fiction. Contains non-graphic depictions of political persecution, disappearance, and trauma.")}</p>`;
+    content = `<p class="modal-intro">${tr("《雾渡》是一部首次正常阅读与探索约 25–35 分钟的原创叙事 RPG 原型。没有战斗，也没有倒计时。可以慢慢阅读，反复走访。", "The Other Shore is an original narrative RPG prototype, designed for about 25–35 minutes of first-time reading and exploration. There is no combat or countdown. Read at your own pace and revisit freely.")}</p><div class="help-rows"><p><kbd>WASD / ↑↓←→</kbd>${tr("在场景的街道或地板上移动", "Move along the street or floor")}</p><p><kbd>Enter / Space / E</kbd>${tr("与附近人物、物件或出口交互；显示全文", "Interact with nearby events; reveal the full passage")}</p><p><kbd>1–5</kbd>${tr("选择相应对话；空格推进单选段落", "Choose a dialogue option; Space advances single-choice passages")}</p><p><kbd>J / I / M</kbd>${tr("打开手记 / 行囊 / 地图", "Open journal / belongings / map")}</p><p><kbd>Esc</kbd>${tr("打开 / 关闭菜单；对话需要做出选择", "Open / close the menu; dialogue requires a choice")}</p></div><p class="modal-intro">${tr("鼠标或触屏：点击场景标记交互，点击地面移动，打开地图选择地点旅行。背包中可查看和使用物品。场景时刻是章节氛围，不是游戏计时器。", "Mouse or touch: select markers to interact, the ground to walk, or open the map to travel. Inspect and use items in the bag. Scene times convey atmosphere; they are not a timer.")}</p><p class="fiction-note">${tr("背景：中国文化大革命时期，1968 年的上海。沈砚、沈泊、林岚及所有具体事件均为原创虚构。包含政治迫害、失踪与创伤的非血腥描写。", "Setting: Shanghai in 1968, during China’s Cultural Revolution. Shen Yan, Shen Bo, Lin Lan, and all specific events are original fiction. Contains non-graphic depictions of political persecution, disappearance, and trauma.")}</p>`;
   }
   document.querySelector("#modal-root")!.innerHTML =
     `<div class="modal-backdrop"><section class="modal ${wide ? "wide" : ""} ${modal === "ending" ? "ending-modal" : ""}" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="icon-button modal-close" data-action="close" aria-label="${tr("关闭", "Close")}">${icon("close")}</button><span class="eyebrow">${eyebrow}</span><h2 id="modal-title">${title}</h2>${content}</section></div>`;

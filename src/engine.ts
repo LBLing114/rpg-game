@@ -1,4 +1,4 @@
-import { dialogues, has, scenes } from "./story";
+import { dialogues, has, scenes, storyData } from "./story";
 import { groundPosition, getSpawn } from "./grid";
 import {
   type Choice,
@@ -25,13 +25,16 @@ export function newGame(): State {
 }
 export function unlock(s: State, scene: SceneId): boolean {
   if (scene === "home") return has(s, "key");
-  if (scene === "clinic" || scene === "archive") return has(s, "proof");
+  if (scene === "clinic") return has(s, "proof");
+  if (scene === "archive") return has(s, "record") || (has(s, "proof") && (has(s, "testimony") || s.visited.includes("archive")));
   if (scene === "river") return has(s, "record");
   return true;
 }
 export function lockReason(scene: SceneId) {
   return scene === "home"
     ? L("先向周姨取得旧屋钥匙", "Get the house key from Aunt Zhou first")
+    : scene === "archive"
+      ? L("先取得印刷校样，再在诊所核对登记并取得医生证言", "Obtain the proof, then examine the clinic register and get Luo’s statement")
     : scene === "river"
       ? L(
           "先在档案室找到转运名册",
@@ -72,12 +75,13 @@ export function choose(
   };
 }
 export interface SaveData {
+  contentVersion: 2;
   state: State;
   dialogue: string | null;
   savedAt: string;
 }
 export function encodeSave(state: State, dialogue: string | null): string {
-  return JSON.stringify({ state, dialogue, savedAt: new Date().toISOString() });
+  return JSON.stringify({ contentVersion: 2, state, dialogue, savedAt: new Date().toISOString() });
 }
 const allItems = [
   "letter",
@@ -88,15 +92,7 @@ const allItems = [
   "testimony",
   "ticket",
 ];
-const allFlags = [
-  "intro",
-  "aunt",
-  "trusted",
-  "protected",
-  "remembered",
-  "copied",
-  "confessed",
-];
+const allFlags: readonly string[] = storyData.flags;
 const allEndings: EndingId[] = ["witness", "departure", "silence", "embers"];
 export function decodeSave(raw: string | null): SaveData | null {
   try {
@@ -105,6 +101,7 @@ export function decodeSave(raw: string | null): SaveData | null {
       s = d.state;
     if (
       !s ||
+      (d.contentVersion !== undefined && d.contentVersion !== 1 && d.contentVersion !== 2) ||
       s.version !== 1 ||
       !scenes.some((x) => x.id === s.scene) ||
       !Array.isArray(s.inventory) ||
@@ -131,6 +128,19 @@ export function decodeSave(raw: string | null): SaveData | null {
       !Number.isFinite(Date.parse(d.savedAt))
     )
       return null;
+    // Legacy saves retain earned routes; a v2 save never gains deductions by reloading.
+    if (d.contentVersion !== 2) {
+      const earned: string[] = [];
+      if (s.inventory.includes("photo") || s.inventory.includes("proof")) earned.push("homeClue");
+      if (s.inventory.includes("proof")) earned.push("typeClue");
+      if (s.inventory.includes("testimony") || s.inventory.includes("record")) earned.push("medicalClue");
+      if (s.inventory.includes("record")) {
+        earned.push("archiveClue");
+        if (s.flags.includes("trusted")) earned.push("sharedPlan");
+      }
+      s.flags = Array.from(new Set([...s.flags, ...earned]));
+    }
+    d.contentVersion = 2;
     Object.assign(s, groundPosition(s.scene, s.x, s.y));
     if (!unlock(s, s.scene)) return null;
     return d as SaveData;

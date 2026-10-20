@@ -42,7 +42,7 @@ npm run preview -- --port 4173
 ## 内容与操作
 
 - **六张地图**：槐生里、沈家旧屋、长明印刷铺、仁安诊所、旧档案室、黄浦江岸。使用砖墙、旧海报、石板路、室内木地板和家具，没有大片草地。
-- **完整序章**：四章流程、多个角色与推理分支、六个任务、七件可查看和使用的剧情道具、四种结局。
+- **完整序章**：四章流程、77 个双语对话节点、两次证据推理、十二项任务（含三条支线）、七件可查看和使用的剧情道具、四种结局。
 - **网格探索**：平滑四向移动、地形与家具碰撞、点击地面寻路、走近人物后交互；角色与场景按脚底 Y 坐标遮挡。
 - **经典对话**：深色半透明白边窗口、五位角色的透明半身立绘、逐字文字、分支选择、可开启的文字与菜单提示音。
 - **双语与存档**：界面和全文中英文切换；自动存档、独立手动槽、已发现结局收集；支持键盘、鼠标和触屏。
@@ -60,9 +60,17 @@ npm run preview -- --port 4173
 | 打开 / 关闭菜单 | Esc | 右上角 ☰ 菜单 / 关闭按钮 |
 | 中英文与音效 | 菜单中的设置 | 菜单 → English / 中文；设置 → 音效 |
 
-先和周姨交谈取得旧屋钥匙，再到印刷铺寻找校样。地图会显示地点解锁条件。背包中的物品会提示使用地点；到达相应场景使用，可引导角色走到目标并开启相关对话。场景时间仅用于叙事，没有限时选择。
+开场用六段可推进对话交代文革时期的上海、沈砚在法国里昂留学与 1957 年归国、此后的政治迫害、沈泊在 1967 年失踪，以及林岚为何在 1968 年送来旧信。菜单中的 **故事背景** 可随时重读，不改变进度。
+
+首次正常阅读与探索以 **25–35 分钟**为目标：主线约 54 段对话、6,363 个中文汉字（英文约 3,744 词）；含顾先生回忆、分存准备与周姨告别约 66 段。时长是依据阅读量与探索流程的估算，会随阅读速度、支线和重访变化；没有强制等待或限时机制。
+
+先和周姨交谈取得旧屋钥匙，去旧屋读书桌里的回执，再调查印刷铺铅字盒，与林岚核对后取得校样。诊所需先读值夜登记，再听医生证言；档案室需先查索引，再核对名册。两次推理选错会给出解释并允许重试，不消耗道具。地图会显示地点解锁条件。背包中的物品会提示使用地点；到达相应场景使用，可引导角色走到目标并开启相关对话。场景时间仅用于叙事，没有限时选择。
+
+已有旧版存档会保留道具、选择及已解锁路线；如要完整体验新增流程，请在 **菜单 → 设置与存档 → 重新开始故事** 中重开（可先手动存档）。只想补看开头，可用 **菜单 → 故事背景**。
 
 进度保存在浏览器当前站点的 `localStorage`，不跨设备同步。重新开始保留手动存档和结局收集；结局后可返回最后选择，或回访角色补齐线索。旧版连续坐标存档会恢复到当前地图的可行走网格。
+
+详细章节路线与时长依据见 [扩展序章流程（含剧透）](docs/story-flow.md)。
 
 ## 剧情与地图扩展
 
@@ -109,7 +117,7 @@ npm run test:e2e # Chromium 中完成剧情与交互检查
 <details>
 <summary>结局条件（剧透）</summary>
 
-- **留名**：收集第三份校样、转运名册、医生证言，并信任林岚；到江岸分存证据。
+- **留名**：收集第三份校样、转运名册、医生证言，并回访林岚完成分存约定；到江岸选择留下证据。
 - **余灯**：取得转运名册、承诺保护罗医生，并用旧合影唤回顾先生的记忆；选择留下。
 - **渡雾**：取得转运名册与船票；选择渡江。
 - **无声**：抵达江岸后选择烧毁证据。
@@ -120,12 +128,14 @@ npm run test:e2e # Chromium 中完成剧情与交互检查
 
 ## English
 
-**The Other Shore** is an original bilingual narrative RPG set in a fictional Shanghai lane in 1968. Shen Yan, a returning overseas student facing political persecution, follows a letter from his missing brother. Explore six urban and interior maps, collect seven story items, complete six quests, and reach four endings. There is no combat or time limit.
+**The Other Shore** is an original bilingual narrative RPG set in a fictional Shanghai lane in 1968. Shen Yan, a returning overseas student facing political persecution, follows a letter from his missing brother. Explore six urban and interior maps, collect seven story items, complete twelve quests, and reach four endings. There is no combat or time limit.
 
 This is a **TypeScript / Canvas / Vite web game inspired by classic RPG Maker presentation**, with 32px grid movement, collision and click pathfinding, Y-sorted pixel art, five illustrated character busts, and typewriter dialogue. It does not require the RPG Maker editor.
 
 Download and open **`play.html`** to play immediately, or run `npm install && npm run dev` and open the printed localhost address on the same computer. For a cloud server, use its forwarded port URL. Run `npm run build` to generate both `dist/` and `play.html`; use `npm run preview` to preview the production build.
 
 Use **WASD / arrows** to walk, **Enter / Space / E** to interact or reveal dialogue, **1–5** for choices, **I** for belongings, **J** for quests, **M** for the map, and **Escape** for the in-game menu. Click terrain to navigate, or an event marker to approach and interact. Inventory items have a use action and a location hint. The top-right **Menu** contains language, settings, saves and fullscreen controls. **English / 中文** switches language without resetting progress. Audio is optional. Saves stay in the current browser.
+
+The expanded opening explains the Cultural Revolution setting, Shen’s return from Lyon, his persecution, his brother’s disappearance and the delivery of an old letter. **Menu → Story background** lets you reread it without changing progress. The complete route targets **25–35 minutes** of first-time reading and exploration, based on 54 main-route dialogue pages (about 3,744 English words), with 12 additional pages across three optional arcs. Actual time depends on reading speed and exploration; no forced waits are used. Compare the house receipt and printing type, examine the clinic night register, and read the archive index before drawing two retryable deductions. Return to Lin with all three documents to unlock the witness ending. Existing saves retain progress; start a new story in settings to experience the expanded route from the beginning.
 
 Edit `src/data/storyData.json` to extend bilingual dialogue, choices, items, quests and endings; conditions are JSON data, not executable strings. Map geometry and event coordinates live in `src/grid.ts`. Run `npm test`, `npm run build`, and `npm run test:e2e` after changes. Artwork is bundled with the project and audio is synthesized locally; no external runtime services are required. Four original atlases supply character busts, Shanghai architecture, furniture, and ground textures, while walking sprites use hand-authored pixel masks. The web build caches image assets separately; the offline play.html embeds all of them.
