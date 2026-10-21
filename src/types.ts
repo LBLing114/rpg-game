@@ -150,6 +150,8 @@ export interface StoryData {
   conditions: Record<string, StoryCondition>;
   items: Record<ItemId, StoryItem>;
   dialogues: Record<string, StoryDialogueData>;
+  /** Ordered opening pages reuse dialogue IDs so existing saves remain valid. */
+  prologue: { node: string; title: Text; period: Text }[];
   scenes: StorySceneData[];
   endings: Record<EndingId, StoryEnding>;
   /** Ordered highest-priority first; final entry is an unconditional fallback. */

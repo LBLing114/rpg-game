@@ -29,6 +29,9 @@ describe("standalone authored story module", () => {
   });
 
   it.each([
+    ["broken prologue reference", (d: any) => { d.prologue[1].node = "missing"; }, "prologue[1].node"],
+    ["missing prologue translation", (d: any) => { delete d.prologue[0].period.en; }, "prologue[0].period.en"],
+    ["nonlinear prologue", (d: any) => { d.prologue.reverse(); }, "opening must begin at intro"],
     ["missing translation", (d: any) => { delete d.dialogues.intro.text.en; }, "dialogues.intro.text.en"],
     ["broken dialogue link", (d: any) => { d.dialogues.aunt.choices[0].next = "missing"; }, "choices[0].next"],
     ["prototype dialogue link", (d: any) => { d.dialogues.aunt.choices[0].next = "__proto__"; }, "choices[0].next"],

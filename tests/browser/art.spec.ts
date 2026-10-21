@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('all five transparent busts load, keep their proportions, and persist across language changes', async ({ browser }) => {
   for (const [portrait, dialogue, scene, name] of [
-    ['shen','intro','lane','沈砚'],['aunt','aunt','lane','周姨'],
+    ['shen','deskInventory','home','沈砚'],['aunt','aunt','lane','周姨'],
     ['lin','lin','press','林岚'],['doctor','doctor','clinic','罗医生'],['gu','gu','clinic','顾文山'],
   ]) {
     const page=await browser.newPage({viewport:{width:1100,height:900}});

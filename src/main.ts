@@ -27,6 +27,7 @@ import {
   items,
   quests,
   scenes,
+  storyData,
 } from "./story";
 import {
   L,
@@ -205,6 +206,7 @@ function enterGame(save?: SaveData) {
   persist();
   render();
   if (state.ending) openModal('ending');
+  else if (prologueIndex() >= 0) document.querySelector<HTMLButtonElement>('#dialogue button:not([hidden])')?.focus({ preventScroll: true });
   else document.querySelector<HTMLCanvasElement>('#world')!.focus({ preventScroll: true });
 }
 function showTitle() {
@@ -227,13 +229,26 @@ function saveManual() {
     : tr('存档失败：浏览器存储不可用或已满。原存档未被删除。', 'Save failed: browser storage is unavailable or full. The previous save was not deleted.'));
   openModal('saves');
 }
+function prologueIndex() {
+  return atTitle ? -1 : storyData.prologue.findIndex(page => page.node === currentDialogue);
+}
+function skipPrologue() {
+  if (prologueIndex() < 0 || modal) return;
+  // Apply the same conclusion as reading all pages: only the opening flag and note.
+  reveal?.finish();
+  currentDialogue = storyData.prologue.at(-1)!.node;
+  makeChoice(0);
+}
 function render() {
+  const opening = prologueIndex() >= 0;
   const scene = scenes.find((s) => s.id === state.scene)!;
   document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
   document.title = tr("雾渡 · The Other Shore", "The Other Shore · 雾渡");
-  world.titleMode = atTitle;
+  world.titleMode = atTitle || opening;
   document.querySelector('#stage')!.classList.toggle('at-title', atTitle);
-  document.querySelector<HTMLCanvasElement>('#world')!.tabIndex = atTitle ? -1 : 0;
+  document.querySelector('#stage')!.classList.toggle('has-prologue', opening);
+  document.querySelector('#stage')!.classList.toggle('reduced-motion', !motion);
+  document.querySelector<HTMLCanvasElement>('#world')!.tabIndex = atTitle || opening ? -1 : 0;
   renderTitle();
   document.querySelector("#game-menu")!.innerHTML = `${icon("menu")}<span>${tr("菜单", "Menu")}</span>`;
   document.querySelector("#scene-caption")!.innerHTML =
@@ -269,7 +284,8 @@ function renderDialogue() {
   reveal?.dispose();
   reveal = null;
   revealKey = key;
-  el.classList.remove("narration");
+  el.classList.remove("narration", "prologue");
+  el.setAttribute("aria-label", tr("故事对话", "Story dialogue"));
   delete el.dataset.node;
   if (atTitle) { el.innerHTML = ''; return; }
   if (state.ending) {
@@ -281,10 +297,30 @@ function renderDialogue() {
   const d = dialogues[currentDialogue];
   el.dataset.node = currentDialogue;
   const full = d.text[lang];
+  const openingIndex = prologueIndex();
+  const opening = openingIndex >= 0;
+  if (opening) {
+    const page = storyData.prologue[openingIndex];
+    el.classList.add('prologue');
+    el.setAttribute('aria-label', tr('故事序幕', 'Story prologue'));
+    el.innerHTML = `<div class="prologue-page">
+      <div class="prologue-scroll">
+        <p class="prologue-period">${t(page.period)}</p>
+        <h2 class="prologue-heading">${t(page.title)}</h2>
+        <p class="prologue-voice">${tr('沈砚 · 回忆', 'Shen Yan · Recollections')}</p>
+        <div class="dialogue-text" tabindex="0" role="button" aria-label="${tr('显示整段介绍', 'Reveal this passage')}"><div class="typing-layout" aria-hidden="true">${escape(full)}</div><div class="typing-visible" aria-hidden="true"></div><span class="sr-only">${escape(full)}</span></div>
+        ${openingIndex === 0 ? `<p class="prologue-fiction">${tr('真实历史背景下的虚构人物与事件。', 'Fictional characters and events in a real historical setting.')}</p>` : ''}
+      </div>
+      ${openingIndex === 0 ? `<p class="prologue-scroll-hint">${tr('可上下滚动阅读', 'Scroll to read')}</p>` : ''}
+      <div class="prologue-navigation"><span class="prologue-counter">${tr('序幕', 'PROLOGUE')}　${String(openingIndex + 1).padStart(2, '0')} / ${String(storyData.prologue.length).padStart(2, '0')}</span><button class="typing-hint" data-action="advance">${tr('Enter / Space · 显示全文', 'Enter / Space · Reveal text')}</button><div class="choices" hidden><button class="choice" data-choice="0">${t(d.choices[0].label)}<span aria-hidden="true"> ▸</span></button></div></div>
+      <div class="prologue-tools"><button data-action="skip-prologue">${tr('跳过介绍', 'Skip introduction')}</button><button data-action="prologue-language">${lang === 'zh' ? 'English' : '中文'}</button></div>
+    </div>`;
+  } else {
   const hasPortrait = !!d.portrait && d.portrait !== "narrator";
   el.classList.toggle("narration", !hasPortrait);
   el.innerHTML = `${hasPortrait ? `<div class="dialogue-face"><canvas class="portrait" width="192" height="320" aria-hidden="true"></canvas><div class="speaker-badge"><h2>${t(d.speaker)}</h2><span>${d.role ? t(d.role) : tr("雨夜的低语", "A voice in the rain")}</span></div></div>` : ""}<div class="dialogue-body">${hasPortrait ? "" : `<h2 class="narration-title">${t(d.speaker)}</h2>`}<div class="dialogue-text" tabindex="0" role="button" aria-label="${tr('显示整段对话','Reveal this passage')}"><div class="typing-layout" aria-hidden="true">${escape(full)}</div><div class="typing-visible" aria-hidden="true"></div><span class="sr-only">${escape(full)}</span></div><button class="typing-hint" data-action="advance">${tr('Enter / Space · 显示全文','Enter / Space · Reveal text')}</button><div class="choices" hidden>${d.choices.map((c, i) => (!c.requires || c.requires(state) ? `<button class="choice" data-choice="${i}"><span class="choice-number">${i+1}</span><span>${t(c.label)}</span><span class="choice-cursor" aria-hidden="true">◀</span></button>` : '')).join('')}</div>${currentDialogue === 'finale' ? `<div class="ending-hints">${tr('证据','Evidence')} ${evidenceCount(state)}/3 · ${tr('分存','Copies')} ${flag(state,'sharedPlan')?'✓':'—'} · ${tr('守护','Care')} ${flag(state,'protected')?'✓':'—'} · ${tr('记忆','Memory')} ${flag(state,'remembered')?'✓':'—'} <button data-action="endings">${tr('结局线索','Ending clues')}</button></div>` : ''}</div>`;
   if (hasPortrait) drawPortrait(el.querySelector<HTMLCanvasElement>('.portrait')!.getContext('2d')!, d.portrait);
+  }
   const visible = el.querySelector<HTMLElement>('.typing-visible')!;
   const hint = el.querySelector<HTMLButtonElement>('.typing-hint')!;
   const choices = el.querySelector<HTMLElement>('.choices')!;
@@ -296,6 +332,7 @@ function renderDialogue() {
     complete: () => {
       el.dataset.typing = 'false';
       choices.hidden = false;
+      if (opening) hint.hidden = true;
       hint.textContent = d.choices.length === 1 ? tr('▼ Enter / Space · 继续','▼ Enter / Space · Continue') : tr('▼ 请选择 · 数字键 / 鼠标','▼ Choose · Number keys / mouse');
     },
   });
@@ -372,6 +409,7 @@ function makeChoice(index: number) {
   if (!currentDialogue || modal) return;
   if (reveal && !reveal.isComplete) { reveal.finish(); return; }
   effects.play();
+  const wasOpening = prologueIndex() >= 0;
   const prev = state.inventory.length;
   const result = choose(state, currentDialogue, index);
   state = result.state;
@@ -389,7 +427,15 @@ function makeChoice(index: number) {
   }
   persist();
   render();
+  if (wasOpening && prologueIndex() < 0 && motion) {
+    const stage = document.querySelector<HTMLElement>('#stage')!;
+    stage.classList.remove('arriving');
+    void stage.offsetWidth;
+    stage.classList.add('arriving');
+  }
   if (state.ending) openModal("ending");
+  else if (prologueIndex() >= 0)
+    document.querySelector<HTMLButtonElement>('#dialogue button:not([hidden])')?.focus({ preventScroll: true });
   else if (currentDialogue)
     document
       .querySelector<HTMLButtonElement>("[data-choice]")
@@ -451,7 +497,7 @@ function renderModal() {
   } else if (modal === "background") {
     title = tr("故事开始之前", "Before the story");
     eyebrow = "SHANGHAI · 1968";
-    const opening = ["intro", "introReturn", "introPersecution", "introBrother", "introLetter", "introGoal"];
+    const opening = storyData.prologue.map(page => page.node);
     content = `<p class="modal-intro">${tr("真实历史时期下的原创虚构人物与事件。重读背景不会改变当前进度。", "Original fictional characters and events in a real historical period. Reading this does not alter your progress.")}</p><div class="memory-log">${opening.map(id => `<p>${t(dialogues[id].text)}</p>`).join("")}</div>`;
   } else if (modal === "journal") {
     title = tr("旅人手记", "Traveler’s journal");
@@ -550,6 +596,7 @@ function renderModal() {
 }
 
 async function action(name: string) {
+  if (name === 'skip-prologue') { skipPrologue(); return; }
   if (name === 'advance') { advanceText(); return; }
   if (name === 'interact') { interactNearest(); return; }
   if (name === 'use-item') { useItem(); return; }
@@ -574,7 +621,7 @@ async function action(name: string) {
     closeModal();
     return;
   }
-  if (name === "lang") {
+  if (name === "lang" || name === "prologue-language") {
     lang = lang === "zh" ? "en" : "zh";
     storageSet("wudu-lang", lang);
     render();

@@ -126,7 +126,8 @@ test("standalone HTML runs entirely inline and reaches an ending without network
   await page.setContent(await readFile(resolve("play.html"), "utf8"));
   await page.locator('#title-screen [data-action="new-story"]').click();
   await expect(page.locator('#world')).toHaveAttribute('data-art-ready', 'true');
-  await expect(page.locator('.portrait')).toHaveAttribute('data-illustration', 'shen');
+  await expect(page.locator('#dialogue')).toHaveClass(/prologue/);
+  await expect(page.locator('.portrait')).toHaveCount(0);
   await expect(page.locator(".typing-layout")).toContainText("上海，一九六八年");
   await fullJourney(page, false);
   await choice(page, 3);
@@ -357,6 +358,9 @@ test("initial RPG stage renders pixel artwork, portraits, no runtime errors or m
   await expect(page.locator(".typing-layout")).toContainText("上海，一九六八年");
   await expect(page.locator("#world")).toHaveAttribute("width", String(WORLD_WIDTH));
   await expect(page.locator("#world")).toHaveAttribute("height", String(WORLD_HEIGHT));
+  await expect(page.locator("#dialogue")).toHaveClass(/prologue/);
+  await conversation(page);
+  await interact(page, "aunt");
   await expect(page.locator(".dialogue-face canvas.portrait")).toHaveAttribute("width", "192");
   await expect(page.locator(".dialogue-face canvas.portrait")).toHaveAttribute("height", "320");
   await expect(page.locator('#world')).toHaveAttribute('data-art-ready', 'true');
@@ -406,7 +410,7 @@ test("keyboard in-game menu controls work during dialogue and text/sound prefere
   await page.keyboard.press("Escape");
   await expect(page.locator(".choices")).toBeVisible();
   await expect(page.locator("#game-menu")).toBeFocused();
-  await page.locator("#world").focus();
+  await page.locator("#dialogue .dialogue-text").focus();
   await page.keyboard.press("Enter");
   await expect(page.locator("#dialogue")).toHaveAttribute("data-node", "introReturn");
   expect(await page.evaluate(() => localStorage.getItem("wudu-text-speed"))).toBe("0");

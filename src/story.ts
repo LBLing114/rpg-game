@@ -169,6 +169,26 @@ export function validateStoryData(input: unknown): asserts input is StoryData {
     });
   }
 
+  const prologue = list(data.prologue, "prologue").map((entry, i) => {
+    const page = object(entry, `prologue[${i}]`);
+    own(page.node, dialogues, `prologue[${i}].node`);
+    bilingual(page.title, `prologue[${i}].title`);
+    bilingual(page.period, `prologue[${i}].period`);
+    return page;
+  });
+  if (!prologue.length || prologue[0].node !== "intro") fail("prologue", "opening must begin at intro");
+  unique(prologue.map(page => page.node), "prologue");
+  prologue.forEach((page, i) => {
+    const entry = dialogues[page.node as string] as Record<string, unknown>;
+    const choices = entry.choices as Record<string, unknown>[];
+    if (choices.length !== 1 || choices[0].requires !== undefined || choices[0].ending !== undefined || choices[0].items !== undefined)
+      fail(`prologue[${i}]`, "opening pages need one unconditional continuation without rewards or endings");
+    if (choices[0].next !== prologue[i + 1]?.node)
+      fail(`prologue[${i}]`, "continuation must follow the opening order and close on its last page");
+    if (i === prologue.length - 1 && !(choices[0].flags as string[] | undefined)?.includes("intro"))
+      fail(`prologue[${i}]`, "last page must complete the intro flag");
+  });
+
   for (const scene of sceneRecords) {
     const path = `scenes.${scene.id}`;
     for (const key of ["name", "subtitle", "description"])

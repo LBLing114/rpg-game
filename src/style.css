@@ -352,3 +352,52 @@ html[lang="en"] .choice { font-family: Georgia, serif; letter-spacing: 0; }
   .title-year { font-size: 10px; }
 }
 @media (pointer: coarse) { .title-controls { display: none; } }
+
+/* A full-screen opening, before the player enters the explorable lane. */
+.has-prologue > :is(#hotspots, #scene-caption, #quest-hud, #touch-controls) { display: none; }
+.stage.has-prologue:after { display: none; }
+.stage.has-prologue { background: #000; }
+.has-prologue #world { cursor: default; visibility: hidden; }
+.has-prologue .dialogue-panel.prologue { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; min-height: 0; padding: 70px 30px 38px; border: 0; border-radius: 0; background: #000; box-shadow: none; }
+.prologue-page { width: min(650px, 100%); max-height: 100%; display: flex; flex-direction: column; min-height: 0; }
+.prologue-scroll { overflow: auto; min-height: 0; padding: 0 8px 14px; scrollbar-width: thin; scrollbar-color: #778174 #17202a; animation: prologue-page-in 1.3s ease-out; }
+.prologue-period { color: #b8b4a2; font: 13px/1.7 var(--serif); letter-spacing: 3px; text-align: center; }
+.prologue-heading { margin: 17px 0 12px; font: 32px/1.5 var(--serif); letter-spacing: 6px; text-align: center; color: #e9ddbd; }
+.prologue-voice { text-align: center; color: #85928e; font: 11px/1.6 var(--serif); letter-spacing: 2px; margin-bottom: 30px; }
+.prologue .dialogue-text, html[lang="en"] .prologue .dialogue-text { font-size: 18px; line-height: 2.05; letter-spacing: .7px; color: #dddcd0; }
+.prologue-fiction { margin-top: 22px; color: #8c9797; font: 11px/1.7 var(--serif); }
+.prologue-navigation { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 16px; min-height: 58px; margin-top: 18px; padding: 10px 4px; border-top: 1px solid #9a9e8f45; }
+.prologue-counter { color: #a7b0a5; font: 11px/1.5 var(--serif); letter-spacing: 1px; white-space: nowrap; }
+.prologue .choices { display: block; margin: 0; }
+.prologue .choice { display: block; min-height: 40px; padding: 8px 12px; font: 14px/1.6 var(--serif); text-align: right; border: 0; background: none; color: #e3d4ae; }
+.prologue button.typing-hint { font: 12px/1.5 var(--serif); min-height: 40px; margin: 0; }
+.prologue-tools { display: flex; flex: 0 0 auto; justify-content: space-between; margin-top: 7px; }
+.prologue-tools button { min-height: 36px; padding: 6px 4px; color: #99a5a4; font-size: 11px; }
+.prologue-tools button:hover { color: #e3d4ae; }
+@keyframes prologue-page-in { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 680px) {
+  .stage.has-prologue { height: 100svh; min-height: 480px; overflow: hidden; }
+  .has-prologue #world { height: 100%; width: 100%; object-fit: cover; }
+  .has-prologue .dialogue-panel.prologue { padding: 66px 22px 18px; background: #000; }
+  .prologue-heading { font-size: 26px; margin: 10px 0; letter-spacing: 4px; }
+  .prologue-period { font-size: 11px; letter-spacing: 1px; }
+  .prologue-voice { margin-bottom: 22px; }
+  .prologue .dialogue-text, html[lang="en"] .prologue .dialogue-text { font-size: 16px; line-height: 1.9; letter-spacing: .3px; }
+  .prologue-scroll { padding: 0 3px 10px; }
+  .prologue-navigation { gap: 8px; margin-top: 10px; }
+  .prologue .choice { font-size: 13px; padding-right: 3px; }
+  .prologue-tools { margin-top: 0; }
+}
+@media (max-height: 550px) and (min-width: 681px) {
+  .has-prologue .dialogue-panel.prologue { padding: 50px 24px 12px; }
+  .prologue-heading { font-size: 24px; margin: 8px 0; }
+  .prologue-voice { margin-bottom: 15px; }
+  .prologue-navigation { margin-top: 6px; }
+}
+@media (prefers-reduced-motion: reduce) { .prologue-scroll { animation: none; } }
+
+.reduced-motion .prologue-scroll { animation: none; }
+
+.has-prologue .stage-atmosphere { display: none; }
+.stage.arriving #world { animation-duration: 1s; }
+.prologue-scroll-hint { margin: 0 0 8px; color: #8c9797; font-size: 10px; text-align: right; }

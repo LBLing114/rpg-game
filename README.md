@@ -65,9 +65,13 @@ npm run preview -- --port 4173
 | 手动存档 / 读档 | Esc → 存档 / 读档 | 菜单 → 存档 / 读档 → 对应档位的保存 / 读取 |
 | 中英文与音效 | 菜单中的设置 | 菜单 → English / 中文；设置 → 音效 |
 
-开场用六段可推进对话交代文革时期的上海、沈砚在法国里昂留学与 1957 年归国、此后的政治迫害、沈泊在 1967 年失踪，以及林岚为何在 1968 年送来旧信。菜单中的 **故事背景** 可随时重读，不改变进度。
+点击 **新的故事** 后，先进入独立的全屏序幕：纯黑幕、淡入文字、分段标题与年代标记；开头旁白约 531 个汉字，依次交代文革时期的上海、沈砚在法国里昂留学与 1957 年归国、此后的政治迫害、沈泊在 1967 年失踪，以及一封旧信为何在今晚送达。六段读完后，画面淡入槐生里的地图探索。长文可以上下滚动阅读。
 
-首次正常阅读与探索以 **25–35 分钟**为目标：主线约 54 段对话、6,363 个中文汉字（英文约 3,744 词）；含顾先生回忆、分存准备与周姨告别约 66 段。时长是依据阅读量与探索流程的估算，会随阅读速度、支线和重访变化；没有强制等待或限时机制。
+按 **Enter / Space** 或点击按钮显示全文并继续；可用 **跳过介绍** 直接进入地图，也可在序幕底部切换语言。序幕每段自动保存，中途退出后从开始界面选择 **继续游戏** 即可接着读；已经进入探索的存档不会重新播放。菜单中的 **故事背景** 可随时重读，不改变进度。
+
+![雾渡：游戏开始前的剧情序幕](docs/prologue.png)
+
+首次正常阅读与探索以 **25–35 分钟**为目标：主线约 54 段对话、6,780 个中文汉字（英文约 4,038 词）；含顾先生回忆、分存准备与周姨告别约 66 段。时长是依据阅读量与探索流程的估算，会随阅读速度、支线和重访变化；没有强制等待或限时机制。
 
 先和周姨交谈取得旧屋钥匙，去旧屋读书桌里的回执，再调查印刷铺铅字盒，与林岚核对后取得校样。诊所需先读值夜登记，再听医生证言；档案室需先查索引，再核对名册。两次推理选错会给出解释并允许重试，不消耗道具。地图会显示地点解锁条件。背包中的物品会提示使用地点；到达相应场景使用，可引导角色走到目标并开启相关对话。场景时间仅用于叙事，没有限时选择。
 
@@ -104,7 +108,7 @@ src/
   style.css      RPG 窗口、菜单与响应式布局
 ```
 
-文字均采用 `{ "zh": "中文", "en": "English" }`。编辑 `src/data/storyData.json` 的 `dialogues` 添加节点；每个节点提供 `speaker`、`portrait`、`text`、`choices`。选择可包含 `next`（节点 ID）、`items`（赠送道具）、`flags`（决定）、`note`（手记）、`ending`（结局 ID）。条件是声明式数据，不执行字符串代码：
+文字均采用 `{ "zh": "中文", "en": "English" }`。`prologue` 数组定义序幕的节点顺序、双语标题与年代；正文复用对应对话节点，保持旧存档兼容。编辑 `src/data/storyData.json` 的 `dialogues` 添加节点；每个节点提供 `speaker`、`portrait`、`text`、`choices`。选择可包含 `next`（节点 ID）、`items`（赠送道具）、`flags`（决定）、`note`（手记）、`ending`（结局 ID）。条件是声明式数据，不执行字符串代码：
 
 ```json
 {
@@ -151,6 +155,6 @@ Download and open **`play.html`** to play immediately, or run `npm install && np
 
 Use **WASD / arrows** to walk, **Enter / Space / E** to interact or reveal dialogue, **1–5** for choices, **I** for belongings, **J** for quests, **M** for the map, and **Escape** for the in-game menu. Click terrain to navigate, or an event marker to approach and interact. Inventory items have a use action and a location hint. The title screen offers **Continue**, **New story**, **Load game** and **Options**. Use Up/Down and Enter, or click a menu entry. The top-right in-game **Menu** contains language, options, **Save / Load**, return to title and fullscreen controls. Save to any of three manual slots; autosave is separate. Occupied slots require confirmation before replacement. Starting over preserves manual saves and discovered endings, and the original manual save remains in slot 1. Continue opens the most recent valid save; visiting the title never replaces existing progress. **English / 中文** switches language without resetting progress. Audio is optional. Saves stay in the current browser.
 
-The expanded opening explains the Cultural Revolution setting, Shen’s return from Lyon, his persecution, his brother’s disappearance and the delivery of an old letter. **Menu → Story background** lets you reread it without changing progress. The complete route targets **25–35 minutes** of first-time reading and exploration, based on 54 main-route dialogue pages (about 3,744 English words), with 12 additional pages across three optional arcs. Actual time depends on reading speed and exploration; no forced waits are used. Compare the house receipt and printing type, examine the clinic night register, and read the archive index before drawing two retryable deductions. Return to Lin with all three documents to unlock the witness ending. Existing saves retain progress; start a new story in settings to experience the expanded route from the beginning.
+Selecting **New story** opens a full-screen, six-part prologue before map exploration, with dated headings and narration gradually appearing against a black screen. The expanded first passage contains about 531 Chinese characters, with a full English translation. Long passages scroll; the map fades in after the opening. Enter/Space reveals or advances text; **Skip introduction** enters the lane immediately. Language can be changed on the prologue screen. Progress resumes at the saved page, while saves already in exploration do not replay the opening. The prologue explains the Cultural Revolution setting, Shen’s return from Lyon, his persecution, his brother’s disappearance and the delivery of an old letter. **Menu → Story background** lets you reread it without changing progress. The complete route targets **25–35 minutes** of first-time reading and exploration, based on 54 main-route dialogue pages (about 4,038 English words), with 12 additional pages across three optional arcs. Actual time depends on reading speed and exploration; no forced waits are used. Compare the house receipt and printing type, examine the clinic night register, and read the archive index before drawing two retryable deductions. Return to Lin with all three documents to unlock the witness ending. Existing saves retain progress; start a new story in settings to experience the expanded route from the beginning.
 
 Edit `src/data/storyData.json` to extend bilingual dialogue, choices, items, quests and endings; conditions are JSON data, not executable strings. Map geometry and event coordinates live in `src/grid.ts`. Run `npm test`, `npm run build`, and `npm run test:e2e` after changes. Artwork is bundled with the project and audio is synthesized locally; no external runtime services are required. Four original atlases supply character busts, Shanghai architecture, furniture, and ground textures, while walking sprites use hand-authored pixel masks. The web build caches image assets separately; the offline play.html embeds all of them.

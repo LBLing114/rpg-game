@@ -224,13 +224,13 @@
       },
       "portrait": "shen",
       "text": {
-        "zh": "上海，一九六八年，深秋。\n文化大革命已经持续两年。街角的高音喇叭反复响着，学校停过课，熟悉的老师和邻居陆续不再露面。出身、海外经历，甚至一封旧信，都可能成为被审查的理由。\n在槐生里，人们渐渐学会隔着门说话，也学会不问隔壁那扇门为什么封上。今晚，我又站在了那扇门前。",
-        "en": "Shanghai, late autumn, 1968.\nTwo years into the Cultural Revolution, loudspeakers repeat their messages at street corners. Classes have been disrupted; familiar teachers and neighbors have disappeared from daily life. Family background, time abroad, even an old letter can become grounds for investigation.\nIn Huaisheng Lane, people have learned to speak through closed doors—and not to ask why the next one has been sealed. Tonight, I stand before my own."
+        "zh": "上海，一九六八年，深秋。\n雨从傍晚落到现在。黄浦江上的汽笛隔着雾传来，里弄尽头的高音喇叭却迟迟没有停。文化大革命已经持续两年。学校的门时开时闭，墙上的纸一层盖过一层。人们走过那些名字时会放慢脚步，又很快低下头，仿佛多看一眼，也需要向谁解释。\n我叫沈砚。十一年前，我从法国里昂学成归来，想替这座城市画一些住得下普通人的房子。那时弟弟沈泊站在码头上接我，替我提走最重的皮箱。后来，我的海外经历成了被反复追问的事情，外文书被搬走，图纸被收起，设计室里属于我的那把椅子也换了人。\n去年，一份印着我名字的检举材料牵连了几位同事。我没有说过那些话，却无法让纸上的字消失。沈泊去查那份材料，十一月被带走，从此没有确切的消息。有人说他已经承认了，有人劝我不要再问。我写过许多份说明，每次都把地址写得很清楚，却始终等不到一封回信。\n如今我住在单位安排的窄房里，白天做杂务，夜里听走廊上的脚步。母亲留下的旧屋就在几条街外，我却有一年没有回去。不是不记得路，是不知道推开那扇门以后，该怎样面对弟弟留下的东西，也不知道该怎样面对自己曾经相信过的传言。\n今天傍晚，一封没有邮戳的旧信出现在我的饭盒里。信上是沈泊的字，背面却添了陌生人的留言，要我今晚去长明印刷铺。那不是他平安的证明，只是一条迟到的线索。我把信放进贴身口袋，走进雨里。今夜，也许没有人能够替我洗清什么。但我想先弄明白：那张纸上的名字，究竟是谁放上去的。",
+        "en": "Shanghai, late autumn, 1968.\nIt has rained since dusk. A ship’s horn sounds through the fog on the Huangpu, but the loudspeaker at the end of the lane has yet to fall silent. Two years into the Cultural Revolution, school gates open and close, and fresh sheets of paper cover old ones on the walls. People slow down as they pass the names, then quickly lower their heads, as though another glance might require an explanation.\nMy name is Shen Yan. Eleven years ago I returned from my studies in Lyon, hoping to design homes that ordinary people could afford to live in. My younger brother, Shen Bo, met me at the dock and took the heavier suitcase. Later, my time abroad became a subject of repeated questioning. My foreign books were taken away, my drawings put aside. Someone else took my chair in the design office.\nLast year, a printed accusation bearing my name implicated several colleagues. I had never said those things, but I could not make the words disappear. Shen Bo investigated the document. In November he was taken away. Since then, nothing certain. Some said he had confessed; others told me to stop asking. I wrote explanation after explanation, carefully adding my address every time. No reply ever came.\nNow I sleep in a narrow room assigned by my work unit, do odd jobs by day, and listen to footsteps in the corridor at night. Our mother’s old home is only a few streets away, but I have not returned for a year. I remember the way. What I do not know is how to face the things my brother left behind—or the rumors I once allowed myself to believe.\nThis evening, an old, unstamped letter appeared in my lunch tin. The writing was Shen Bo’s. A stranger had added a message on the back, asking me to come to Changming Press tonight. It was no proof that he was safe, only a clue that had arrived late. I put the letter inside my coat and stepped into the rain. Perhaps no one can clear my name tonight. But first I want to know who put it on that page."
       },
       "choices": [
         {
           "label": {
-            "zh": "继续听下去",
+            "zh": "继续",
             "en": "Continue"
           },
           "next": "introReturn"
@@ -975,7 +975,7 @@
       "choices": [
         {
           "label": {
-            "zh": "继续听下去",
+            "zh": "继续",
             "en": "Continue"
           },
           "next": "introPersecution"
@@ -999,7 +999,7 @@
       "choices": [
         {
           "label": {
-            "zh": "继续听下去",
+            "zh": "继续",
             "en": "Continue"
           },
           "next": "introBrother"
@@ -1023,7 +1023,7 @@
       "choices": [
         {
           "label": {
-            "zh": "继续听下去",
+            "zh": "继续",
             "en": "Continue"
           },
           "next": "introLetter"
@@ -1047,7 +1047,7 @@
       "choices": [
         {
           "label": {
-            "zh": "继续听下去",
+            "zh": "继续",
             "en": "Continue"
           },
           "next": "introGoal"
@@ -2974,6 +2974,74 @@
       },
       "complete": {
         "endingReached": true
+      }
+    }
+  ],
+  "prologue": [
+    {
+      "node": "intro",
+      "title": {
+        "zh": "长夜",
+        "en": "The long night"
+      },
+      "period": {
+        "zh": "一九六八年 · 上海",
+        "en": "Shanghai · 1968"
+      }
+    },
+    {
+      "node": "introReturn",
+      "title": {
+        "zh": "归人",
+        "en": "The returnee"
+      },
+      "period": {
+        "zh": "一九五七年 · 归国",
+        "en": "The return home · 1957"
+      }
+    },
+    {
+      "node": "introPersecution",
+      "title": {
+        "zh": "纸上的名字",
+        "en": "A name on paper"
+      },
+      "period": {
+        "zh": "一九六六年至一九六七年",
+        "en": "1966–1967"
+      }
+    },
+    {
+      "node": "introBrother",
+      "title": {
+        "zh": "没有回信的人",
+        "en": "No letter came"
+      },
+      "period": {
+        "zh": "一九六七年 · 十一月",
+        "en": "November · 1967"
+      }
+    },
+    {
+      "node": "introLetter",
+      "title": {
+        "zh": "迟到的信",
+        "en": "The delayed letter"
+      },
+      "period": {
+        "zh": "一九六八年 · 今晚",
+        "en": "This evening · 1968"
+      }
+    },
+    {
+      "node": "introGoal",
+      "title": {
+        "zh": "走进雨里",
+        "en": "Into the rain"
+      },
+      "period": {
+        "zh": "槐生里 · 入夜",
+        "en": "Huaisheng Lane · Nightfall"
       }
     }
   ]
