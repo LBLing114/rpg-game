@@ -1,4 +1,5 @@
 import type { SceneId } from './types';
+import { drawTitleBackground } from './title-art';
 import { illustratedBuilding, illustratedProp, illustratedPortrait, illustratedTerrain, illustratedRug } from './illustrations';
 import { drawCharacter, type Facing } from './characters';
 export type { Facing } from './characters';
@@ -387,7 +388,13 @@ export class World{
   background(){if(!this.backgrounds.has(this.scene))this.backgrounds.set(this.scene,background(this.scene));return this.backgrounds.get(this.scene)!;}
   render(time:number){
     const dt=Math.min(Math.max((time-this.last)/1000,0),.045);this.last=time;this.update(dt);
-    const c=this.context;c.clearRect(0,0,W,H);c.drawImage(this.background(),0,0);
+    const c=this.context;c.clearRect(0,0,W,H);
+    if(this.titleMode){
+      drawTitleBackground(c,time,this.motion);
+      this.animation=requestAnimationFrame(this.render);
+      return;
+    }
+    c.drawImage(this.background(),0,0);
     const layers:{depth:number;draw:()=>void}[]=this.propSprites().map(p=>({depth:p.depth,draw:()=>c.drawImage(p.canvas,p.x,p.y)}));
     if(!this.titleMode){
       for(const event of Object.values(maps[this.scene].events))if(event.kind==='person'){const point={x:event.col*T+T/2,y:event.row*T+T/2};layers.push({depth:point.y,draw:()=>drawPerson(c,point.x,point.y,event.actor,0,'down')});}

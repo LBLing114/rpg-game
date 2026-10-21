@@ -315,7 +315,7 @@ html[lang="en"] .choice { font-family: Georgia, serif; letter-spacing: 0; }
 /* The title lives inside the game picture, like a classic console RPG. */
 .at-title > :is(#scene-caption, #hotspots, #game-menu, #quest-hud, #touch-controls, #dialogue) { display: none; }
 .at-title #world { cursor: default; }
-.title-screen { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(22px, 5vh, 60px); background: linear-gradient(90deg, #090c1494, #11132335 50%, #090c1494), linear-gradient(0deg, #080c16b0, #0d102326 80%); text-shadow: 2px 3px 0 #10101c, 0 2px 12px #000; }
+.title-screen { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(22px, 5vh, 60px); background: linear-gradient(90deg, #090c1422, #0b122035 50%, #090c1422), linear-gradient(0deg, #080c1655, transparent 65%); text-shadow: 2px 3px 0 #10101c, 0 2px 12px #000; }
 .title-heading { text-align: center; }
 .title-heading h1 { display: flex; flex-direction: column; gap: 0; font: 500 clamp(50px, 8vh, 92px)/1.15 var(--serif); letter-spacing: 6px; color: #ede6ce; margin: 14px 0 18px; padding-left: 6px; }
 .title-year { font: 12px/1.6 var(--serif); letter-spacing: 5px; color: #c4b89c; }
