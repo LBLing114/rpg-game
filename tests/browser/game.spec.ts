@@ -76,6 +76,7 @@ async function menuAction(page: Page, action: string) {
 }
 async function begin(page: Page) {
   await page.goto("/");
+  await page.locator('#title-screen [data-action="new-story"]').click();
   await conversation(page);
 }
 
@@ -123,6 +124,7 @@ test("standalone HTML runs entirely inline and reaches an ending without network
   // The managed cloud browser blocks file:// navigation. Execute the authorized
   // standalone file in a blank document, with no server or external assets.
   await page.setContent(await readFile(resolve("play.html"), "utf8"));
+  await page.locator('#title-screen [data-action="new-story"]').click();
   await expect(page.locator('#world')).toHaveAttribute('data-art-ready', 'true');
   await expect(page.locator('.portrait')).toHaveAttribute('data-illustration', 'shen');
   await expect(page.locator(".typing-layout")).toContainText("上海，一九六八年");
@@ -135,6 +137,7 @@ test("standalone HTML runs entirely inline and reaches an ending without network
 
 test("typewriter reveals progressively and Enter/Space reveal before advancing", async ({ page }) => {
   await page.goto("/");
+  await page.locator('#title-screen [data-action="new-story"]').click();
   const text = page.locator(".typing-visible");
   const completeText = await page.locator(".typing-layout").textContent();
   const initialLength = (await text.textContent())!.length;
@@ -198,9 +201,11 @@ test("language, bag, journal, manual save, reload, reset and restore", async ({ 
   await expect(page.locator(".journal-entry.complete")).toHaveCount(1);
   await page.keyboard.press("Escape");
   await menuAction(page, "settings");
-  await page.locator('[data-action="save"]').click();
+  await page.locator('.modal [data-action="saves"]').click();
+  await page.locator('[data-action="slot-save-1"]').click();
   await page.keyboard.press("Escape");
   await page.reload();
+  await page.locator('#title-screen [data-action="continue"]').click();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   expect((await readSave(page)).state.inventory).toContain("key");
   await menuAction(page, "settings");
@@ -208,7 +213,8 @@ test("language, bag, journal, manual save, reload, reset and restore", async ({ 
   await page.locator('[data-action="confirm-reset"]').click();
   expect((await readSave(page)).state.inventory).toEqual(["letter"]);
   await menuAction(page, "settings");
-  await page.locator('[data-action="load"]').click();
+  await page.locator('.modal [data-action="saves"]').click();
+  await page.locator('[data-action="slot-load-1"]').click();
   await page.locator('[data-action="confirm-load"]').click();
   expect((await readSave(page)).state.inventory).toContain("key");
   await expect(page.locator(".dialogue-text")).toHaveCount(0);
@@ -307,12 +313,14 @@ test("mouse pathfinding traverses adjacent walkable tiles around furniture", asy
     if (i) expect(Math.abs(point.x - walked[i - 1].x) + Math.abs(point.y - walked[i - 1].y)).toBe(TILE_SIZE);
   }
   await page.reload();
+  await page.locator('#title-screen [data-action="continue"]').click();
   expect(await position(page)).toEqual(destination);
 });
 
 test("mobile dialogue stays inside the stage and supports story and inventory controls", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
+  await page.locator('#title-screen [data-action="new-story"]').click();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await reveal(page);
   const stage = await page.locator("#stage").boundingBox();
@@ -339,6 +347,7 @@ test("initial RPG stage renders pixel artwork, portraits, no runtime errors or m
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("requestfailed", (r) => failed.push(r.url()));
   await page.goto("/");
+  await page.locator('#title-screen [data-action="new-story"]').click();
   await expect(page.locator("#stage #dialogue")).toBeVisible();
   await expect(page.locator("header, footer, .scene-toolbar, .chapter-heading, .scene-frame, .control-strip")).toHaveCount(0);
   await expect(page.locator("#stage #game-menu")).toBeVisible();
@@ -367,6 +376,7 @@ test("initial RPG stage renders pixel artwork, portraits, no runtime errors or m
 test("corrupt save recovers safely and audio/reduced-motion controls work", async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("wudu-save-v1", "{bad"));
   await page.goto("/");
+  await page.locator('#title-screen [data-action="new-story"]').click();
   await expect(page.locator(".typing-layout")).toContainText("上海，一九六八年");
   await menuAction(page, "settings");
   await page.locator('.modal [data-action="audio"]').click();
@@ -377,6 +387,7 @@ test("corrupt save recovers safely and audio/reduced-motion controls work", asyn
 
 test("keyboard in-game menu controls work during dialogue and text/sound preferences apply", async ({ page }) => {
   await page.goto("/");
+  await page.locator('#title-screen [data-action="new-story"]').click();
   await page.locator('#game-menu').focus();
   await page.keyboard.press("Enter");
   await expect(page.locator("#modal-title")).toHaveText("雾渡");
@@ -405,10 +416,12 @@ test("keyboard in-game menu controls work during dialogue and text/sound prefere
 
 test("deduction mistakes remain retryable, opening context is bilingual, and background reading preserves progress", async ({ page }) => {
   await page.goto("/");
+  await page.locator('#title-screen [data-action="new-story"]').click();
   await choice(page);
   await choice(page);
   await expect(page.locator("#dialogue")).toHaveAttribute("data-node", "introPersecution");
   await page.reload();
+  await page.locator('#title-screen [data-action="continue"]').click();
   await expect(page.locator("#dialogue")).toHaveAttribute("data-node", "introPersecution");
   const saved = await readSave(page);
   await menuAction(page, "background");
@@ -430,6 +443,7 @@ test("deduction mistakes remain retryable, opening context is bilingual, and bac
   await expect(page.locator("#dialogue")).toHaveAttribute("data-node", "proofMistake");
   expect((await readSave(page)).state.inventory).not.toContain("proof");
   await page.reload();
+  await page.locator('#title-screen [data-action="continue"]').click();
   await expect(page.locator("#dialogue")).toHaveAttribute("data-node", "proofMistake");
   await choice(page);
   await expect(page.locator("#dialogue")).toHaveAttribute("data-node", "proofQuestion");

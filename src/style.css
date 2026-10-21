@@ -305,3 +305,50 @@ html[lang="en"] .choice { font-family: Georgia, serif; letter-spacing: 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *:before, *:after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* Objects and scenery speak through captions; only characters have busts. */
+.has-dialogue .dialogue-panel.narration { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+.dialogue-panel.narration .dialogue-body { grid-column: 1; }
+.narration-title { margin: 0 0 10px; color: #f2e2bd; font: 18px/1.5 var(--serif); letter-spacing: 1px; }
+@media (max-width: 680px) { .narration-title { font-size: 16px; } }
+
+/* The title lives inside the game picture, like a classic console RPG. */
+.at-title > :is(#scene-caption, #hotspots, #game-menu, #quest-hud, #touch-controls, #dialogue) { display: none; }
+.at-title #world { cursor: default; }
+.title-screen { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(22px, 5vh, 60px); background: linear-gradient(90deg, #090c1494, #11132335 50%, #090c1494), linear-gradient(0deg, #080c16b0, #0d102326 80%); text-shadow: 2px 3px 0 #10101c, 0 2px 12px #000; }
+.title-heading { text-align: center; }
+.title-heading h1 { display: flex; flex-direction: column; gap: 0; font: 500 clamp(50px, 8vh, 92px)/1.15 var(--serif); letter-spacing: 6px; color: #ede6ce; margin: 14px 0 18px; padding-left: 6px; }
+.title-year { font: 12px/1.6 var(--serif); letter-spacing: 5px; color: #c4b89c; }
+.title-heading p { font: 10px/1.6 Georgia, serif; letter-spacing: 4px; color: #d2c7aa; }
+.title-menu { width: min(240px, 75%); padding: 10px; border: 2px solid #b6b6b8; border-radius: 4px; background: #161c2be8; box-shadow: inset 0 0 0 2px #4b5362, 0 4px 0 #080c15b3; }
+.title-menu button { position: relative; display: block; width: 100%; min-height: 42px; font: 17px/1.5 var(--serif); letter-spacing: 2px; border: 1px solid transparent; border-radius: 2px; }
+.title-menu button:hover:not(:disabled), .title-menu button:focus-visible { color: #fff7df; background: #74829b3b; border-color: #c4c8ce80; outline: none; }
+.title-menu button:is(:hover, :focus-visible):not(:disabled):before { content: '▶'; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font: 10px/1 monospace; color: #f4e9c5; }
+.title-menu button:disabled { opacity: .35; }
+.title-language { position: absolute; right: 20px; top: 18px; min-height: 36px; padding: 6px 10px; color: #ccc6b7; font-size: 12px; }
+.title-controls { position: absolute; bottom: 19px; font: 11px/1.5 var(--serif); letter-spacing: 2px; color: #b2b4b7; }
+.save-list { display: grid; gap: 12px; }
+.save-slot { display: flex; align-items: center; gap: 15px; padding: 16px; border: 1px solid #858c9d99; border-radius: 3px; background: #10172588; }
+.save-slot-info { flex: 1; min-width: 0; }
+.save-slot h3 { font: 18px/1.5 var(--serif); color: #eee4ce; }
+.save-slot p { margin: 6px 0; font-size: 12px; line-height: 1.7; color: #b7c0ce; }
+.save-slot small { display: block; color: #97a5b8; font-size: 11px; line-height: 1.5; }
+.save-slot-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.save-slot-actions button { min-height: 38px; padding: 7px 13px; }
+.save-slot.empty { border-style: dashed; }
+.settings-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; padding-top: 22px; }
+@media (max-width: 680px) {
+  .stage.at-title { height: 100svh; min-height: 520px; overflow: hidden; }
+  .at-title #world { height: 100%; width: 100%; object-fit: cover; }
+  .title-screen { gap: 36px; padding: 58px 0; }
+  .title-heading h1 { font-size: 68px; }
+  .title-menu { width: 218px; }
+  .save-slot { align-items: flex-start; flex-direction: column; gap: 8px; padding: 14px; }
+  .save-slot-actions { align-self: flex-end; }
+}
+@media (max-height: 550px) and (min-width: 681px) {
+  .title-screen { flex-direction: row; gap: 60px; }
+  .title-heading h1 { font-size: 52px; margin: 10px 0; }
+  .title-year { font-size: 10px; }
+}
+@media (pointer: coarse) { .title-controls { display: none; } }

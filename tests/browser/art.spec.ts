@@ -13,6 +13,7 @@ test('all five transparent busts load, keep their proportions, and persist acros
       dialogue,savedAt:new Date().toISOString(),
     })),{scene,dialogue});
     await page.goto('http://127.0.0.1:5173');
+    await page.locator('#title-screen [data-action="continue"]').click();
     const bust=page.locator('.portrait');
     await expect(bust).toHaveAttribute('data-illustration',portrait);
     await expect(page.locator('.speaker-badge h2')).toHaveText(name);

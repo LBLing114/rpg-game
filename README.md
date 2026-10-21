@@ -4,6 +4,8 @@
 
 采用 **TypeScript + HTML5 Canvas + Vite**，以 32 × 32 像素网格、俯视地图、四向行走、半身立绘与底部对话框呈现。它模拟经典 RPG Maker 的游玩方式，**不是需要 RPG Maker 软件打开的编辑器工程**。全部人物、地点与具体情节均为原创虚构；无战斗、无倒计时。
 
+![雾渡：雨巷开始界面](docs/title.png)
+
 ![雾渡：上海里弄像素地图与 RPG 对话窗口](docs/preview.png)
 
 美术包含五位角色的透明半身立绘、石库门建筑、旧式家具与六类地形纹理。角色行走图采用独立的 32×48 像素蒙版和四步动画，与立绘服装配色一致。详见[美术资源与替换说明](src/assets/README.md)。
@@ -14,6 +16,7 @@
 
 1. [下载 main 分支的完整游戏 ZIP](https://github.com/LBLing114/rpg-game/archive/refs/heads/main.zip) 并**解压**，或在仓库点击 **Code → Download ZIP**。
 2. 用 Chrome、Edge 或 Firefox 打开根目录的 **`play.html`**。
+3. 在开始界面选择 **新的故事**；已有进度选择 **继续游戏**，或用 **读取存档** 指定档位。
 
 `play.html` 是包含代码、剧情、样式和全部美术的单文件游戏，无需安装 Node.js。也可在 GitHub 的 `play.html` 页面点击 **Download raw file** 单独下载；不要保存 GitHub 预览网页。浏览器可能限制本地文件存档，稳定保存进度可使用下方本地服务。
 
@@ -37,15 +40,16 @@ npm run preview -- --port 4173
 
 运行时无需 CDN、外部图片或字体、账号、API 密钥或后端；安装完成后可离线游玩。
 
-页面只显示游戏画面，不再包含外部导航、章节栏、装饰外框或页脚。右上角 **☰ 菜单**（或 **Esc**）可打开背包、手记、地图、结局、语言、设置与存档及游玩指南。画面保持原始比例，按窗口尺寸缩放。
+页面只显示游戏画面，不再包含外部导航、章节栏、装饰外框或页脚。右上角 **☰ 菜单**（或 **Esc**）可打开背包、手记、地图、结局、语言、存档 / 读档、设置及游玩指南。画面保持原始比例，按窗口尺寸缩放。
 
 ## 内容与操作
 
 - **六张地图**：槐生里、沈家旧屋、长明印刷铺、仁安诊所、旧档案室、黄浦江岸。使用砖墙、旧海报、石板路、室内木地板和家具，没有大片草地。
 - **完整序章**：四章流程、77 个双语对话节点、两次证据推理、十二项任务（含三条支线）、七件可查看和使用的剧情道具、四种结局。
-- **网格探索**：平滑四向移动、地形与家具碰撞、点击地面寻路、走近人物后交互；角色与场景按脚底 Y 坐标遮挡。
-- **经典对话**：深色半透明白边窗口、五位角色的透明半身立绘、逐字文字、分支选择、可开启的文字与菜单提示音。
-- **双语与存档**：界面和全文中英文切换；自动存档、独立手动槽、已发现结局收集；支持键盘、鼠标和触屏。
+- **网格探索**：平滑四向移动、地形与家具碰撞、点击地面寻路、走近人物后交互；角色与场景按脚底 Y 坐标遮挡。出入地图会落在对应门口，地图内选择当前地点保留原位置。
+- **经典对话**：深色半透明白边窗口、五位角色的透明半身立绘、逐字文字、分支选择、可开启的文字与菜单提示音。角色发言显示立绘，书桌、墙面等物件旁白使用标题与正文，不显示人物或船的占位图。
+- **开始界面**：雨夜里弄像素背景、竖排标题与经典文字菜单；支持方向键选择、Enter 确认、鼠标和触屏。
+- **双语与存档**：界面和全文中英文切换；一个自动档、三个独立手动档位、已发现结局收集；保存当前场景、网格位置、道具、选择和对话节点。
 
 | 操作 | 键盘 | 鼠标 / 触屏 |
 | --- | --- | --- |
@@ -58,6 +62,7 @@ npm run preview -- --port 4173
 | 任务手记 | J | 菜单 → 手记 |
 | 街区地图 | M | 菜单 → 地图，选择已解锁地点 |
 | 打开 / 关闭菜单 | Esc | 右上角 ☰ 菜单 / 关闭按钮 |
+| 手动存档 / 读档 | Esc → 存档 / 读档 | 菜单 → 存档 / 读档 → 对应档位的保存 / 读取 |
 | 中英文与音效 | 菜单中的设置 | 菜单 → English / 中文；设置 → 音效 |
 
 开场用六段可推进对话交代文革时期的上海、沈砚在法国里昂留学与 1957 年归国、此后的政治迫害、沈泊在 1967 年失踪，以及林岚为何在 1968 年送来旧信。菜单中的 **故事背景** 可随时重读，不改变进度。
@@ -66,9 +71,17 @@ npm run preview -- --port 4173
 
 先和周姨交谈取得旧屋钥匙，去旧屋读书桌里的回执，再调查印刷铺铅字盒，与林岚核对后取得校样。诊所需先读值夜登记，再听医生证言；档案室需先查索引，再核对名册。两次推理选错会给出解释并允许重试，不消耗道具。地图会显示地点解锁条件。背包中的物品会提示使用地点；到达相应场景使用，可引导角色走到目标并开启相关对话。场景时间仅用于叙事，没有限时选择。
 
-已有旧版存档会保留道具、选择及已解锁路线；如要完整体验新增流程，请在 **菜单 → 设置与存档 → 重新开始故事** 中重开（可先手动存档）。只想补看开头，可用 **菜单 → 故事背景**。
+已有旧版存档会保留道具、选择及已解锁路线；如要完整体验新增流程，请在 **菜单 → 设置 → 重新开始故事** 中重开（可先手动存档）。只想补看开头，可用 **菜单 → 故事背景**。
 
-进度保存在浏览器当前站点的 `localStorage`，不跨设备同步。重新开始保留手动存档和结局收集；结局后可返回最后选择，或回访角色补齐线索。旧版连续坐标存档会恢复到当前地图的可行走网格。
+### 开始与存档
+
+- **继续游戏**：读取最近的一份有效存档（自动或手动）。没有存档时显示为不可选。
+- **手动保存**：游戏内按 Esc → **存档 / 读档** → 选择档位 1、2、3 的 **保存**。对话中也能保存，读取后会从当前段落重新显示文字。已占用档位会先询问是否覆盖。
+- **读取进度**：开始界面的 **读取存档** 可查看自动档和三个手动档，列表显示章节、场景及保存日期。游戏内读取会先确认替换当前进度。
+- **返回标题**：Esc → **返回标题**，先保存当前进度。进入标题、修改设置、切换语言或在标题页刷新，都不会用初始状态覆盖进度。
+- **重新开始**：只替换自动档，保留三个手动档位与结局收集。旧版本的唯一手动存档直接显示为 **档位 1**，无需迁移操作。
+
+进度保存在浏览器当前站点的 `localStorage`，不跨设备同步。请使用同一浏览器及同一网址；更换端口、清除网站数据或在隐私窗口关闭浏览器，可能无法保留进度。浏览器拒绝写入或存储空间不足时，游戏会明确提示保存失败，不会显示保存成功；当前故事仍可继续。结局后可返回最后选择，或回访角色补齐线索。旧版连续坐标存档会恢复到当前地图的可行走网格。
 
 详细章节路线与时长依据见 [扩展序章流程（含剧透）](docs/story-flow.md)。
 
@@ -84,6 +97,7 @@ src/
   illustrations.ts  图集加载、裁切与纹理缓存
   assets/         角色立绘、建筑、家具、地形及美术说明
   engine.ts       状态转换、地点解锁、存档校验
+  saves.ts        三个手动档位、自动档与旧档兼容
   main.ts         界面、逐字对话、操作与道具使用
   audio.ts        合成环境音与交互音效
   style.css      RPG 窗口、菜单与响应式布局
@@ -110,7 +124,7 @@ npm run build    # TypeScript + Vite + 单文件游戏
 npm run test:e2e # Chromium 中完成剧情与交互检查
 ```
 
-浏览器测试自动启动开发服务，覆盖逐字对话、键盘与鼠标、背包使用、双语、存读档、移动端、全部结局，以及单文件离线运行。截图和失败跟踪输出到被 Git 忽略的 `test-results/`。
+浏览器测试自动启动开发服务，覆盖开始菜单、三个档位的独立保存与读取、覆盖 / 重开确认、旧档兼容、存储失败提示、逐字对话、键盘与鼠标、背包使用、双语、移动端、全部结局、门口出入位置、物件旁白不显示立绘，以及单文件离线运行。截图和失败跟踪输出到被 Git 忽略的 `test-results/`。
 
 首次运行浏览器测试可执行 `npx playwright install chromium`。也可用 `PLAYWRIGHT_CHROMIUM_EXECUTABLE` 指向已安装的 Chromium；Linux 默认优先使用 `/usr/bin/chromium`。缺少系统依赖时使用 Playwright 官方的 `npx playwright install --with-deps chromium`。
 
@@ -134,7 +148,7 @@ This is a **TypeScript / Canvas / Vite web game inspired by classic RPG Maker pr
 
 Download and open **`play.html`** to play immediately, or run `npm install && npm run dev` and open the printed localhost address on the same computer. For a cloud server, use its forwarded port URL. Run `npm run build` to generate both `dist/` and `play.html`; use `npm run preview` to preview the production build.
 
-Use **WASD / arrows** to walk, **Enter / Space / E** to interact or reveal dialogue, **1–5** for choices, **I** for belongings, **J** for quests, **M** for the map, and **Escape** for the in-game menu. Click terrain to navigate, or an event marker to approach and interact. Inventory items have a use action and a location hint. The top-right **Menu** contains language, settings, saves and fullscreen controls. **English / 中文** switches language without resetting progress. Audio is optional. Saves stay in the current browser.
+Use **WASD / arrows** to walk, **Enter / Space / E** to interact or reveal dialogue, **1–5** for choices, **I** for belongings, **J** for quests, **M** for the map, and **Escape** for the in-game menu. Click terrain to navigate, or an event marker to approach and interact. Inventory items have a use action and a location hint. The title screen offers **Continue**, **New story**, **Load game** and **Options**. Use Up/Down and Enter, or click a menu entry. The top-right in-game **Menu** contains language, options, **Save / Load**, return to title and fullscreen controls. Save to any of three manual slots; autosave is separate. Occupied slots require confirmation before replacement. Starting over preserves manual saves and discovered endings, and the original manual save remains in slot 1. Continue opens the most recent valid save; visiting the title never replaces existing progress. **English / 中文** switches language without resetting progress. Audio is optional. Saves stay in the current browser.
 
 The expanded opening explains the Cultural Revolution setting, Shen’s return from Lyon, his persecution, his brother’s disappearance and the delivery of an old letter. **Menu → Story background** lets you reread it without changing progress. The complete route targets **25–35 minutes** of first-time reading and exploration, based on 54 main-route dialogue pages (about 3,744 English words), with 12 additional pages across three optional arcs. Actual time depends on reading speed and exploration; no forced waits are used. Compare the house receipt and printing type, examine the clinic night register, and read the archive index before drawing two retryable deductions. Return to Lin with all three documents to unlock the witness ending. Existing saves retain progress; start a new story in settings to experience the expanded route from the beginning.
 

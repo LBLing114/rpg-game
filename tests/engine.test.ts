@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
+  arrivalFor,
   choose,
   decodeSave,
   encodeSave,
@@ -18,7 +19,7 @@ import {
   quests,
   scenes,
 } from "../src/story";
-import { getSpawn, groundPosition, isWalkable, TILE_SIZE, toTile } from "../src/grid";
+import { eventIsAdjacent, getSpawn, groundPosition, isWalkable, TILE_SIZE, tileCenter, toTile } from "../src/grid";
 import type { State } from "../src/types";
 
 function pick(s: State, node: string, i = 0) {
@@ -180,7 +181,8 @@ describe("original narrative progression", () => {
 describe("save integrity", () => {
   it("starts river travel on the quay and restores obsolete coordinates to walkable grid centers", () => {
     const s = completeStory();
-    expect({ x: s.x, y: s.y }).toEqual(getSpawn("river"));
+    expect(eventIsAdjacent("river", "lane", s)).toBe(true);
+    expect(isWalkable("river", toTile(s).col, toTile(s).row)).toBe(true);
     // A save from the old continuous-movement renderer can point into the water.
     s.x = 259;
     s.y = 233;
@@ -277,5 +279,34 @@ describe("save integrity", () => {
     expect(isWalkable("lane", tile.col, tile.row)).toBe(true);
     expect(position.x % TILE_SIZE).toBe(TILE_SIZE / 2);
     expect(position.y % TILE_SIZE).toBe(TILE_SIZE / 2);
+  });
+});
+
+
+describe("doorway transfers", () => {
+  it.each([
+    ["home", 3, 6], ["press", 12, 6], ["clinic", 20, 6],
+    ["archive", 3, 12], ["river", 21, 13],
+  ] as const)("returns from %s to its own street entrance and keeps the position on reload", (room, col, row) => {
+    const unlocked = { ...completeStory(), scene: "lane" as const, ...getSpawn("lane") };
+    const inside = travel(unlocked, room);
+    expect(eventIsAdjacent(room, "lane", inside)).toBe(true);
+    const outside = travel(inside, "lane");
+    expect({ x: outside.x, y: outside.y }).toEqual(tileCenter(col, row));
+    expect(eventIsAdjacent("lane", room, outside)).toBe(true);
+    expect(isWalkable("lane", col, row)).toBe(true);
+    expect(decodeSave(encodeSave(outside, null))!.state).toEqual(outside);
+    expect(arrivalFor(room, "lane").facing).toBe(room === "river" ? "left" : "down");
+  });
+  it("arrives inside the door when using the map directly between rooms", () => {
+    const s = { ...completeStory(), scene: "home" as const };
+    const arrived = travel(s, "clinic");
+    expect({ x: arrived.x, y: arrived.y }).toEqual(tileCenter(11, 13));
+    expect(arrivalFor("home", "clinic").facing).toBe("up");
+  });
+  it("selecting the current map never resets the player position", () => {
+    const s = { ...newGame(), ...tileCenter(10, 10) };
+    expect(travel(s, "lane")).toBe(s);
+    expect({ x: s.x, y: s.y }).toEqual(tileCenter(10, 10));
   });
 });

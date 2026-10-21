@@ -4,16 +4,15 @@ import { World, drawPortrait } from "./art";
 import { WORLD_WIDTH, WORLD_HEIGHT } from "./grid";
 import { Typewriter } from "./typewriter";
 import { Ambience, InterfaceAudio } from "./audio";
+import { SaveStore, SAVE_SLOTS, type SaveSlot } from "./saves";
 import {
+  arrivalFor,
   choose,
-  decodeSave,
-  encodeSave,
   lockReason,
-  MANUAL_KEY,
   newGame,
-  SAVE_KEY,
   travel,
   unlock,
+  type SaveData,
 } from "./engine";
 import {
   getItemUse,
@@ -98,10 +97,11 @@ function storageSet(key: string, value: string) {
 let lang: Lang = storageGet("wudu-lang") === "en" ? "en" : "zh";
 const t = (value: Text) => escape(value[lang]);
 const tr = (zh: string, en: string) => (lang === "zh" ? zh : en);
-const loaded = decodeSave(storageGet(SAVE_KEY));
-let state = loaded?.state ?? newGame();
-let currentDialogue: string | null =
-  loaded?.dialogue ?? (flag(state, "intro") ? null : "intro");
+const saves = new SaveStore();
+let state = newGame();
+let currentDialogue: string | null = "intro";
+let atTitle = true;
+let selectedSlot: SaveSlot = '1';
 let modal: string | null = null;
 let selectedItem: ItemId = "letter";
 let returnFocus: HTMLElement | null = null;
@@ -136,6 +136,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
       <button id="quest-hud" class="quest-hud" data-action="journal"></button>
       <div class="touch-controls" id="touch-controls"></div>
       <section class="dialogue-panel" id="dialogue" aria-label="Story dialogue"></section>
+      <section id="title-screen" class="title-screen" aria-labelledby="game-title"></section>
     </div>
   </main>
   <div id="modal-root"></div>
@@ -145,6 +146,7 @@ const world = new World(document.querySelector("#world")!);
 world.change(state.scene, state.x, state.y);
 world.motion = motion;
 world.onPosition = (x, y) => {
+  if (atTitle) return;
   state.x = x;
   state.y = y;
 };
@@ -156,21 +158,12 @@ function notify(text: string) {
   toastTimer = window.setTimeout(() => el.classList.remove("visible"), 3500);
 }
 let storageWarningShown = false;
-function persist(manual = false) {
-  const ok = storageSet(
-    manual ? MANUAL_KEY : SAVE_KEY,
-    encodeSave(state, currentDialogue),
-  );
-  if (manual)
-    notify(
-      ok
-        ? tr("已保存当前进度", "Progress saved")
-        : tr(
-            "浏览器未允许保存，请检查存储设置",
-            "Storage unavailable. Check browser settings.",
-          ),
-    );
-  else if (!ok && !storageWarningShown) {
+function persist() {
+  // Visiting the title, changing its language, or closing the tab must not
+  // replace a player's autosave with the decorative title scene.
+  if (atTitle) return true;
+  const ok = saves.write('auto', state, currentDialogue);
+  if (!ok && !storageWarningShown) {
     notify(
       tr(
         "自动保存不可用；请允许浏览器本地存储",
@@ -181,10 +174,67 @@ function persist(manual = false) {
   }
   return ok;
 }
+function focusTitle() {
+  document.querySelector<HTMLButtonElement>('.title-menu button:not(:disabled)')?.focus({ preventScroll: true });
+}
+function renderTitle() {
+  const el = document.querySelector<HTMLElement>('#title-screen')!;
+  el.hidden = !atTitle;
+  if (!atTitle) { el.innerHTML = ''; return; }
+  const focused = el.contains(document.activeElement)
+    ? (document.activeElement as HTMLElement).dataset.action : null;
+  const available = !!saves.latest();
+  el.innerHTML = `<div class="title-heading"><span class="title-year">${tr("上海 · 一九六八", "SHANGHAI · 1968")}</span><h1 id="game-title">雾<span>渡</span></h1><p>THE OTHER SHORE</p></div>
+    <nav class="title-menu" aria-label="${tr('开始菜单', 'Title menu')}">
+      <button data-action="continue" ${available ? '' : 'disabled'}>${tr('继续游戏', 'Continue')}</button>
+      <button data-action="new-story">${tr('新的故事', 'New story')}</button>
+      <button data-action="saves">${tr('读取存档', 'Load game')}</button>
+      <button data-action="settings">${tr('设置', 'Options')}</button>
+    </nav>
+    <button class="title-language" data-action="lang" aria-label="${tr('Switch to English', '切换为中文')}">${lang === 'zh' ? '中文 / EN' : '中 / English'}</button>
+    <p class="title-controls">${tr('↑ ↓ 选择　Enter 确认', '↑ ↓ Select　Enter Confirm')}</p>`;
+  if (focused) el.querySelector<HTMLButtonElement>(`[data-action="${focused}"]`)?.focus({ preventScroll: true });
+}
+function enterGame(save?: SaveData) {
+  state = save?.state ?? newGame();
+  currentDialogue = save ? save.dialogue : 'intro';
+  atTitle = false;
+  revealKey = '';
+  closeModal(false);
+  world.change(state.scene, state.x, state.y);
+  persist();
+  render();
+  if (state.ending) openModal('ending');
+  else document.querySelector<HTMLCanvasElement>('#world')!.focus({ preventScroll: true });
+}
+function showTitle() {
+  world.keys.clear();
+  world.stop();
+  if (!persist()) {
+    notify(tr('进度未能保存，暂未返回标题。请保持当前页面并检查浏览器存储。', 'Could not save progress, so the game is still open. Keep this page open and check browser storage.'));
+    return;
+  }
+  atTitle = true;
+  closeModal(false);
+  world.change('lane');
+  render();
+  focusTitle();
+}
+function saveManual() {
+  if (atTitle || selectedSlot === 'auto') return;
+  const ok = saves.write(selectedSlot, state, currentDialogue);
+  notify(ok ? tr(`已保存至档位 ${selectedSlot}`, `Saved in slot ${selectedSlot}`)
+    : tr('存档失败：浏览器存储不可用或已满。原存档未被删除。', 'Save failed: browser storage is unavailable or full. The previous save was not deleted.'));
+  openModal('saves');
+}
 function render() {
   const scene = scenes.find((s) => s.id === state.scene)!;
   document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
   document.title = tr("雾渡 · The Other Shore", "The Other Shore · 雾渡");
+  world.titleMode = atTitle;
+  document.querySelector('#stage')!.classList.toggle('at-title', atTitle);
+  document.querySelector<HTMLCanvasElement>('#world')!.tabIndex = atTitle ? -1 : 0;
+  renderTitle();
   document.querySelector("#game-menu")!.innerHTML = `${icon("menu")}<span>${tr("菜单", "Menu")}</span>`;
   document.querySelector("#scene-caption")!.innerHTML =
     `<span class="scene-number">0${scenes.indexOf(scene) + 1} — ${tr("夜行", "NIGHT WALK")}</span><span>${t(scene.name)}</span>`;
@@ -197,8 +247,8 @@ function render() {
   renderDialogue();
   const activeQuest = quests(state).find(q => !q.done && !q.optional);
   document.querySelector("#quest-hud")!.innerHTML = `${icon('book')} ${activeQuest ? t(activeQuest.title) : tr('长夜已渡', 'The night is behind you')}`;
-  document.querySelector("#stage")!.classList.toggle("has-dialogue", !!currentDialogue);
-  document.querySelector("#stage")!.classList.toggle("has-ending", !!state.ending);
+  document.querySelector("#stage")!.classList.toggle("has-dialogue", !atTitle && !!currentDialogue);
+  document.querySelector("#stage")!.classList.toggle("has-ending", !atTitle && !!state.ending);
   document.querySelector("#touch-controls")!.innerHTML = `<button data-move="up" aria-label="${tr('向上','Move up')}">▲</button><button data-move="left" aria-label="${tr('向左','Move left')}">◀</button><button data-move="down" aria-label="${tr('向下','Move down')}">▼</button><button data-move="right" aria-label="${tr('向右','Move right')}">▶</button><button data-action="interact" aria-label="${tr('交互','Interact')}">◎</button>`;
   document
     .querySelector("#world")!
@@ -209,7 +259,7 @@ function render() {
         `${scene.name.en} pixel scene. WASD or arrow keys to move. Enter or Space to interact.`,
       ),
     );
-  world.enabled = !currentDialogue && !modal && !state.ending;
+  world.enabled = !atTitle && !currentDialogue && !modal && !state.ending;
   if (modal) renderModal();
 }
 function renderDialogue() {
@@ -219,6 +269,9 @@ function renderDialogue() {
   reveal?.dispose();
   reveal = null;
   revealKey = key;
+  el.classList.remove("narration");
+  delete el.dataset.node;
+  if (atTitle) { el.innerHTML = ''; return; }
   if (state.ending) {
     const e = endings[state.ending];
     el.innerHTML = `<div class="quiet-state"><div class="quiet-icon">${icon("boat")}</div><div><span class="eyebrow">${tr("故事的余音", "AFTER THE STORY")} · ${e.number}</span><h2>${t(e.title)}</h2><p>${t(e.subtitle)}</p></div><button class="primary-button" data-action="ending">${tr("阅读结局", "Read ending")}${icon("arrow")}</button></div>`;
@@ -228,8 +281,10 @@ function renderDialogue() {
   const d = dialogues[currentDialogue];
   el.dataset.node = currentDialogue;
   const full = d.text[lang];
-  el.innerHTML = `<div class="dialogue-face"><canvas class="portrait" width="192" height="320" aria-hidden="true"></canvas><div class="speaker-badge"><h2>${t(d.speaker)}</h2><span>${d.role ? t(d.role) : tr("雨夜的低语", "A voice in the rain")}</span></div></div><div class="dialogue-body"><div class="dialogue-text" tabindex="0" role="button" aria-label="${tr('显示整段对话','Reveal this passage')}"><div class="typing-layout" aria-hidden="true">${escape(full)}</div><div class="typing-visible" aria-hidden="true"></div><span class="sr-only">${escape(full)}</span></div><button class="typing-hint" data-action="advance">${tr('Enter / Space · 显示全文','Enter / Space · Reveal text')}</button><div class="choices" hidden>${d.choices.map((c, i) => (!c.requires || c.requires(state) ? `<button class="choice" data-choice="${i}"><span class="choice-number">${i+1}</span><span>${t(c.label)}</span><span class="choice-cursor" aria-hidden="true">◀</span></button>` : '')).join('')}</div>${currentDialogue === 'finale' ? `<div class="ending-hints">${tr('证据','Evidence')} ${evidenceCount(state)}/3 · ${tr('分存','Copies')} ${flag(state,'sharedPlan')?'✓':'—'} · ${tr('守护','Care')} ${flag(state,'protected')?'✓':'—'} · ${tr('记忆','Memory')} ${flag(state,'remembered')?'✓':'—'} <button data-action="endings">${tr('结局线索','Ending clues')}</button></div>` : ''}</div>`;
-  drawPortrait(el.querySelector<HTMLCanvasElement>('.portrait')!.getContext('2d')!, d.portrait || 'shen');
+  const hasPortrait = !!d.portrait && d.portrait !== "narrator";
+  el.classList.toggle("narration", !hasPortrait);
+  el.innerHTML = `${hasPortrait ? `<div class="dialogue-face"><canvas class="portrait" width="192" height="320" aria-hidden="true"></canvas><div class="speaker-badge"><h2>${t(d.speaker)}</h2><span>${d.role ? t(d.role) : tr("雨夜的低语", "A voice in the rain")}</span></div></div>` : ""}<div class="dialogue-body">${hasPortrait ? "" : `<h2 class="narration-title">${t(d.speaker)}</h2>`}<div class="dialogue-text" tabindex="0" role="button" aria-label="${tr('显示整段对话','Reveal this passage')}"><div class="typing-layout" aria-hidden="true">${escape(full)}</div><div class="typing-visible" aria-hidden="true"></div><span class="sr-only">${escape(full)}</span></div><button class="typing-hint" data-action="advance">${tr('Enter / Space · 显示全文','Enter / Space · Reveal text')}</button><div class="choices" hidden>${d.choices.map((c, i) => (!c.requires || c.requires(state) ? `<button class="choice" data-choice="${i}"><span class="choice-number">${i+1}</span><span>${t(c.label)}</span><span class="choice-cursor" aria-hidden="true">◀</span></button>` : '')).join('')}</div>${currentDialogue === 'finale' ? `<div class="ending-hints">${tr('证据','Evidence')} ${evidenceCount(state)}/3 · ${tr('分存','Copies')} ${flag(state,'sharedPlan')?'✓':'—'} · ${tr('守护','Care')} ${flag(state,'protected')?'✓':'—'} · ${tr('记忆','Memory')} ${flag(state,'remembered')?'✓':'—'} <button data-action="endings">${tr('结局线索','Ending clues')}</button></div>` : ''}</div>`;
+  if (hasPortrait) drawPortrait(el.querySelector<HTMLCanvasElement>('.portrait')!.getContext('2d')!, d.portrait);
   const visible = el.querySelector<HTMLElement>('.typing-visible')!;
   const hint = el.querySelector<HTMLButtonElement>('.typing-hint')!;
   const choices = el.querySelector<HTMLElement>('.choices')!;
@@ -295,12 +350,14 @@ function go(id: SceneId) {
     notify(tr("请先完成眼前的对话", "Finish the current conversation first"));
     return;
   }
+  if (state.scene === id) { closeModal(); return; }
   if (!unlock(state, id)) {
     notify(t(lockReason(id)));
     return;
   }
+  const { facing } = arrivalFor(state.scene, id);
   state = travel(state, id);
-  world.change(id, state.x, state.y);
+  world.change(id, state.x, state.y, facing);
   persist();
   closeModal(false);
   render();
@@ -358,13 +415,17 @@ function closeModal(restore = true) {
   modal = null;
   document.querySelector("#modal-root")!.innerHTML = "";
   document.body.classList.remove("modal-open");
-  world.enabled = !currentDialogue && !state.ending;
+  world.enabled = !atTitle && !currentDialogue && !state.ending;
+  document.querySelector<HTMLElement>("#stage")!.inert = false;
   if (restore && returnFocus?.isConnected)
     returnFocus.focus({ preventScroll: true });
+  else if (restore && atTitle) focusTitle();
   else if (restore) document.querySelector<HTMLCanvasElement>("#world")!.focus({preventScroll:true});
 }
 function renderModal() {
   if (!modal) return;
+  document.querySelector<HTMLElement>("#stage")!.inert = true;
+  const focusedAction = document.querySelector<HTMLElement>(".modal :focus")?.dataset.action;
   let content = "",
     title = "",
     eyebrow = "",
@@ -378,11 +439,13 @@ function renderModal() {
       ["journal", "book", tr("手记", "Journal"), "J"],
       ["map", "map", tr("地图", "Map"), "M"],
       ["endings", "boat", tr("余音", "Endings"), `${collected.length}/4`],
-      ["settings", "settings", tr("设置与存档", "Settings & saves"), ""],
+      ["saves", "save", tr("存档 / 读档", "Save / Load"), ""],
+      ["settings", "settings", tr("设置", "Options"), ""],
       ["lang", "book", lang === "zh" ? "English" : "中文", ""],
       ["background", "book", tr("故事背景", "Story background"), ""],
       ["help", "help", tr("游玩指南", "How to play"), ""],
       ["fullscreen", "fullscreen", tr("切换全屏", "Toggle fullscreen"), ""],
+      ["title", "moon", tr("返回标题", "Return to title"), ""],
     ];
     content = `<p class="modal-intro">${t(scene.name)} · ${scene.time} · ${tr("上海，1968", "Shanghai, 1968")}</p><div class="menu-grid">${entries.map(([action, symbol, label, key]) => `<button data-action="${action}">${icon(symbol)}<span>${label}</span>${key ? `<kbd>${key}</kbd>` : ""}</button>`).join("")}</div><p class="menu-note">${tr("进度自动保存于此浏览器。", "Progress is saved automatically in this browser.")}</p><button class="primary-button menu-resume" data-action="close">${tr("继续游戏", "Resume game")}${icon("arrow")}</button>`;
   } else if (modal === "background") {
@@ -450,16 +513,32 @@ function renderModal() {
       )}</div><div class="ending-actions"><button class="primary-button" data-action="return-choice">${tr("回到最后的选择", "Return to the final choice")}${icon("arrow")}</button><button class="secondary-button" data-action="endings">${tr("查看所有余音", "View all endings")}</button></div><p class="fiction-note">${tr("本作人物、地点细节及具体事件均为虚构。以真实历史时期为背景，献给被记住的人。", "The characters, specific events, and local places are fictional. Set against a real historical period, this story is dedicated to those remembered.")}</p>`;
   } else if (modal === "settings") {
     title = tr("灯下小憩", "A pause beneath the lamp");
-    eyebrow = "SETTINGS & SAVED MEMORIES";
-    const save = decodeSave(storageGet(MANUAL_KEY));
-    content = `<div class="settings-row"><div><h3>${tr("语言", "Language")}</h3><p>中文 / English</p></div><button class="secondary-button" data-action="lang">${lang === "zh" ? "English" : "中文"}</button></div><div class="settings-row"><div><h3>${tr("雨声与环境音", "Rain & ambience")}</h3><p>${tr("原创合成环境音 · 默认关闭", "Original synthesized ambience · off by default")}</p></div><button class="toggle ${ambience.enabled ? "on" : ""}" data-action="audio" aria-pressed="${ambience.enabled}">${ambience.enabled ? tr("开启", "On") : tr("关闭", "Off")}</button></div><div class="settings-row"><div><h3>${tr("雨景动态", "Rain animation")}</h3><p>${tr("关闭以减少画面动态", "Turn off for reduced motion")}</p></div><button class="toggle ${motion ? "on" : ""}" data-action="motion" aria-pressed="${motion}">${motion ? tr("开启", "On") : tr("关闭", "Off")}</button></div><div class="settings-row"><div><h3>${tr("文字与菜单音效", "Text & menu sounds")}</h3><p>${tr("逐字提示音与选择音", "Typewriter and confirmation tones")}</p></div><button class="toggle ${effects.enabled ? "on" : ""}" data-action="effects" aria-pressed="${effects.enabled}">${effects.enabled ? tr("开启", "On") : tr("关闭", "Off")}</button></div><div class="settings-row"><div><h3>${tr("文字显示速度", "Text speed")}</h3><p>${tr("Enter / Space 可立即显示全文", "Enter / Space reveals the passage instantly")}</p></div><button class="secondary-button" data-action="text-speed">${textSpeed === 0 ? tr("即时", "Instant") : textSpeed === 12 ? tr("快速", "Fast") : tr("标准", "Normal")}</button></div><div class="save-panel"><h3>${tr("手动存档", "Manual save")}</h3><p>${save ? `${t(scenes.find((s) => s.id === save.state.scene)!.name)} · ${escape(new Date(save.savedAt).toLocaleString(lang === "zh" ? "zh-CN" : "en-US"))}` : tr("尚无手动存档。自动存档始终在后台进行。", "No manual save yet. Autosave runs in the background.")}</p><div><button class="primary-button" data-action="save">${icon("save")}${tr("保存进度", "Save progress")}</button><button class="secondary-button" data-action="load" ${save ? "" : "disabled"}>${tr("读取存档", "Load save")}</button></div></div><button class="danger-button" data-action="reset">${tr("重新开始故事", "Start a new story")}</button>`;
-  } else if (modal === "reset" || modal === "load") {
-    const reset = modal === "reset";
-    title = reset
-      ? tr("重新走进雨里？", "Step into the rain again?")
-      : tr("回到保存的那一刻？", "Return to your saved moment?");
-    eyebrow = "A MOMENT TO CHOOSE";
-    content = `<p class="modal-intro">${reset ? tr("当前自动进度将被新故事覆盖。手动存档和已收集的结局会保留。", "A new story will replace the current autosave. Your manual save and discovered endings will remain.") : tr("当前自动进度将由手动存档替换。", "Your manual save will replace the current autosaved progress.")}</p><div class="confirm-actions"><button class="primary-button" data-action="${reset ? "confirm-reset" : "confirm-load"}">${tr("确认", "Confirm")}</button><button class="secondary-button" data-action="settings">${tr("取消", "Cancel")}</button></div>`;
+    eyebrow = "OPTIONS";
+    content = `<div class="settings-row"><div><h3>${tr("语言", "Language")}</h3><p>中文 / English</p></div><button class="secondary-button" data-action="lang">${lang === "zh" ? "English" : "中文"}</button></div><div class="settings-row"><div><h3>${tr("雨声与环境音", "Rain & ambience")}</h3><p>${tr("原创合成环境音 · 默认关闭", "Original synthesized ambience · off by default")}</p></div><button class="toggle ${ambience.enabled ? "on" : ""}" data-action="audio" aria-pressed="${ambience.enabled}">${ambience.enabled ? tr("开启", "On") : tr("关闭", "Off")}</button></div><div class="settings-row"><div><h3>${tr("雨景动态", "Rain animation")}</h3><p>${tr("关闭以减少画面动态", "Turn off for reduced motion")}</p></div><button class="toggle ${motion ? "on" : ""}" data-action="motion" aria-pressed="${motion}">${motion ? tr("开启", "On") : tr("关闭", "Off")}</button></div><div class="settings-row"><div><h3>${tr("文字与菜单音效", "Text & menu sounds")}</h3><p>${tr("逐字提示音与选择音", "Typewriter and confirmation tones")}</p></div><button class="toggle ${effects.enabled ? "on" : ""}" data-action="effects" aria-pressed="${effects.enabled}">${effects.enabled ? tr("开启", "On") : tr("关闭", "Off")}</button></div><div class="settings-row"><div><h3>${tr("文字显示速度", "Text speed")}</h3><p>${tr("Enter / Space 可立即显示全文", "Enter / Space reveals the passage instantly")}</p></div><button class="secondary-button" data-action="text-speed">${textSpeed === 0 ? tr("即时", "Instant") : textSpeed === 12 ? tr("快速", "Fast") : tr("标准", "Normal")}</button></div>${atTitle ? '' : `<div class="settings-links"><button class="secondary-button" data-action="saves">${tr('存档 / 读档', 'Save / Load')}</button><button class="danger-button" data-action="reset">${tr('重新开始故事', 'Start a new story')}</button></div>`}`;
+  } else if (modal === 'saves') {
+    title = atTitle ? tr('读取存档', 'Load game') : tr('存档 / 读档', 'Save / Load');
+    eyebrow = tr('记录', 'SAVED GAMES');
+    content = `<p class="modal-intro">${tr('存档保存在当前浏览器，不同浏览器或设备不会同步。', 'Saves stay in this browser and do not sync across browsers or devices.')}</p><div class="save-list">${SAVE_SLOTS.map(slot => {
+      const save = saves.read(slot);
+      const label = slot === 'auto' ? tr('自动存档', 'Autosave') : tr(`档位 ${slot}`, `Slot ${slot}`);
+      const scene = save && scenes.find(s => s.id === save.state.scene)!;
+      return `<article class="save-slot ${save ? 'occupied' : 'empty'}" data-slot="${slot}">
+        <div class="save-slot-info"><h3>${label}</h3>${save && scene
+          ? `<p>${t(chapter(save.state).title)} · ${t(scene.name)}</p><small>${save.state.ending ? t(endings[save.state.ending].title) + ' · ' : ''}${escape(new Date(save.savedAt).toLocaleString(lang === 'zh' ? 'zh-CN' : 'en-US'))}</small>`
+          : `<p>${tr('— 空 —', '— Empty —')}</p>`}</div>
+        <div class="save-slot-actions">${slot !== 'auto' && !atTitle ? `<button class="secondary-button" data-action="slot-save-${slot}" aria-label="${tr(`保存至档位 ${slot}`, `Save to slot ${slot}`)}">${tr('保存', 'Save')}</button>` : ''}
+          <button class="secondary-button" data-action="slot-load-${slot}" aria-label="${tr(`读取${label}`, `Load ${label}`)}" ${save ? '' : 'disabled'}>${tr('读取', 'Load')}</button></div></article>`;
+    }).join('')}</div><p class="menu-note">${tr('手动档位不会被自动存档或重新开始覆盖。', 'Autosaving and starting a new story leave manual slots intact.')}</p>`;
+  } else if (modal === 'reset' || modal === 'load' || modal === 'overwrite') {
+    const reset = modal === 'reset', overwrite = modal === 'overwrite';
+    title = reset ? tr('开始新的故事？', 'Start a new story?')
+      : overwrite ? tr(`覆盖档位 ${selectedSlot}？`, `Overwrite slot ${selectedSlot}?`)
+      : tr('读取这份存档？', 'Load this save?');
+    content = `<p class="modal-intro">${reset
+      ? tr('当前自动进度将被新故事覆盖。三个手动档位和已收集的结局会保留。', 'A new story will replace the autosave. All three manual slots and discovered endings will remain.')
+      : overwrite ? tr('该档位中的旧进度将被当前进度替换。其他档位不受影响。', 'The old progress in this slot will be replaced by your current progress. Other slots will remain unchanged.')
+      : tr('当前进度将由这份存档替换。需要保留时，请取消并先手动保存。', 'This save will replace your current progress. Cancel and save manually first if you want to keep it.')}</p>
+      <div class="confirm-actions"><button class="primary-button" data-action="${reset ? 'confirm-reset' : overwrite ? 'confirm-save' : 'confirm-load'}">${tr('确认', 'Confirm')}</button><button class="secondary-button" data-action="${reset ? 'close' : 'saves'}">${tr('取消', 'Cancel')}</button></div>`;
   } else {
     title = tr("在雨夜中行走", "Walking through the night");
     eyebrow = "A SMALL GUIDE";
@@ -467,6 +546,7 @@ function renderModal() {
   }
   document.querySelector("#modal-root")!.innerHTML =
     `<div class="modal-backdrop"><section class="modal ${wide ? "wide" : ""} ${modal === "ending" ? "ending-modal" : ""}" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="icon-button modal-close" data-action="close" aria-label="${tr("关闭", "Close")}">${icon("close")}</button><span class="eyebrow">${eyebrow}</span><h2 id="modal-title">${title}</h2>${content}</section></div>`;
+  if (focusedAction) document.querySelector<HTMLButtonElement>(`.modal [data-action="${focusedAction}"]`)?.focus({ preventScroll: true });
 }
 
 async function action(name: string) {
@@ -518,36 +598,46 @@ async function action(name: string) {
     render();
     return;
   }
-  if (name === "save") {
-    persist(true);
-    renderModal();
+  if (name === 'continue') {
+    const save = saves.latest();
+    if (save) enterGame(save);
+    else { render(); notify(tr('没有可读取的存档。', 'No saved game is available.')); }
     return;
   }
-  if (name === "confirm-load") {
-    const save = decodeSave(storageGet(MANUAL_KEY));
-    if (!save) {
-      notify(tr("存档无法读取", "The save could not be read"));
-      return;
+  if (name === 'new-story') {
+    if (saves.read('auto')) openModal('reset');
+    else enterGame();
+    return;
+  }
+  if (name === 'title') { showTitle(); return; }
+  const slotAction = /^slot-(save|load)-(auto|1|2|3)$/.exec(name);
+  if (slotAction) {
+    selectedSlot = slotAction[2] as SaveSlot;
+    if (slotAction[1] === 'save') {
+      if (atTitle || selectedSlot === 'auto') return;
+      if (saves.read(selectedSlot)) openModal('overwrite');
+      else saveManual();
+    } else {
+      const save = saves.read(selectedSlot);
+      if (!save) { notify(tr('该存档无法读取。', 'This save could not be read.')); renderModal(); }
+      else if (atTitle) enterGame(save);
+      else openModal('load');
     }
-    state = save.state;
-    currentDialogue = save.dialogue;
-    world.change(state.scene, state.x, state.y);
-    closeModal(false);
-    persist();
-    render();
-    notify(tr("已恢复手动存档", "Manual save restored"));
-    if (state.ending) openModal("ending");
     return;
   }
-  if (name === "confirm-reset") {
-    state = newGame();
-    currentDialogue = "intro";
-    world.change("lane");
-    closeModal(false);
-    persist();
-    render();
+  if (name === 'confirm-save') { saveManual(); return; }
+  if (name === 'confirm-load') {
+    const save = saves.read(selectedSlot);
+    if (save) {
+      enterGame(save);
+      notify(tr('已恢复存档', 'Saved game restored'));
+    } else {
+      openModal('saves');
+      notify(tr('存档无法读取，当前进度已保留。', 'Cannot read this save. Current progress has been kept.'));
+    }
     return;
   }
+  if (name === 'confirm-reset') { enterGame(); return; }
   if (name === "return-choice") {
     state.ending = null;
     currentDialogue = "finale";
@@ -656,6 +746,19 @@ document.addEventListener("keydown", (event) => {
     }
     return;
   }
+  if (atTitle) {
+    if (['arrowup', 'arrowdown', 'w', 's'].includes(key)) {
+      event.preventDefault();
+      const buttons = [...document.querySelectorAll<HTMLButtonElement>('.title-menu button:not(:disabled)')];
+      const current = buttons.indexOf(document.activeElement as HTMLButtonElement);
+      const direction = key === 'arrowup' || key === 'w' ? -1 : 1;
+      buttons[(current + direction + buttons.length) % buttons.length]?.focus();
+      effects.play('confirm');
+    } else if (['enter', ' '].includes(key) && !(event.target as HTMLElement).closest('button')) {
+      event.preventDefault(); focusTitle();
+    }
+    return;
+  }
   if (
     [
       "arrowleft",
@@ -730,5 +833,4 @@ document.addEventListener("visibilitychange", () => {
 });
 render();
 void artReady.then(() => { world.invalidateArt(); render(); }).catch(() => { /* Procedural fallback keeps play available if image decoding fails. */ });
-persist();
-if (state.ending) openModal("ending");
+focusTitle();

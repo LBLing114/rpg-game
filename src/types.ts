@@ -55,6 +55,7 @@ export interface Choice {
 export interface Dialogue {
   speaker: Text;
   role?: Text;
+  /** "narrator" or no portrait renders a text-only environmental caption. */
   portrait?: "shen" | "aunt" | "lin" | "doctor" | "gu" | "narrator";
   text: Text;
   choices: Choice[];

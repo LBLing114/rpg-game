@@ -297,26 +297,25 @@ const personColors:Record<string,{coat:string;hair:string;skin:string}>={
 };
 export function drawPortrait(c:CanvasRenderingContext2D,type='shen',width=c.canvas.width,height=c.canvas.height){
   c.clearRect(0,0,width,height);
+  delete c.canvas.dataset.illustration;
+  delete c.canvas.dataset.artReady;
+  // Environmental narration has no character portrait, including while art loads.
+  if(!Object.hasOwn(personColors,type)) return;
   if(illustratedPortrait(c,type)) return;
-  if(type==='narrator' && illustratedProp(c,'boat',width*.14,20,width*.72,height-32)){c.canvas.dataset.artReady='true';return;}
   const off=document.createElement('canvas');off.width=64;off.height=72;const previous=ctx;ctx=off.getContext('2d')!;
   const palette=personColors[type]??personColors.shen;
   rect(0,0,64,72,'#29373c');for(let y=0;y<72;y+=4)rect(0,y,64,1,'#78847a12');
-  if(type==='narrator'){
-    rect(0,45,64,27,'#3f5355');for(let i=0;i<8;i++)rect(i*9,53+(i%3)*5,14,1,'#82978a');poly([[10,40],[34,25],[53,40],[42,48],[20,48]],'#c4b68d');poly([[23,39],[33,18],[34,39]],'#e8d9aa');line(33,20,34,43,'#7c8067');
-  }else{
-    poly([[4,72],[10,51],[23,43],[42,43],[56,52],[62,72]],'#1b2a32');poly([[7,72],[13,53],[24,46],[42,46],[53,54],[58,72]],palette.coat);
-    rect(25,39,15,15,palette.skin);rect(27,43,13,8,'#aa896f');
-    rect(17,13,31,29,palette.hair);rect(14,20,36,15,palette.hair);rect(20,23,25,24,palette.skin);rect(17,28,4,11,palette.skin);rect(44,28,4,10,palette.skin);
-    rect(20,40,4,4,'#b2947b');rect(39,40,5,4,'#b2947b');rect(26,46,12,3,'#b6977c');rect(22,20,21,8,palette.skin);
-    rect(17,14,29,9,palette.hair);rect(17,20,6,13,palette.hair);rect(40,19,7,14,palette.hair);rect(24,10,16,5,palette.hair);rect(19,14,12,2,type==='aunt'||type==='gu'?'#d2cbb3':'#52615c');
-    rect(23,29,6,2,'#605244');rect(35,29,6,2,'#605244');rect(25,32,3,3,'#26343a');rect(36,32,3,3,'#26343a');rect(31,34,2,5,'#b08c70');rect(28,41,9,1,'#865f50');
-    if(type==='shen'){poly([[21,48],[31,53],[45,48],[44,55],[32,58],[20,53]],'#c7b58b');rect(37,54,7,18,'#b7a47d');rect(15,55,3,17,'#8d9e98');}
-    if(type==='aunt'){rect(23,8,17,6,'#b4b8a5');poly([[20,50],[29,56],[43,51],[45,72],[19,72]],'#a69c85');}
-    if(type==='doctor'){rect(19,11,26,7,'#dfdec0');rect(29,11,5,6,'#9c6454');poly([[22,49],[31,58],[28,71],[16,55]],'#e0ddbe');poly([[41,49],[32,58],[36,71],[49,55]],'#e0ddbe');}
-    if(type==='gu'){rect(21,30,10,7,'#706d5d');rect(34,30,10,7,'#706d5d');rect(23,32,6,3,'#c6c2a2');rect(36,32,6,3,'#c6c2a2');rect(31,32,3,1,'#514f43');rect(29,40,8,2,'#c8c2a7');}
-    if(type==='lin'){rect(41,24,6,27,palette.hair);rect(42,47,5,3,'#a38569');rect(30,53,3,19,'#cad0ae');}
-  }
+  poly([[4,72],[10,51],[23,43],[42,43],[56,52],[62,72]],'#1b2a32');poly([[7,72],[13,53],[24,46],[42,46],[53,54],[58,72]],palette.coat);
+  rect(25,39,15,15,palette.skin);rect(27,43,13,8,'#aa896f');
+  rect(17,13,31,29,palette.hair);rect(14,20,36,15,palette.hair);rect(20,23,25,24,palette.skin);rect(17,28,4,11,palette.skin);rect(44,28,4,10,palette.skin);
+  rect(20,40,4,4,'#b2947b');rect(39,40,5,4,'#b2947b');rect(26,46,12,3,'#b6977c');rect(22,20,21,8,palette.skin);
+  rect(17,14,29,9,palette.hair);rect(17,20,6,13,palette.hair);rect(40,19,7,14,palette.hair);rect(24,10,16,5,palette.hair);rect(19,14,12,2,type==='aunt'||type==='gu'?'#d2cbb3':'#52615c');
+  rect(23,29,6,2,'#605244');rect(35,29,6,2,'#605244');rect(25,32,3,3,'#26343a');rect(36,32,3,3,'#26343a');rect(31,34,2,5,'#b08c70');rect(28,41,9,1,'#865f50');
+  if(type==='shen'){poly([[21,48],[31,53],[45,48],[44,55],[32,58],[20,53]],'#c7b58b');rect(37,54,7,18,'#b7a47d');rect(15,55,3,17,'#8d9e98');}
+  if(type==='aunt'){rect(23,8,17,6,'#b4b8a5');poly([[20,50],[29,56],[43,51],[45,72],[19,72]],'#a69c85');}
+  if(type==='doctor'){rect(19,11,26,7,'#dfdec0');rect(29,11,5,6,'#9c6454');poly([[22,49],[31,58],[28,71],[16,55]],'#e0ddbe');poly([[41,49],[32,58],[36,71],[49,55]],'#e0ddbe');}
+  if(type==='gu'){rect(21,30,10,7,'#706d5d');rect(34,30,10,7,'#706d5d');rect(23,32,6,3,'#c6c2a2');rect(36,32,6,3,'#c6c2a2');rect(31,32,3,1,'#514f43');rect(29,40,8,2,'#c8c2a7');}
+  if(type==='lin'){rect(41,24,6,27,palette.hair);rect(42,47,5,3,'#a38569');rect(30,53,3,19,'#cad0ae');}
   ctx=previous;c.imageSmoothingEnabled=false;c.clearRect(0,0,width,height);c.drawImage(off,0,0,width,height);
 }
 
@@ -324,6 +323,7 @@ interface MovementTarget extends Point { done?:()=>void }
 interface PropSprite {canvas:HTMLCanvasElement;x:number;y:number;depth:number}
 export class World{
   canvas:HTMLCanvasElement;context:CanvasRenderingContext2D;scene:SceneId='lane';
+  titleMode=false;
   x=getSpawn('lane').x;y=getSpawn('lane').y;keys=new Set<string>();enabled=true;motion=true;last=0;frame=0;facing:Facing='down';animation=0;
   onPosition:(x:number,y:number)=>void=()=>{};
   backgrounds=new Map<SceneId,HTMLCanvasElement>();private sprites=new Map<SceneId,PropSprite[]>();
@@ -332,7 +332,7 @@ export class World{
   get target(){return this._target;}
   set target(value:MovementTarget|null){if(value===null)this.stop();else this.move(value.x,value.y,value.done);}
   stop(){this._target=null;this.path=[];this.step=null;this.x=this.rest.x;this.y=this.rest.y;this.frame=0;}
-  change(scene:SceneId,x?:number,y?:number){this.stop();this.scene=scene;const point=x===undefined||y===undefined?getSpawn(scene):groundPosition(scene,x,y);this.rest=point;this.x=point.x;this.y=point.y;this.keys.clear();this.facing='up';this.onPosition(this.x,this.y);this.syncPosition();}
+  change(scene:SceneId,x?:number,y?:number,facing:Facing='up'){this.stop();this.scene=scene;const point=x===undefined||y===undefined?getSpawn(scene):groundPosition(scene,x,y);this.rest=point;this.x=point.x;this.y=point.y;this.keys.clear();this.facing=facing;this.onPosition(this.x,this.y);this.syncPosition();}
   move(x:number,y:number,done?:()=>void){
     this.stop();const end=groundPosition(this.scene,x,y);const route=findPath(this.scene,this.rest,end);
     if(!route.length){if(this.rest.x===end.x&&this.rest.y===end.y)done?.();return;}
@@ -389,15 +389,17 @@ export class World{
     const dt=Math.min(Math.max((time-this.last)/1000,0),.045);this.last=time;this.update(dt);
     const c=this.context;c.clearRect(0,0,W,H);c.drawImage(this.background(),0,0);
     const layers:{depth:number;draw:()=>void}[]=this.propSprites().map(p=>({depth:p.depth,draw:()=>c.drawImage(p.canvas,p.x,p.y)}));
-    for(const event of Object.values(maps[this.scene].events))if(event.kind==='person'){const point={x:event.col*T+T/2,y:event.row*T+T/2};layers.push({depth:point.y,draw:()=>drawPerson(c,point.x,point.y,event.actor,0,'down')});}
-    layers.push({depth:this.y,draw:()=>drawPerson(c,this.x,this.y,'shen',this.motion?this.frame:0,this.facing)});
+    if(!this.titleMode){
+      for(const event of Object.values(maps[this.scene].events))if(event.kind==='person'){const point={x:event.col*T+T/2,y:event.row*T+T/2};layers.push({depth:point.y,draw:()=>drawPerson(c,point.x,point.y,event.actor,0,'down')});}
+      layers.push({depth:this.y,draw:()=>drawPerson(c,this.x,this.y,'shen',this.motion?this.frame:0,this.facing)});
+    }
     layers.sort((a,b)=>a.depth-b.depth);for(const layer of layers)layer.draw();ctx=c;
     for(const prop of maps[this.scene].props)if(prop.kind==='lamp')glow(prop.col*T+16,prop.row*T-48,95,.14);
     if(!maps[this.scene].outdoors)glow(384,240,210,.13);
     // Subtle night tint preserves the readable pixel palette and warm lamps.
     rect(0,0,W,H,maps[this.scene].outdoors?'#29243d12':'#302a4010');
     const vignette=c.createRadialGradient(W/2,H/2,180,W/2,H/2,485);vignette.addColorStop(0,'#07131e00');vignette.addColorStop(1,'#10102570');c.fillStyle=vignette;c.fillRect(0,0,W,H);
-    poly([[this.x-3,this.y-51],[this.x+3,this.y-51],[this.x,this.y-47]],'#e8d5a1');
+    if(!this.titleMode)poly([[this.x-3,this.y-51],[this.x+3,this.y-51],[this.x,this.y-47]],'#e8d5a1');
     if(this._target){c.strokeStyle='#e0cf9eaa';c.lineWidth=1;c.strokeRect(this._target.x-10,this._target.y-7,20,14);rect(this._target.x-1,this._target.y-1,3,3,'#e0cf9e');}
     if(maps[this.scene].outdoors&&this.motion){
       for(let i=0;i<85;i++){const x=(i*83+time*.019)%W,y=(i*53+time*.16)%H;line(x,y,x-2,y+7,'#afc0c225');}

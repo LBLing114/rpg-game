@@ -1,5 +1,6 @@
 import { dialogues, has, scenes, storyData } from "./story";
-import { groundPosition, getSpawn } from "./grid";
+import { groundPosition, getSpawn, interactionPoint, type Point } from "./grid";
+import type { Facing } from "./characters";
 import {
   type Choice,
   type EndingId,
@@ -45,12 +46,26 @@ export function lockReason(scene: SceneId) {
           "Find the third proof at the printing shop first",
         );
 }
+/** Use the reciprocal door; map shortcuts into a room use its street entrance. */
+export function arrivalFor(from: SceneId, to: SceneId): Point & { facing: Facing } {
+  const destination = scenes.find(scene => scene.id === to)!;
+  const entrance = destination.hotspots.find(event => event.target === from)
+    ?? destination.hotspots.find(event => event.target === "lane");
+  if (!entrance) return { ...getSpawn(to), facing: "up" };
+  const point = interactionPoint(to, entrance.id);
+  const dx = point.x - entrance.x, dy = point.y - entrance.y;
+  const facing: Facing = Math.abs(dx) > Math.abs(dy)
+    ? dx < 0 ? "left" : "right"
+    : dy > 0 ? "down" : "up";
+  return { ...point, facing };
+}
 export function travel(s: State, id: SceneId): State {
-  if (!unlock(s, id) || s.ending) return s;
+  if (!unlock(s, id) || s.ending || s.scene === id) return s;
+  const { x, y } = arrivalFor(s.scene, id);
   return {
     ...s,
     scene: id,
-    ...getSpawn(id),
+    x, y,
     visited: Array.from(new Set([...s.visited, id])),
   };
 }
