@@ -9,9 +9,9 @@
   --text: #ede9df;
   --line: #48505d;
   --serif: "Noto Serif CJK SC", "Songti SC", SimSun, Georgia, serif;
-  --window: linear-gradient(135deg, #19202fee, #101522f5);
-  --window-border: #c2c4c8;
-  --window-shadow: inset 0 0 0 1px #242b3d, inset 0 0 0 3px #6d7482, 0 8px 26px #0008;
+  --window: #182526f5;
+  --window-border: #c8c3ae;
+  --window-shadow: inset 0 0 0 1px #263a3b, inset 0 0 0 3px #64716b, 0 4px 0 #0b1214bb;
 }
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; min-height: 100dvh; background: #090c12; }
@@ -45,9 +45,9 @@ h1 { font: 17px/1.5 var(--serif); color: #d6d7d2; letter-spacing: 2px; display: 
 .menu-note { color: #a8b3c3; font-size: 11px; margin: 20px 0 14px; }
 .menu-resume { width: 100%; justify-content: center; }
 .stage { position: relative; width: 100%; aspect-ratio: 3 / 2; overflow: hidden; isolation: isolate; background: #101319; }
-#world { display: block; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; outline-offset: -4px; touch-action: none; cursor: crosshair; }
+#world { display: block; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; outline: none; touch-action: none; cursor: crosshair; }
 .stage-atmosphere { position: absolute; inset: 0; pointer-events: none; z-index: 1; box-shadow: inset 0 0 65px #02040b55; }
-.scene-caption { position: absolute; top: 13px; left: 14px; display: flex; align-items: center; gap: 12px; padding: 7px 12px; color: #f3e8d0; border-left: 2px solid #cebc91; background: linear-gradient(90deg, #111725db, #1117259c); box-shadow: 0 2px 6px #0003; text-shadow: 0 2px #000b; pointer-events: none; z-index: 2; }
+.scene-caption { position: absolute; top: 13px; left: 14px; display: flex; align-items: center; gap: 12px; padding: 7px 12px; color: #f3e8d0; border-left: 2px solid #cebc91; background: #182527d9; box-shadow: 0 2px 6px #0003; text-shadow: 0 2px #000b; pointer-events: none; z-index: 2; }
 .scene-caption > span:last-child { font: 16px/1.4 var(--serif); letter-spacing: 3px; }
 .scene-number { font: 8px/1.5 monospace; color: #c1bfad; letter-spacing: .6px; }
 #hotspots { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 3; }
@@ -97,13 +97,13 @@ h1 { font: 17px/1.5 var(--serif); color: #d6d7d2; letter-spacing: 2px; display: 
 button.typing-hint { margin-left: auto; }
 .typing-hint button:hover, button.typing-hint:hover { color: #fff3d1; }
 .choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
-.choice { position: relative; width: 100%; display: flex; align-items: center; text-align: left; gap: 9px; min-height: 39px; padding: 7px 10px; border: 1px solid #777f9270; border-radius: 3px; background: linear-gradient(90deg, #3d475a60, #222d4050); color: #e3e4df; font: 12px/1.6 var(--serif); }
+.choice { position: relative; width: 100%; display: flex; align-items: center; text-align: left; gap: 9px; min-height: 39px; padding: 7px 10px; border: 1px solid #777f9270; border-radius: 3px; background: #35423f70; color: #e3e4df; font: 12px/1.6 var(--serif); }
 .choice:only-child { grid-column: 1 / -1; }
 .choice-number { font: 10px/1 monospace; color: #b4a37d; flex-shrink: 0; }
 .choice-cursor { margin-left: auto; opacity: 0; color: #f6e8c4; }
 .choice:hover .choice-cursor, .choice:focus-visible .choice-cursor { opacity: 1; }
 .choice > .icon { width: 13px; height: 13px; margin-left: auto; color: #c6bb9e; flex-shrink: 0; }
-.choice:hover:not(:disabled), .choice:focus-visible { background: linear-gradient(90deg, #7b775f77, #46557488); border-color: #e6d7b4; color: #fff4d6; }
+.choice:hover:not(:disabled), .choice:focus-visible { background: #6c6d526e; border-color: #e6d7b4; color: #fff4d6; }
 .choice:focus-visible { outline-offset: 1px; }
 .ending-hints { margin-top: 10px; font: 10px/1.8 sans-serif; color: #b3b6bb; }
 .ending-hints button { text-decoration: underline; text-underline-offset: 3px; color: #dbc38c; margin-left: 5px; }
@@ -118,7 +118,7 @@ button.typing-hint { margin-left: auto; }
 .toast.visible { opacity: 1; transform: translate(-50%, 0); }
 .modal-open { overflow: hidden; }
 .modal-backdrop { position: fixed; inset: 0; z-index: 40; background: #03060dc7; display: flex; align-items: center; justify-content: center; padding: 24px; }
-.modal { position: relative; background: linear-gradient(130deg, #242b3cf5, #111724fc); border: 2px solid var(--window-border); border-radius: 7px; box-shadow: var(--window-shadow), 0 20px 120px #0008; max-height: calc(100dvh - 48px); overflow: auto; width: 630px; max-width: 100%; padding: 32px 35px; scrollbar-width: thin; scrollbar-color: #8794a7 #161d2b; }
+.modal { position: relative; background: var(--window); border: 2px solid var(--window-border); border-radius: 7px; box-shadow: var(--window-shadow), 0 20px 120px #0008; max-height: calc(100dvh - 48px); overflow: auto; width: 630px; max-width: 100%; padding: 32px 35px; scrollbar-width: thin; scrollbar-color: #8794a7 #161d2b; }
 .modal.wide { width: 820px; }
 .modal-close { position: absolute; right: 13px; top: 13px; border: 1px solid #8b94a65e; }
 .modal > .eyebrow { font: 9px/1.6 monospace; letter-spacing: 1.2px; padding-right: 30px; color: #c0b59b; }
@@ -241,7 +241,7 @@ html[lang="en"] .choice { font-family: Georgia, serif; letter-spacing: 0; }
   .quest-hud { top: 45px; right: 9px; max-width: 39%; font-size: 8px; padding: 5px 6px; gap: 4px; }
   .quest-hud .icon { width: 11px; height: 11px; }
   .quest-hud small { display: none; }
-  .dialogue-panel { position: relative; inset: auto; margin: 0; border-radius: 5px; max-height: none; overflow: visible; padding: 14px 13px; min-height: 170px; border-color: #d1d2d4; box-shadow: inset 0 0 0 1px #242b3d, inset 0 0 0 3px #6d7482; background: linear-gradient(135deg, #1e2536, #141b2a); }
+  .dialogue-panel { position: relative; inset: auto; margin: 0; border-radius: 5px; max-height: none; overflow: visible; padding: 14px 13px; min-height: 170px; border-color: #d1d2d4; box-shadow: inset 0 0 0 1px #242b3d, inset 0 0 0 3px #6d7482; background: #182526; }
   .has-dialogue .dialogue-panel { grid-template-columns: 100px minmax(0, 1fr); gap: 12px; }
   .dialogue-face { position: relative; inset: auto; width: 100%; align-self: start; }
   .dialogue-body { max-height: none; overflow: visible; padding: 0; }
@@ -320,7 +320,7 @@ html[lang="en"] .choice { font-family: Georgia, serif; letter-spacing: 0; }
 .title-heading h1 { display: flex; flex-direction: column; gap: 0; font: 500 clamp(50px, 8vh, 92px)/1.15 var(--serif); letter-spacing: 6px; color: #ede6ce; margin: 14px 0 18px; padding-left: 6px; }
 .title-year { font: 12px/1.6 var(--serif); letter-spacing: 5px; color: #c4b89c; }
 .title-heading p { font: 10px/1.6 Georgia, serif; letter-spacing: 4px; color: #d2c7aa; }
-.title-menu { width: min(240px, 75%); padding: 10px; border: 2px solid #b6b6b8; border-radius: 4px; background: #161c2be8; box-shadow: inset 0 0 0 2px #4b5362, 0 4px 0 #080c15b3; }
+.title-menu { width: min(240px, 75%); padding: 10px; border: 2px solid #b6b6b8; border-radius: 4px; background: #182526ed; box-shadow: inset 0 0 0 2px #64716b, 0 4px 0 #080c15b3; }
 .title-menu button { position: relative; display: block; width: 100%; min-height: 42px; font: 17px/1.5 var(--serif); letter-spacing: 2px; border: 1px solid transparent; border-radius: 2px; }
 .title-menu button:hover:not(:disabled), .title-menu button:focus-visible { color: #fff7df; background: #74829b3b; border-color: #c4c8ce80; outline: none; }
 .title-menu button:is(:hover, :focus-visible):not(:disabled):before { content: '▶'; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font: 10px/1 monospace; color: #f4e9c5; }
@@ -403,6 +403,6 @@ html[lang="en"] .choice { font-family: Georgia, serif; letter-spacing: 0; }
 .prologue-scroll-hint { margin: 0 0 8px; color: #8c9797; font-size: 10px; text-align: right; }
 
 /* Quest destinations stay inside the game; exits and critical objects share a cue. */
-.hotspot.objective .hotspot-symbol { color: #ffe4a0; background: #55442be8; border: 1px solid #efd49a; min-width: 19px; height: 19px; box-shadow: 0 0 0 2px #211c16, 0 0 12px #e9ba6b45; }
+.hotspot.objective .hotspot-symbol { color: #ffe4a0; background: #55442be8; border: 1px solid #efd49a; min-width: 19px; height: 19px; box-shadow: 0 0 0 1px #211c16; }
 .map-place.objective { border-color: #efd49a; box-shadow: inset 3px 0 #c2a265; }
 .quest-hud { max-width: min(80%, 640px); text-align: left; }

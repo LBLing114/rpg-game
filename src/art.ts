@@ -1,8 +1,9 @@
 import type { SceneId } from './types';
 import { GridMovement } from './movement';
 import { drawTitleBackground } from './title-art';
-import { illustratedBuilding, illustratedProp, illustratedPortrait, illustratedTerrain, illustratedRug } from './illustrations';
+import { illustratedBuilding, illustratedProp, illustratedPortrait } from './illustrations';
 import { drawCharacter, type Facing } from './characters';
+import { drawGroundTile, drawRoomArchitecture, drawGroundDetails, drawCraftedProp } from './scenery';
 export type { Facing } from './characters';
 import { COLS, ROWS, TILE_SIZE as T, WORLD_WIDTH as W, WORLD_HEIGHT as H, maps, type MapProp } from './grid';
 
@@ -16,75 +17,12 @@ function poly(points:number[][],color:string){ctx.fillStyle=color;ctx.beginPath(
 function glow(x:number,y:number,r:number,opacity=.2){const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,`rgba(238,183,91,${opacity})`);g.addColorStop(1,'rgba(238,183,91,0)');ctx.fillStyle=g;ctx.fillRect(x-r,y-r,2*r,2*r);}
 function text(value:string,x:number,y:number,size=10,color='#d7caa6'){ctx.font=`${size}px "Noto Serif SC", serif`;ctx.textAlign='center';ctx.fillStyle=color;ctx.fillText(value,x,y);}
 function tile(char:string,col:number,row:number){
-  const x=col*T,y=row*T,v=(col*31+row*17)%11;
-  if(illustratedTerrain(ctx,char,x,y))return;
-  if(char===' '){rect(x,y,T,T,'#10121c');return;}
-  if(char==='#'){
-    rect(x,y,T,T,'#31323d');
-    for(let yy=0;yy<T;yy+=8)for(let xx=(yy%16?-10:0);xx<T;xx+=20){
-      const bx=x+Math.max(0,xx),bw=Math.min(18,T-Math.max(0,xx));
-      rect(bx,y+yy+1,bw,6,['#4b4747','#56504c','#5a514b','#48454a'][Math.floor(rnd()*4)]);
-      rect(bx+1,y+yy+1,bw-2,1,'#777063');rect(bx+1,y+yy+6,bw-1,1,'#2d2c39');
-      if(rnd()>.5)rect(bx+3+rnd()*8,y+yy+3,3,1,'#9b89724a');
-    }
-    return;
-  }
-  if(char==='~'){
-    rect(x,y,T,T,['#273949','#2a3d4a','#263747'][v%3]);
-    for(let i=0;i<7;i++){
-      const xx=x+rnd()*20,yy=y+rnd()*28,w=4+rnd()*9;
-      rect(xx,yy,w,1,i%2?'#56747b':'#1c2b40');rect(xx+2,yy+1,w-3,1,i%2?'#3a525f':'#263949');
-    }
-    return;
-  }
-  if(char==='='||char==='p'){
-    rect(x,y,T,T,'#3e3035');
-    for(let yy=0;yy<32;yy+=8){
-      const warm=char==='='?['#806348','#8f7050','#775c46','#997951']:['#6b6253','#79705b','#72624c','#89775b'];
-      rect(x,y+yy,32,7,warm[Math.floor(rnd()*warm.length)]);
-      rect(x,y+yy,32,1,'#b89a6c65');rect(x,y+yy+6,32,1,'#47373980');
-      const joint=((col+Math.floor(row/2)+yy/8)%3)*11;rect(x+joint,y+yy,1,7,'#423239');
-      for(let i=0;i<3;i++){
-        const xx=x+2+rnd()*18,sy=y+yy+2+rnd()*3;
-        rect(xx,sy,5+rnd()*9,1,'#c2a37b30');rect(xx+2,sy+1,3+rnd()*6,1,'#43313935');
-      }
-      if((v+yy)%7===0){rect(x+8,y+yy+3,5,2,'#514034');rect(x+10,y+yy+3,2,1,'#b69a6d');}
-    }
-    if(char==='p'){rect(x+3,y+3,2,2,'#33333c');rect(x+27,y+27,2,2,'#33333c');}
-    return;
-  }
-  if(char===':'){
-    rect(x,y,T,T,'#42494b');
-    for(let yy=0;yy<32;yy+=8)for(let xx=0;xx<32;xx+=8){
-      const light=(xx/8+yy/8)%2===0;
-      rect(x+xx,y+yy,7,7,light?['#a9ad99','#b7b8a2','#9ea593'][Math.floor(rnd()*3)]:['#73857a','#7a8a7b','#6d7d75'][Math.floor(rnd()*3)]);
-      rect(x+xx+1,y+yy+1,5,1,light?'#d3cab333':'#a8b59b30');
-      if(rnd()>.7)rect(x+xx+3,y+yy+5,2,1,'#444b4660');
-    }
-    return;
-  }
-  if(char===','){
-    rect(x,y,T,T,['#45444e','#49474e','#45444b'][v%3]);
-    for(let i=0;i<28;i++){
-      const xx=x+rnd()*30,yy=y+rnd()*30;
-      rect(xx,yy,1+rnd()*2,1,['#746b6950','#23273770','#8a7f7138'][i%3]);
-    }
-    if(v===2||v===8){
-      rect(x+4,y+18,23,5,'#303948');rect(x+8,y+16,15,9,'#303948');
-      rect(x+10,y+17,11,1,'#817d7165');rect(x+5,y+20,16,1,'#9b967643');rect(x+13,y+23,9,1,'#6c7b8260');
-    }
-    if(v===5){line(x+5,y+8,x+10,y+12,'#2a2b38');line(x+10,y+12,x+8,y+18,'#2a2b38');}
-    return;
-  }
-  if(char==='d'){rect(x,y,T,T,'#777568');for(let i=0;i<32;i+=8){rect(x,y+i,32,2,'#c7baa0');rect(x,y+i+2,32,1,'#484651');}return;}
-  // Staggered small stone setts break up the large checkerboard of the old map.
-  rect(x,y,T,T,'#30323d');
-  for(let yy=0;yy<32;yy+=8)for(let xx=yy%16?-8:0;xx<32;xx+=16){
-    const bx=x+Math.max(0,xx),bw=Math.min(14,32-Math.max(0,xx));
-    rect(bx+1,y+yy+1,bw-1,6,['#66666a','#73716d','#5c6168','#747574'][Math.floor(rnd()*4)]);
-    rect(bx+2,y+yy+1,bw-3,1,'#b1a99065');rect(bx+1,y+yy+6,bw-1,1,'#434452');
-    rect(bx+3+rnd()*5,y+yy+3,3,1,rnd()>.5?'#a49d8c44':'#252c3b44');
-  }
+  if(drawGroundTile(ctx,char,col,row))return;
+  const x=col*T,y=row*T;
+  if(char==='d'){
+    rect(x,y,T,T,'#55594f');
+    for(let i=0;i<T;i+=8){rect(x,y+i,T,2,'#b2ab91');rect(x,y+i+2,T,1,'#3d4743');}
+  }else rect(x,y,T,T,'#11191e');
 }
 function windowAt(x:number,y:number,w=32,h=32,lit=false){
   rect(x-3,y-3,w+6,h+8,'#28312f');rect(x-2,y-3,w+4,3,'#8c8a75');
@@ -175,7 +113,8 @@ function house(prop:MapProp,x:number,y:number,w:number,h:number){
   text(labels[prop.variant??'home'],doorX+14,y+h-60,10);
   if(prop.variant==='clinic'){rect(x+w-29,facade+13,14,17,'#c0c1a1');rect(x+w-24,facade+16,4,11,'#985b4d');rect(x+w-28,facade+20,12,4,'#985b4d');}
 }
-function drawProp(prop:MapProp){
+function drawProp(prop:MapProp,scene:SceneId){
+  if(drawCraftedProp(ctx,prop,scene))return;
   const x=prop.col*T,y=prop.row*T,w=prop.width*T,h=prop.height*T;
   // Atlas assets share the same footline as their collision rectangles.
   // Tall objects extend upward, so the existing Y-sort also covers their artwork.
@@ -183,7 +122,12 @@ function drawProp(prop:MapProp){
   switch(prop.kind){
     case 'desk': painted=illustratedProp(ctx,'desk',x-1,y-17,w+2,h+18);break;
     case 'bed': painted=illustratedProp(ctx,'bed',x+w*.12,y-24,w*.76,h+24);break;
-    case 'shelf': painted=illustratedProp(ctx,'shelf',x,y-47,w,h+47);break;
+    case 'shelf': {
+      // Repeat complete bays instead of stretching one bookcase across the wall.
+      const bays=Math.max(1,Math.ceil(w/100)),bay=w/bays;
+      for(let i=0;i<bays;i++)painted=illustratedProp(ctx,'shelf',x+i*bay,y-47,bay,h+47);
+      break;
+    }
     case 'medical':
       for(let i=0;i<2;i++)painted=illustratedProp(ctx,'medical',x+i*w/2+3,y-43,w/2-6,h+43);
       break;
@@ -193,7 +137,6 @@ function drawProp(prop:MapProp){
     case 'lamp': painted=illustratedProp(ctx,'lamp',x+5,y-67,24,99);break;
     case 'stove': painted=illustratedProp(ctx,'stove',x,y-33,w,h+33);break;
     case 'bicycle': painted=illustratedProp(ctx,'bicycle',x-4,y-14,w+8,46);break;
-    case 'curtain': painted=illustratedProp(ctx,'curtain',x,y-48,w,64);break;
     case 'boat': painted=illustratedProp(ctx,'boat',x+w*.25,y-62,w*.5,h+62);break;
   }
   if(painted){
@@ -209,9 +152,6 @@ function drawProp(prop:MapProp){
     case 'shelf': shelf(x+2,y,w-4,h);break;
     case 'medical': shelf(x+2,y,w-4,h,true);break;
     case 'crate': crate(x+2,y,w-4,h);break;
-    case 'cabinet':
-      rect(x+2,y-25,w-4,h+22,'#596764');rect(x+3,y-25,w-6,3,'#a0a690');
-      for(let yy=y-19;yy<y+h-7;yy+=17){rect(x+5,yy,w-10,15,'#7b8270');rect(x+w/2-6,yy+5,12,3,'#2c3c3c');rect(x+w/2-4,yy+5,8,1,'#c0c0a0');}break;
     case 'bed':
       rect(x+4,y-12,w-8,h+10,'#3b4136');rect(x+1,y-15,5,h+17,'#a29c7e');rect(x+w-6,y-15,5,h+17,'#a29c7e');
       rect(x+7,y-9,w-14,h-6,'#b4b19b');rect(x+12,y-5,w-24,20,'#d9d0b1');rect(x+14,y-2,w-28,2,'#efe4c2');
@@ -226,8 +166,6 @@ function drawProp(prop:MapProp){
       rect(x+10,y-6,w-20,h,'#293a3e');rect(x+12,y-6,w-24,7,'#7e8b80');rect(x+18,y+8,w-36,19,'#89958a');rect(x+20,y+11,w-40,11,'#b7baa0');rect(x+17,y+33,w-34,16,'#3d514f');rect(x+13,y+50,7,11,'#1e2b31');rect(x+w-20,y+50,7,11,'#1e2b31');
       rect(x+w/2-6,y-35,12,30,'#5d706a');rect(x+16,y-36,w-32,7,'#a4ac92');
       ctx.strokeStyle='#899d8d';ctx.lineWidth=4;ctx.beginPath();ctx.arc(x+7,y+15,19,0,Math.PI*2);ctx.stroke();for(let a=0;a<6;a++)line(x+7,y+15,x+7+Math.cos(a)*17,y+15+Math.sin(a)*17,'#849b8d',2);break;
-    case 'clock':
-      rect(x+3,y-31,26,50,'#564a35');rect(x+5,y-29,22,29,'#b8b393');rect(x+7,y-27,18,25,'#e1d6ad');line(x+16,y-15,x+16,y-24,'#574f3b',2);line(x+16,y-15,x+22,y-12,'#574f3b',2);rect(x+9,y+3,14,12,'#2c3530');rect(x+15,y+3,2,10,'#b39a62');break;
     case 'bench':
       rect(x+3,y-11,w-6,11,'#7e6445');rect(x+3,y-9,w-6,2,'#b39a6e');rect(x+2,y+7,w-4,10,'#9a7c53');rect(x+2,y+9,w-4,1,'#c5a575');rect(x+7,y+18,5,9,'#4b4135');rect(x+w-12,y+18,5,9,'#4b4135');break;
     case 'lamp':
@@ -238,77 +176,23 @@ function drawProp(prop:MapProp){
       line(x+12,y+17,x+25,y-7,'#9c9e80',2);line(x+12,y+17,x+36,y+17,'#9c9e80',2);line(x+25,y-7,x+36,y+17,'#9c9e80',2);line(x+36,y+17,x+43,y-9,'#9c9e80',2);line(x+43,y-9,x+w-13,y+17,'#9c9e80',2);rect(x+18,y-10,15,4,'#202d31');line(x+43,y-9,x+36,y-14,'#b0ad89',2);break;
     case 'boat':
       poly([[x-10,y+5],[x+w+4,y+5],[x+w-12,y+h-7],[x+13,y+h-7]],'#1a2f37');rect(x+5,y+4,w-10,h-27,'#7b7356');for(let yy=y+12;yy<y+h-25;yy+=8)rect(x+10,yy,w-20,2,'#4c5141');rect(x+21,y-21,w-42,41,'#6f7970');rect(x+17,y-24,w-34,8,'#b1ad87');windowAt(x+31,y-15,24,21,true);windowAt(x+w-58,y-15,24,21,true);rect(x+w/2-5,y-43,10,19,'#364a49');rect(x+w/2-7,y-44,14,3,'#708077');break;
-    case 'rail':
-      rect(x,y-4,w,4,'#a8aa8a');rect(x,y+12,w,3,'#5f766c');for(let xx=x+4;xx<x+w;xx+=32){rect(xx,y-13,6,39,'#7e8f7c');rect(xx-2,y-15,10,4,'#c5bea0');rect(xx+1,y-10,1,32,'#b2b69b');}break;
-    case 'curtain':
-      rect(x,y-33,w,3,'#b2aa88');for(let xx=0;xx<w;xx+=8){rect(x+xx,y-30,7,27,'#879589');rect(x+xx+1,y-30,2,25,'#acb39b');}break;
-    case 'rug':
-      if(illustratedRug(ctx,x+7,y+7,w-14,h-14)){
-        ctx.strokeStyle='#372832';ctx.lineWidth=3;ctx.strokeRect(x+6,y+6,w-12,h-12);
-        ctx.strokeStyle='#aa8c62';ctx.lineWidth=1;ctx.strokeRect(x+9,y+9,w-18,h-18);
-        for(let i=12;i<w-12;i+=3){rect(x+i,y+2,1,3,'#b59b77');rect(x+i,y+h-5,1,3,'#a38a67');}
-        break;
-      }
-      rect(x+4,y+4,w-8,h-8,'#645344');rect(x+7,y+7,w-14,h-14,'#7c6751');for(let i=0;i<4;i++){ctx.strokeStyle=i%2?'#b3a17c55':'#353b3433';ctx.strokeRect(x+12+i*5,y+12+i*5,w-24-i*10,h-24-i*10);}break;
+
   }
 }
 function background(scene:SceneId):HTMLCanvasElement{
   const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;ctx=canvas.getContext('2d')!;ctx.imageSmoothingEnabled=false;seed=42+scene.length;
   for(let row=0;row<ROWS;row++)for(let col=0;col<COLS;col++)tile(maps[scene].tiles[row][col],col,row);
-  if(!maps[scene].outdoors){
-    // Cutaway perimeter: a two-tile high back wall, side caps and a door at the south edge.
-    rect(32,63,704,5,'#8d8171');rect(35,64,698,1,'#c2b399');rect(35,68,698,4,'#3b343b');rect(64,121,640,7,'#6c5e4e');rect(64,122,640,1,'#aa9374');rect(64,127,640,4,'#302b35');
-    rect(32,128,6,352,'#8d8171');rect(35,128,1,352,'#b5a68b');rect(730,128,6,352,'#7b7067');rect(731,128,1,352,'#b5a68b');
-    rect(32,447,320,5,'#8d8171');rect(384,447,352,5,'#8d8171');rect(32,447,320,1,'#c2b399');rect(384,447,352,1,'#c2b399');
-    if(!illustratedProp(ctx,'curtain',226,65,62,62))windowAt(232,78,43,34,true);
-    if(!illustratedProp(ctx,'curtain',484,65,62,62))windowAt(490,78,43,34,scene==='home');
-    for(const x of[64,352,696]){rect(x,73,5,53,'#373d34');rect(x+1,73,1,53,'#91917a');}
-    const labels:Record<string,string>={home:'沈 宅 · 一 九 六 八',press:'长 明 印 刷',clinic:'仁 安 诊 所',archive:'档 案 · 值 班 室',warehouse:'沿 江 货 栈 · 点 交 处',waiting:'候 船 室 · 夜 航'};
-    text(labels[scene],384,97,13,'#b8ad87');
-    // Shadows cast by the back wall and the window light on the wooden floor.
-    rect(64,131,640,8,'#101b2340');rect(64,139,640,6,'#101b2322');
-    poly([[234,132],[274,132],[318,226],[260,226]],'#e8d4960e');
-  }
+  if(!maps[scene].outdoors)drawRoomArchitecture(ctx,scene);
   for(const prop of maps[scene].props){
-    if(prop.kind==='rug'){drawProp(prop);continue;}
-    rect(prop.col*T+4,(prop.row+prop.height)*T-8,prop.width*T+6,13,'#10202845');
+    if(prop.kind==='rug'){drawProp(prop,scene);continue;}
+    rect(prop.col*T+5,(prop.row+prop.height)*T-3,prop.width*T-10,5,'#10202835');
   }
-  if(scene==='lane'){
-    // Cobbled gutters, drains, road repairs and a few fallen paper scraps.
-    for(const col of[6,17])for(let row=6;row<15;row++){rect(col*T+25,row*T,7,32,'#1c323b');rect(col*T+25,row*T,1,32,'#98a38c55');}
-    for(const [col,row] of[[10,7],[13,13],[15,10]]){rect(col*T,row*T+8,27,13,'#22373b');for(let x=3;x<27;x+=5)rect(col*T+x,row*T+9,2,10,'#6e7d73');}
-    for(let i=0;i<14;i++)rect(220+rnd()*320,220+rnd()*240,3+rnd()*5,2,'#a99b714d');
-    text('黄 浦 江  →',680,451,12,'#b3b18c');
-    text('← 后 弄',65,253,10,'#b3b18c');
-  }
-  if(scene==='courtyard'){
-    // Drainage channel, patched paving and a communal washing area, no grass.
-    for(let row=5;row<15;row++){
-      rect(365,row*T,7,T,'#202e38');
-      for(let yy=0;yy<T;yy+=8)rect(367,row*T+yy,3,3,'#687778');
-    }
-    line(230,115,491,125,'#a08e71');
-    for(const x of[255,310,405]){rect(x,120,25,39,'#89938b');rect(x+3,120,3,37,'#b7baa1');rect(x+8,157,14,3,'#394d52');}
-    rect(230,260,65,30,'#435658');rect(234,264,57,20,'#263c48');rect(240,269,40,1,'#9aaf9a');
-    text('货 栈 ←',71,428,10);text('→ 槐 生 里',668,428,10);
-  }
-  if(scene==='warehouse'){
-    // Clear loading aisles and painted bay numbers orient the player.
-    for(const x of[224,544])for(let y=178;y<410;y+=24)rect(x,y,2,13,'#b3a07460');
-    for(const [x,y,n] of[[252,220,'壹'],[500,220,'贰'],[252,340,'叁']] as const)text(n,x,y,15,'#c1ac7866');
-    text('候 船 室 →',663,433,10);
-  }
-  if(scene==='waiting'){
-    rect(305,168,151,6,'#6c6958');
-    for(let x=310;x<452;x+=15)rect(x,133,2,34,'#323d42');
-    text('问 讯',384,159,10,'#c3ba9a');text('江 岸 →',663,432,10);
-  }
-  if(scene==='river'){
-    // A top-down expanse of dark water; distant lights are only reflections, no horizon.
-    for(let i=0;i<90;i++)rect(510+rnd()*90,rnd()*100,2+rnd()*7,1,'#b7ab6b30');
-    for(let row=8;row<15;row++)rect(32,row*T+30,704,2,'#303e40');
-    text('← 槐 生 里',98,466,12,'#c0b68e');
-  }
+  drawGroundDetails(ctx,scene);
+  if(scene==='lane'){text('黄 浦 江 →',680,451,11,'#b3b18c');text('← 后 弄',65,253,10,'#b3b18c');}
+  if(scene==='courtyard'){text('货 栈 ←',71,428,10);text('→ 槐 生 里',668,428,10);}
+  if(scene==='warehouse')text('候 船 室 →',663,433,10);
+  if(scene==='waiting')text('江 岸 →',663,432,10);
+  if(scene==='river')text('← 槐 生 里',98,466,11,'#c0b68e');
   return canvas;
 }
 export function drawPerson(c:CanvasRenderingContext2D,x:number,y:number,type='shen',frame=0,facing:Facing|number='down',scale=1){
@@ -356,7 +240,7 @@ export class World extends GridMovement {
     const result=maps[this.scene].props.filter(p=>p.kind!=='rug').map(prop=>{
       const canvas=document.createElement('canvas'),x=prop.col*T-24,y=prop.row*T-80;
       canvas.width=prop.width*T+48;canvas.height=prop.height*T+100;
-      ctx=canvas.getContext('2d')!;ctx.imageSmoothingEnabled=false;ctx.translate(-x,-y);seed=prop.col*71+prop.row*19;drawProp(prop);
+      ctx=canvas.getContext('2d')!;ctx.imageSmoothingEnabled=false;ctx.translate(-x,-y);seed=prop.col*71+prop.row*19;drawProp(prop,this.scene);
       return {canvas,x,y,depth:(prop.row+prop.height)*T-8};
     });this.sprites.set(this.scene,result);return result;
   }
@@ -379,14 +263,15 @@ export class World extends GridMovement {
     }
     layers.sort((a,b)=>a.depth-b.depth);for(const layer of layers)layer.draw();ctx=c;
     for(const prop of maps[this.scene].props)if(prop.kind==='lamp')glow(prop.col*T+16,prop.row*T-48,95,.14);
-    if(!maps[this.scene].outdoors)glow(384,240,210,.13);
+    // Warmth comes from practical lamps; avoid a flat orange wash over the room.
+    if(!maps[this.scene].outdoors){glow(253,137,77,.08);glow(511,137,70,.06);}
     // Subtle night tint preserves the readable pixel palette and warm lamps.
-    rect(0,0,W,H,maps[this.scene].outdoors?'#29243d12':'#302a4010');
-    const vignette=c.createRadialGradient(W/2,H/2,180,W/2,H/2,485);vignette.addColorStop(0,'#07131e00');vignette.addColorStop(1,'#10102570');c.fillStyle=vignette;c.fillRect(0,0,W,H);
+    rect(0,0,W,H,maps[this.scene].outdoors?'#2535430b':'#322e2505');
+    const vignette=c.createRadialGradient(W/2,H/2,180,W/2,H/2,485);vignette.addColorStop(0,'#07131e00');vignette.addColorStop(1,'#101c2942');c.fillStyle=vignette;c.fillRect(0,0,W,H);
     if(!this.titleMode)poly([[this.x-3,this.y-51],[this.x+3,this.y-51],[this.x,this.y-47]],'#e8d5a1');
     if(this._target){c.strokeStyle='#e0cf9eaa';c.lineWidth=1;c.strokeRect(this._target.x-10,this._target.y-7,20,14);rect(this._target.x-1,this._target.y-1,3,3,'#e0cf9e');}
     if(maps[this.scene].outdoors&&this.motion){
-      for(let i=0;i<85;i++){const x=(i*83+time*.019)%W,y=(i*53+time*.16)%H;line(x,y,x-2,y+7,'#afc0c225');}
+      for(let i=0;i<50;i++){const x=(i*83+time*.019)%W,y=(i*53+time*.16)%H;line(x,y,x-2,y+7,'#afc0c21c');}
       for(let i=0;i<10;i++){const phase=(time*.0006+i*.17)%1;c.strokeStyle=`rgba(166,193,186,${(1-phase)*.12})`;c.strokeRect(220+(i*61)%400,230+(i*37)%240,phase*12+2,phase*4+1);}
     }
     this.animation=requestAnimationFrame(this.render);

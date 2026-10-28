@@ -1,10 +1,9 @@
 import portraitUrl from './assets/portraits.png';
 import buildingUrl from './assets/buildings.png';
 import propUrl from './assets/props.png';
-import terrainUrl from './assets/terrain.png';
 
 type Frame = readonly [number, number, number, number];
-const sources = { portraits: portraitUrl, buildings: buildingUrl, props: propUrl, terrain: terrainUrl };
+const sources = { portraits: portraitUrl, buildings: buildingUrl, props: propUrl };
 type Atlas = keyof typeof sources;
 const images = {} as Record<Atlas, HTMLImageElement>;
 
@@ -56,24 +55,4 @@ export function illustratedPortrait(ctx: CanvasRenderingContext2D, kind: string)
   const drawn = blit(ctx, 'portraits', [left, 0, right - left, 724], 0, 0, ctx.canvas.width, ctx.canvas.height);
   if (drawn) { ctx.canvas.dataset.illustration = kind; ctx.canvas.dataset.artReady = 'true'; }
   return drawn;
-}
-
-const textures = new Map<string, HTMLCanvasElement>();
-export function illustratedTerrain(ctx:CanvasRenderingContext2D, kind:string, x:number, y:number) {
-  const cells:Record<string,number> = {'.':0, ',':1, '=':2, ':':3, '#':4};
-  const cell=cells[kind],image=images.terrain;
-  if(cell===undefined || !image) return false;
-  if(!textures.has(kind)){
-    const tile=document.createElement('canvas');tile.width=128;tile.height=128;
-    const c=tile.getContext('2d')!;c.imageSmoothingEnabled=false;
-    c.drawImage(image,cell%3*512,Math.floor(cell/3)*512,512,512,0,0,128,128);
-    // A soft flat tint keeps ground detail below the value of characters and props.
-    c.fillStyle=kind===','?'#32344388':kind==='#'?'#302c3b44':kind==='='?'#45323e25':'#35354725';
-    c.fillRect(0,0,128,128);textures.set(kind,tile);
-  }
-  ctx.drawImage(textures.get(kind)!,((x%128)+128)%128,((y%128)+128)%128,32,32,x,y,32,32);
-  return true;
-}
-export function illustratedRug(ctx:CanvasRenderingContext2D,x:number,y:number,w:number,h:number){
-  return blit(ctx,'terrain',[1024,512,512,512],x,y,w,h);
 }
