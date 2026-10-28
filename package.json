@@ -11,7 +11,8 @@
     "build": "tsc --noEmit && vite build && node scripts/build-standalone.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "report:routes": "node scripts/route-report.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",

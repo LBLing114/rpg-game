@@ -1,9 +1,10 @@
 import type { SceneId } from './types';
+import { GridMovement } from './movement';
 import { drawTitleBackground } from './title-art';
 import { illustratedBuilding, illustratedProp, illustratedPortrait, illustratedTerrain, illustratedRug } from './illustrations';
 import { drawCharacter, type Facing } from './characters';
 export type { Facing } from './characters';
-import { COLS, ROWS, TILE_SIZE as T, WORLD_WIDTH as W, WORLD_HEIGHT as H, maps, getSpawn, groundPosition, eventPoint, interactionPoint, eventIsAdjacent, findPath, isWalkable, toTile, type MapProp, type Point } from './grid';
+import { COLS, ROWS, TILE_SIZE as T, WORLD_WIDTH as W, WORLD_HEIGHT as H, maps, type MapProp } from './grid';
 
 // Original atlas sprites and deterministic tile textures, rasterized on a 32px grid.
 let ctx: CanvasRenderingContext2D;
@@ -262,7 +263,7 @@ function background(scene:SceneId):HTMLCanvasElement{
     if(!illustratedProp(ctx,'curtain',226,65,62,62))windowAt(232,78,43,34,true);
     if(!illustratedProp(ctx,'curtain',484,65,62,62))windowAt(490,78,43,34,scene==='home');
     for(const x of[64,352,696]){rect(x,73,5,53,'#373d34');rect(x+1,73,1,53,'#91917a');}
-    const labels:Record<string,string>={home:'沈 宅 · 一 九 六 八',press:'长 明 印 刷',clinic:'仁 安 诊 所',archive:'档 案 · 值 班 室'};
+    const labels:Record<string,string>={home:'沈 宅 · 一 九 六 八',press:'长 明 印 刷',clinic:'仁 安 诊 所',archive:'档 案 · 值 班 室',warehouse:'沿 江 货 栈 · 点 交 处',waiting:'候 船 室 · 夜 航'};
     text(labels[scene],384,97,13,'#b8ad87');
     // Shadows cast by the back wall and the window light on the wooden floor.
     rect(64,131,640,8,'#101b2340');rect(64,139,640,6,'#101b2322');
@@ -278,6 +279,29 @@ function background(scene:SceneId):HTMLCanvasElement{
     for(const [col,row] of[[10,7],[13,13],[15,10]]){rect(col*T,row*T+8,27,13,'#22373b');for(let x=3;x<27;x+=5)rect(col*T+x,row*T+9,2,10,'#6e7d73');}
     for(let i=0;i<14;i++)rect(220+rnd()*320,220+rnd()*240,3+rnd()*5,2,'#a99b714d');
     text('黄 浦 江  →',680,451,12,'#b3b18c');
+    text('← 后 弄',65,253,10,'#b3b18c');
+  }
+  if(scene==='courtyard'){
+    // Drainage channel, patched paving and a communal washing area, no grass.
+    for(let row=5;row<15;row++){
+      rect(365,row*T,7,T,'#202e38');
+      for(let yy=0;yy<T;yy+=8)rect(367,row*T+yy,3,3,'#687778');
+    }
+    line(230,115,491,125,'#a08e71');
+    for(const x of[255,310,405]){rect(x,120,25,39,'#89938b');rect(x+3,120,3,37,'#b7baa1');rect(x+8,157,14,3,'#394d52');}
+    rect(230,260,65,30,'#435658');rect(234,264,57,20,'#263c48');rect(240,269,40,1,'#9aaf9a');
+    text('货 栈 ←',71,428,10);text('→ 槐 生 里',668,428,10);
+  }
+  if(scene==='warehouse'){
+    // Clear loading aisles and painted bay numbers orient the player.
+    for(const x of[224,544])for(let y=178;y<410;y+=24)rect(x,y,2,13,'#b3a07460');
+    for(const [x,y,n] of[[252,220,'壹'],[500,220,'贰'],[252,340,'叁']] as const)text(n,x,y,15,'#c1ac7866');
+    text('候 船 室 →',663,433,10);
+  }
+  if(scene==='waiting'){
+    rect(305,168,151,6,'#6c6958');
+    for(let x=310;x<452;x+=15)rect(x,133,2,34,'#323d42');
+    text('问 讯',384,159,10,'#c3ba9a');text('江 岸 →',663,432,10);
   }
   if(scene==='river'){
     // A top-down expanse of dark water; distant lights are only reflections, no horizon.
@@ -320,60 +344,13 @@ export function drawPortrait(c:CanvasRenderingContext2D,type='shen',width=c.canv
   ctx=previous;c.imageSmoothingEnabled=false;c.clearRect(0,0,width,height);c.drawImage(off,0,0,width,height);
 }
 
-interface MovementTarget extends Point { done?:()=>void }
 interface PropSprite {canvas:HTMLCanvasElement;x:number;y:number;depth:number}
-export class World{
-  canvas:HTMLCanvasElement;context:CanvasRenderingContext2D;scene:SceneId='lane';
-  titleMode=false;
-  x=getSpawn('lane').x;y=getSpawn('lane').y;keys=new Set<string>();enabled=true;motion=true;last=0;frame=0;facing:Facing='down';animation=0;
-  onPosition:(x:number,y:number)=>void=()=>{};
+export class World extends GridMovement {
+  canvas:HTMLCanvasElement;context:CanvasRenderingContext2D;
+  titleMode=false;motion=true;last=0;animation=0;
   backgrounds=new Map<SceneId,HTMLCanvasElement>();private sprites=new Map<SceneId,PropSprite[]>();
-  private _target:MovementTarget|null=null;private path:Point[]=[];private step:Point|null=null;private rest:Point=getSpawn('lane');
-  constructor(canvas:HTMLCanvasElement){this.canvas=canvas;canvas.width=W;canvas.height=H;this.context=canvas.getContext('2d')!;this.context.imageSmoothingEnabled=false;this.render=this.render.bind(this);this.animation=requestAnimationFrame(this.render);}
-  get target(){return this._target;}
-  set target(value:MovementTarget|null){if(value===null)this.stop();else this.move(value.x,value.y,value.done);}
-  stop(){this._target=null;this.path=[];this.step=null;this.x=this.rest.x;this.y=this.rest.y;this.frame=0;}
-  change(scene:SceneId,x?:number,y?:number,facing:Facing='up'){this.stop();this.scene=scene;const point=x===undefined||y===undefined?getSpawn(scene):groundPosition(scene,x,y);this.rest=point;this.x=point.x;this.y=point.y;this.keys.clear();this.facing=facing;this.onPosition(this.x,this.y);this.syncPosition();}
-  move(x:number,y:number,done?:()=>void){
-    this.stop();const end=groundPosition(this.scene,x,y);const route=findPath(this.scene,this.rest,end);
-    if(!route.length){if(this.rest.x===end.x&&this.rest.y===end.y)done?.();return;}
-    this._target={...end,done};this.path=route;
-  }
-  moveToEvent(id:string,done:()=>void=()=>{}){
-    this.stop();const event=maps[this.scene].events[id];if(!event)return false;
-    const end=interactionPoint(this.scene,id,this.rest);
-    if(!eventIsAdjacent(this.scene,id,end))return false;
-    const finish=()=>{const point=eventPoint(this.scene,id);this.face(point.x-this.x,point.y-this.y);done();};
-    this.move(end.x,end.y,finish);return true;
-  }
-  nearestEvent():string|null{
-    const current=toTile(this.rest),direction={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[this.facing];
-    const entries=Object.entries(maps[this.scene].events).filter(([id])=>eventIsAdjacent(this.scene,id,this.rest));
-    entries.sort(([,a],[,b])=>{const rank=(event:typeof a)=>event.col===current.col+direction[0]&&event.row===current.row+direction[1]?0:event.col===current.col&&event.row===current.row?1:2;return rank(a)-rank(b);});
-    return entries[0]?.[0]??null;
-  }
-  private face(dx:number,dy:number){if(Math.abs(dx)>Math.abs(dy))this.facing=dx<0?'left':'right';else if(dy)this.facing=dy<0?'up':'down';this.canvas.dataset.facing=this.facing;}
-  private inputDirection():Point|null{
-    const directions:Record<string,Point>={arrowleft:{x:-1,y:0},a:{x:-1,y:0},arrowright:{x:1,y:0},d:{x:1,y:0},arrowup:{x:0,y:-1},w:{x:0,y:-1},arrowdown:{x:0,y:1},s:{x:0,y:1}};
-    for(const key of [...this.keys].reverse())if(directions[key])return directions[key];return null;
-  }
-  private update(dt:number){
-    if(!this.enabled)return;
-    const input=this.inputDirection();
-    if(input){this.path=[];this._target=null;}
-    if(!this.step){
-      if(input){this.face(input.x,input.y);const tile=toTile(this.rest);if(isWalkable(this.scene,tile.col+input.x,tile.row+input.y))this.step={x:this.rest.x+input.x*T,y:this.rest.y+input.y*T};}
-      else if(this.path.length)this.step=this.path.shift()!;
-      if(this.step)this.face(this.step.x-this.x,this.step.y-this.y);
-    }
-    if(this.step){
-      const dx=this.step.x-this.x,dy=this.step.y-this.y,distance=Math.abs(dx)+Math.abs(dy),amount=Math.min(distance,dt*148);
-      this.x+=Math.sign(dx)*amount;this.y+=Math.sign(dy)*amount;this.frame+=dt*14;
-      if(amount>=distance){this.rest={...this.step};this.x=this.rest.x;this.y=this.rest.y;this.step=null;this.onPosition(this.x,this.y);this.syncPosition();
-        if(!this.path.length&&this._target){const done=this._target.done;this._target=null;done?.();}
-      }
-    }else this.frame=0;
-  }
+  constructor(canvas:HTMLCanvasElement){super();this.canvas=canvas;canvas.width=W;canvas.height=H;this.context=canvas.getContext('2d')!;this.context.imageSmoothingEnabled=false;this.render=this.render.bind(this);this.animation=requestAnimationFrame(this.render);}
+  override change(scene:SceneId,x?:number,y?:number,facing:Facing='up'){super.change(scene,x,y,facing);this.syncPosition();}
   private propSprites():PropSprite[]{
     if(this.sprites.has(this.scene))return this.sprites.get(this.scene)!;
     const result=maps[this.scene].props.filter(p=>p.kind!=='rug').map(prop=>{
@@ -383,11 +360,11 @@ export class World{
       return {canvas,x,y,depth:(prop.row+prop.height)*T-8};
     });this.sprites.set(this.scene,result);return result;
   }
-  private syncPosition(){this.canvas.dataset.playerX=String(this.rest.x);this.canvas.dataset.playerY=String(this.rest.y);this.canvas.dataset.facing=this.facing;}
+  private syncPosition(){for(const [key,value] of Object.entries({playerX:String(this.rest.x),playerY:String(this.rest.y),facing:this.facing}))if(this.canvas.dataset[key]!==value)this.canvas.dataset[key]=value;}
   invalidateArt(){this.backgrounds.clear();this.sprites.clear();this.canvas.dataset.artReady='true';}
   background(){if(!this.backgrounds.has(this.scene))this.backgrounds.set(this.scene,background(this.scene));return this.backgrounds.get(this.scene)!;}
   render(time:number){
-    const dt=Math.min(Math.max((time-this.last)/1000,0),.045);this.last=time;this.update(dt);
+    const dt=Math.min(Math.max((time-this.last)/1000,0),.08);this.last=time;this.update(dt);this.syncPosition();
     const c=this.context;c.clearRect(0,0,W,H);
     if(this.titleMode){
       drawTitleBackground(c,time,this.motion);

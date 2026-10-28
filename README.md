@@ -12,6 +12,10 @@
 
 ![沈家旧屋：木地板、旧家具与像素角色](docs/interior.png)
 
+![槐生后弄：晾衣绳、退信箱与公用煤炉](docs/courtyard.png)
+
+![沿江货栈：货位、点交桌与装卸通道](docs/warehouse.png)
+
 ## 直接打开游戏
 
 1. [下载 main 分支的完整游戏 ZIP](https://github.com/LBLing114/rpg-game/archive/refs/heads/main.zip) 并**解压**，或在仓库点击 **Code → Download ZIP**。
@@ -44,9 +48,9 @@ npm run preview -- --port 4173
 
 ## 内容与操作
 
-- **六张地图**：槐生里、沈家旧屋、长明印刷铺、仁安诊所、旧档案室、黄浦江岸。使用砖墙、旧海报、石板路、室内木地板和家具，没有大片草地。
-- **完整序章**：四章流程、77 个双语对话节点、两次证据推理、十二项任务（含三条支线）、七件可查看和使用的剧情道具、四种结局。
-- **网格探索**：平滑四向移动、地形与家具碰撞、点击地面寻路、走近人物后交互；角色与场景按脚底 Y 坐标遮挡。出入地图会落在对应门口，地图内选择当前地点保留原位置。
+- **九张地图**：槐生里、沈家旧屋、长明印刷铺、仁安诊所、旧档案室、黄浦江岸，以及新增的槐生后弄、沿江货栈、夜航候船室。使用砖墙、旧海报、石板路、室内木地板和家具，没有大片草地。
+- **完整故事**：五章流程、205 个双语对话节点、两次证据推理、四条独立后半程与八种结局。共有 28 项任务定义，每条路线显示相关的 19 项（含三项可选任务），七件可查看和使用的剧情道具。
+- **网格探索**：每秒 176 像素的连续四向移动，跨格保留剩余位移，支持途中立即反向、短按转向缓冲，连续点击新目的地不会退回格子中心。地形与家具碰撞、点击地面寻路、走近人物后交互；角色与场景按脚底 Y 坐标遮挡。出入地图会落在对应门口，地图内选择当前地点保留原位置。
 - **经典对话**：深色半透明白边窗口、五位角色的透明半身立绘、逐字文字、分支选择、可开启的文字与菜单提示音。角色发言显示立绘，书桌、墙面等物件旁白使用标题与正文，不显示人物或船的占位图。
 - **开始界面**：独立绘制的江雾码头像素背景（旧上海远景、渡船、石岸与旧式路灯）、竖排标题与经典文字菜单；支持方向键选择、Enter 确认、鼠标和触屏。
 - **双语与存档**：界面和全文中英文切换；一个自动档、三个独立手动档位、已发现结局收集；保存当前场景、网格位置、道具、选择和对话节点。
@@ -71,11 +75,15 @@ npm run preview -- --port 4173
 
 ![雾渡：游戏开始前的剧情序幕](docs/prologue.png)
 
-首次正常阅读与探索以 **25–35 分钟**为目标：主线约 54 段对话、6,780 个中文汉字（英文约 4,038 词）；含顾先生回忆、分存准备与周姨告别约 66 段。时长是依据阅读量与探索流程的估算，会随阅读速度、支线和重访变化；没有强制等待或限时机制。
+每条完整路线以 **约一小时**为目标。目前按最直接的有效路线统计，有 **92–98 段正文、约 1.19–1.27 万个中文汉字 / 6,875–7,334 个英文词**，正常阅读和探索估算约 **50–70 分钟**。估算采用中文每分钟 240–300 字、英文 140–180 词，加上 12–18 分钟的探索与选择；不是强制计时，也尚未经过真人试玩计时。快速阅读、跳过序幕或地图传送会缩短时间；支线和重访会增加时间。`npm run report:routes` 可重新统计每个结局的阅读量，详见 [完整路线说明（含剧透）](docs/story-flow.md)。
 
-先和周姨交谈取得旧屋钥匙，去旧屋读书桌里的回执，再调查印刷铺铅字盒，与林岚核对后取得校样。诊所需先读值夜登记，再听医生证言；档案室需先查索引，再核对名册。两次推理选错会给出解释并允许重试，不消耗道具。地图会显示地点解锁条件。背包中的物品会提示使用地点；到达相应场景使用，可引导角色走到目标并开启相关对话。场景时间仅用于叙事，没有限时选择。
+关键选择有独立后续：是否公开询问邻居会改变后来的寄存对话；署名、轮值、核对接应、保留草稿等决定会开放或关闭相应结局。江岸选择后，必须完成当前路线的三段实地事件，才会在候船室问讯窗口进行最终选择，并播放三段结局后果。
 
-已有旧版存档会保留道具、选择及已解锁路线；如要完整体验新增流程，请在 **菜单 → 设置 → 重新开始故事** 中重开（可先手动存档）。只想补看开头，可用 **菜单 → 故事背景**。
+先和周姨交谈取得旧屋钥匙，去旧屋读书桌里的回执，再调查印刷铺铅字盒，与林岚核对后取得校样。诊所需先读值夜登记，再听医生证言；档案室需先查索引，再核对名册。两次推理选错会给出解释并允许重试，不消耗道具。取得名册后，继续调查 **后弄退信箱 → 货栈点交桌 → 候船室旧航班表**，再去江岸选择路线。新区域可以沿出口连续步行，也可用 M 打开地图传送。地图会显示地点解锁条件，金色标记与任务提示会提示下一处地点。背包中的物品会提示使用地点；到达相应场景使用，可引导角色走到目标并开启相关对话。场景时间仅用于叙事，没有限时选择。
+
+旧版存档保留道具、选择、已收集结局和三个手动档位。拿到名册的旧进度可直接前往后弄补完调查；不会凭空完成新增任务。已到旧结局的进度可点击“回到本路线的最后选择”，退出江岸对话后继续调查。若想从头体验，在标题选择 **新的故事**（可先手动存档）。
+
+**建议在江岸选择路线前保存一个手动档。** 选择后进入独立路线，不能靠回访累加另一条路线。结局后的返回按钮只回到本路线最后选择，并保留早先选择的限制；体验其他路线需要读取分线前的存档。
 
 ### 开始与存档
 
@@ -95,7 +103,8 @@ npm run preview -- --port 4173
 src/
   data/storyData.json  双语剧情、对话分支、任务、物品、结局与条件
   story.ts        JSON 数据适配与条件判断
-  grid.ts         32px 网格、六张地图、碰撞、路径查找与交互位置
+  grid.ts         32px 网格、九张地图、碰撞、路径查找与交互位置
+  movement.ts     连续跨格移动、输入缓冲、反向与鼠标重定向
   art.ts          图块与物件合成、Y 排序与天气
   title-art.ts    开始界面的独立像素江岸画面、薄雾与雨景
   characters.ts   四向行走精灵、像素蒙版与动画
@@ -108,7 +117,7 @@ src/
   style.css      RPG 窗口、菜单与响应式布局
 ```
 
-文字均采用 `{ "zh": "中文", "en": "English" }`。`prologue` 数组定义序幕的节点顺序、双语标题与年代；正文复用对应对话节点，保持旧存档兼容。编辑 `src/data/storyData.json` 的 `dialogues` 添加节点；每个节点提供 `speaker`、`portrait`、`text`、`choices`。选择可包含 `next`（节点 ID）、`items`（赠送道具）、`flags`（决定）、`note`（手记）、`ending`（结局 ID）。条件是声明式数据，不执行字符串代码：
+文字均采用 `{ "zh": "中文", "en": "English" }`。`routes` 数组定义四条路线、任务地点与八个结局；对话选择用 `flags` 记录决定，地点对话支持嵌套条件选择器，任务的 `when` 控制相关路线的显示。`prologue` 数组定义序幕的节点顺序、双语标题与年代；正文复用对应对话节点，保持旧存档兼容。编辑 `src/data/storyData.json` 的 `dialogues` 添加节点；每个节点提供 `speaker`、`portrait`、`text`、`choices`。选择可包含 `next`（节点 ID）、`items`（赠送道具）、`flags`（决定）、`note`（手记）、`ending`（结局 ID）。条件是声明式数据，不执行字符串代码：
 
 ```json
 {
@@ -127,6 +136,7 @@ src/
 npm test          # 剧情、条件、存档、地图碰撞与寻路
 npm run build    # TypeScript + Vite + 单文件游戏
 npm run test:e2e # Chromium 中完成剧情与交互检查
+npm run report:routes # 各结局的正文量与时长估算
 ```
 
 浏览器测试自动启动开发服务，覆盖开始菜单、三个档位的独立保存与读取、覆盖 / 重开确认、旧档兼容、存储失败提示、逐字对话、键盘与鼠标、背包使用、双语、移动端、全部结局、门口出入位置、物件旁白不显示立绘，以及单文件离线运行。截图和失败跟踪输出到被 Git 忽略的 `test-results/`。
@@ -147,14 +157,14 @@ npm run test:e2e # Chromium 中完成剧情与交互检查
 
 ## English
 
-**The Other Shore** is an original bilingual narrative RPG set in a fictional Shanghai lane in 1968. Shen Yan, a returning overseas student facing political persecution, follows a letter from his missing brother. Explore six urban and interior maps, collect seven story items, complete twelve quests, and reach four endings. There is no combat or time limit.
+**The Other Shore** is an original bilingual narrative RPG set in a fictional Shanghai lane in 1968. Shen Yan, a returning overseas student facing political persecution, follows a letter from his missing brother. Explore nine urban and interior maps, collect seven story items, and follow four separate routes to eight endings. The 28 quest definitions show 19 relevant objectives per route, including three optional objectives. There is no combat or time limit.
 
 This is a **TypeScript / Canvas / Vite web game inspired by classic RPG Maker presentation**, with 32px grid movement, collision and click pathfinding, Y-sorted pixel art, five illustrated character busts, and typewriter dialogue. It does not require the RPG Maker editor.
 
 Download and open **`play.html`** to play immediately, or run `npm install && npm run dev` and open the printed localhost address on the same computer. For a cloud server, use its forwarded port URL. Run `npm run build` to generate both `dist/` and `play.html`; use `npm run preview` to preview the production build.
 
-Use **WASD / arrows** to walk, **Enter / Space / E** to interact or reveal dialogue, **1–5** for choices, **I** for belongings, **J** for quests, **M** for the map, and **Escape** for the in-game menu. Click terrain to navigate, or an event marker to approach and interact. Inventory items have a use action and a location hint. The title screen offers **Continue**, **New story**, **Load game** and **Options**. Use Up/Down and Enter, or click a menu entry. The top-right in-game **Menu** contains language, options, **Save / Load**, return to title and fullscreen controls. Save to any of three manual slots; autosave is separate. Occupied slots require confirmation before replacement. Starting over preserves manual saves and discovered endings, and the original manual save remains in slot 1. Continue opens the most recent valid save; visiting the title never replaces existing progress. **English / 中文** switches language without resetting progress. Audio is optional. Saves stay in the current browser.
+Walking is continuous across grid edges at 176 px/s, with immediate reversals, buffered turns and mouse retargeting without snapping back. Collision and save positions remain grid-aligned. Use **WASD / arrows** to walk, **Enter / Space / E** to interact or reveal dialogue, **1–5** for choices, **I** for belongings, **J** for quests, **M** for the map, and **Escape** for the in-game menu. Click terrain to navigate, or an event marker to approach and interact. Inventory items have a use action and a location hint. The title screen offers **Continue**, **New story**, **Load game** and **Options**. Use Up/Down and Enter, or click a menu entry. The top-right in-game **Menu** contains language, options, **Save / Load**, return to title and fullscreen controls. Save to any of three manual slots; autosave is separate. Occupied slots require confirmation before replacement. Starting over preserves manual saves and discovered endings, and the original manual save remains in slot 1. Continue opens the most recent valid save; visiting the title never replaces existing progress. **English / 中文** switches language without resetting progress. Audio is optional. Saves stay in the current browser.
 
-Selecting **New story** opens a full-screen, six-part prologue before map exploration, with dated headings and narration gradually appearing against a black screen. The expanded first passage contains about 531 Chinese characters, with a full English translation. Long passages scroll; the map fades in after the opening. Enter/Space reveals or advances text; **Skip introduction** enters the lane immediately. Language can be changed on the prologue screen. Progress resumes at the saved page, while saves already in exploration do not replay the opening. The prologue explains the Cultural Revolution setting, Shen’s return from Lyon, his persecution, his brother’s disappearance and the delivery of an old letter. **Menu → Story background** lets you reread it without changing progress. The complete route targets **25–35 minutes** of first-time reading and exploration, based on 54 main-route dialogue pages (about 4,038 English words), with 12 additional pages across three optional arcs. Actual time depends on reading speed and exploration; no forced waits are used. Compare the house receipt and printing type, examine the clinic night register, and read the archive index before drawing two retryable deductions. Return to Lin with all three documents to unlock the witness ending. Existing saves retain progress; start a new story in settings to experience the expanded route from the beginning.
+Selecting **New story** opens a full-screen, six-part prologue before map exploration, with dated headings and narration gradually appearing against a black screen. The expanded first passage contains about 531 Chinese characters, with a full English translation. Long passages scroll; the map fades in after the opening. Enter/Space reveals or advances text; **Skip introduction** enters the lane immediately. Language can be changed on the prologue screen. Progress resumes at the saved page, while saves already in exploration do not replay the opening. The prologue explains the Cultural Revolution setting, Shen’s return from Lyon, his persecution, his brother’s disappearance and the delivery of an old letter. **Menu → Story background** lets you reread it without changing progress. Each complete route targets **about one hour**, with 92–98 passages and about 6,875–7,334 English words on the most direct valid paths. Estimated reading at 140–180 words/minute plus 12–18 minutes of exploration gives roughly 50–70 minutes; this is not a human playtest measurement. Fast reading, skipped introductions and fast travel shorten playtime. Run `npm run report:routes` for reproducible route counts. After the archive, investigate the rear court’s returned letters, the warehouse freight papers and the ferry hall timetable. Commit to one of four routes at the shore, complete three route-specific tasks, then decide at the enquiry window and read the aftermath. Earlier choices affect later scenes and ending availability. Save in a manual slot before committing to a route. Returning from an ending preserves that route’s earlier decisions; load a pre-route save to try another route. Legacy saves keep their progress and do not receive unearned new task flags.
 
 Edit `src/data/storyData.json` to extend bilingual dialogue, choices, items, quests and endings; conditions are JSON data, not executable strings. Map geometry and event coordinates live in `src/grid.ts`. Run `npm test`, `npm run build`, and `npm run test:e2e` after changes. Artwork is bundled with the project and audio is synthesized locally; no external runtime services are required. Four original atlases supply character busts, Shanghai architecture, furniture, and ground textures, while walking sprites use hand-authored pixel masks. The web build caches image assets separately; the offline play.html embeds all of them.

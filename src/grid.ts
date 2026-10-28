@@ -30,12 +30,12 @@ export const maps: Record<SceneId, GridMap> = {
       p('crate',19,10,1,1),p('crate',20,10,1,1),p('crate',20,9,1,1),
       p('lamp',7,7),p('lamp',17,11),p('bench',3,13,2,1),p('stove',2,6),
     ],
-    events:{aunt:e(8,9,'person','aunt'),wall:e(18,7,'object'),home:e(3,5,'exit'),press:e(12,5,'exit'),clinic:e(20,5,'exit'),archive:e(3,11,'exit'),river:e(22,13,'exit')},
+    events:{aunt:e(8,9,'person','aunt'),wall:e(18,7,'object'),home:e(3,5,'exit'),press:e(12,5,'exit'),clinic:e(20,5,'exit'),archive:e(3,11,'exit'),river:e(22,13,'exit'),courtyard:e(1,7,'exit')},
   },
   home: {
     outdoors:false,spawn:{col:11,row:12},tiles:interior(),
     props:[p('desk',5,7,3,2,'letter'),p('mirror',15,4),p('shelf',18,4,3,1),p('bed',17,10,3,3),p('crate',3,11,2,1),p('stove',3,5),p('rug',9,7,4,3,undefined,false),p('lamp',10,4),p('curtain',4,4,3,1,undefined,false)],
-    events:{desk:e(6,8,'object'),mirror:e(15,4,'object'),lane:e(11,14,'exit')},
+    events:{desk:e(6,8,'object'),mirror:e(15,4,'object'),suitcase:e(3,11,'object'),lane:e(11,14,'exit')},
   },
   press: {
     outdoors:false,spawn:{col:11,row:12},tiles:interior(),
@@ -45,18 +45,34 @@ export const maps: Record<SceneId, GridMap> = {
   clinic: {
     outdoors:false,spawn:{col:11,row:12},tiles:interior(':'),
     props:[p('medical',3,4,4,1),p('desk',5,8,3,2,'medicine'),p('bed',17,6,3,3,'clinic'),p('curtain',16,5,5,1,undefined,false),p('stove',3,12),p('bench',14,11,2,1),p('lamp',11,4),p('cabinet',19,11,2,1)],
-    events:{doctor:e(8,7,'person','doctor'),gu:e(16,10,'person','gu'),register:e(5,4,'object'),lane:e(11,14,'exit')},
+    events:{doctor:e(8,7,'person','doctor'),gu:e(16,10,'person','gu'),register:e(5,4,'object'),ward:e(18,8,'object'),lane:e(11,14,'exit')},
   },
   archive: {
     outdoors:false,spawn:{col:11,row:12},tiles:interior(),
     props:[p('shelf',3,4,4,1),p('shelf',10,4,4,1),p('shelf',17,4,4,1),p('shelf',4,8,3,1),p('shelf',17,8,3,1),p('desk',10,8,3,2,'register'),p('clock',8,4),p('crate',3,12,2,1),p('crate',19,12,2,1),p('lamp',15,6)],
-    events:{cabinet:e(11,9,'object'),archiveWall:e(8,4,'object'),ledger:e(12,4,'object'),lane:e(11,14,'exit')},
+    events:{cabinet:e(11,9,'object'),archiveWall:e(8,4,'object'),ledger:e(12,4,'object'),amendment:e(4,8,'object'),lane:e(11,14,'exit')},
   },
   river: {
     outdoors:true,spawn:{col:4,row:12},
     tiles:Array.from({length:ROWS},(_,r)=>Array.from({length:COLS},(_,c)=>r<7 ? '~' : r===7 && c>=16&&c<=19 ? 'p' : r===7 ? '~' : r===15 || c===0 || c===23 ? '#' : r<11 && c>=16 && c<=19 ? 'p' : '.').join('')),
     props:[p('boat',16,4,5,3),p('rail',1,8,7,1),p('rail',10,8,6,1),p('rail',20,8,3,1),p('lamp',5,10),p('lamp',14,10),p('bench',7,12,3,1),p('crate',20,12,2,1),p('crate',21,11),p('poster',2,9)],
-    events:{finale:e(17,7,'exit'),water:e(9,8,'object'),lane:e(2,13,'exit')},
+    events:{finale:e(17,7,'exit'),water:e(9,8,'object'),lane:e(2,13,'exit'),waiting:e(22,10,'exit')},
+  },
+  courtyard: {
+    outdoors:true,spawn:{col:20,row:12},
+    tiles:Array.from({length:ROWS},(_,r)=>Array.from({length:COLS},(_,c)=>r===0||r===15||c===0||c===23?'#':c===11||c===12?',':'.').join('')),
+    props:[p('house',1,1,6,4,'home'),p('house',16,1,6,4,'home'),p('cabinet',3,6,2,1),p('stove',17,8),p('bench',4,11,3,1),p('bicycle',18,12,2,1),p('lamp',10,8),p('crate',3,8),p('crate',4,8),p('poster',20,6),p('rail',8,2,7,1)],
+    events:{letters:e(4,6,'object'),relay:e(5,11,'object'),boiler:e(17,8,'object'),lane:e(22,12,'exit'),warehouse:e(1,12,'exit')},
+  },
+  warehouse: {
+    outdoors:false,spawn:{col:11,row:12},tiles:interior(','),
+    props:[p('crate',3,4,3,2),p('crate',3,8,3,2),p('crate',18,4,3,2),p('crate',18,8,3,2),p('shelf',8,4,6,1),p('desk',10,7,3,2,'register'),p('desk',7,11,2,1,'paper'),p('lamp',16,6),p('clock',16,4),p('rail',20,11,2,1),p('poster',3,11)],
+    events:{freight:e(11,8,'object'),seal:e(8,11,'object'),cargo:e(19,9,'object'),courtyard:e(11,14,'exit'),waiting:e(21,13,'exit')},
+  },
+  waiting: {
+    outdoors:false,spawn:{col:11,row:12},tiles:interior(':'),
+    props:[p('desk',9,4,6,1,'register'),p('bench',4,8,4,1),p('bench',15,8,4,1),p('bench',4,11,4,1),p('bench',15,11,4,1),p('clock',19,4),p('stove',3,5),p('cabinet',3,4,2,1),p('poster',16,4),p('lamp',13,10),p('rail',9,6,2,1),p('rail',13,6,2,1)],
+    events:{timetable:e(16,4,'object'),window:e(11,4,'object'),bench:e(6,8,'object'),warehouse:e(11,14,'exit'),river:e(21,13,'exit')},
   },
 };
 export function tileCenter(col:number,row:number):Point { return {x:col*TILE_SIZE+TILE_SIZE/2,y:row*TILE_SIZE+TILE_SIZE/2}; }

@@ -16,8 +16,10 @@ import {
 } from "./engine";
 import {
   getItemUse,
-  canEmbers,
-  canWitness,
+  activeRoute,
+  objective,
+  endingAvailable,
+  endingReturnNode,
   chapter,
   dialogues,
   endings,
@@ -210,7 +212,7 @@ function enterGame(save?: SaveData) {
   else document.querySelector<HTMLCanvasElement>('#world')!.focus({ preventScroll: true });
 }
 function showTitle() {
-  world.keys.clear();
+  world.clearInput();
   world.stop();
   if (!persist()) {
     notify(tr('进度未能保存，暂未返回标题。请保持当前页面并检查浏览器存储。', 'Could not save progress, so the game is still open. Keep this page open and check browser storage.'));
@@ -241,6 +243,7 @@ function skipPrologue() {
 }
 function render() {
   const opening = prologueIndex() >= 0;
+  const goal = objective(state);
   const scene = scenes.find((s) => s.id === state.scene)!;
   document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
   document.title = tr("雾渡 · The Other Shore", "The Other Shore · 雾渡");
@@ -256,12 +259,13 @@ function render() {
   document.querySelector("#hotspots")!.innerHTML = scene.hotspots
     .map(
       (h) =>
-        `<button class="hotspot ${h.kind} ${currentDialogue ? "subdued" : ""}" style="left:${(h.x / WORLD_WIDTH) * 100}%;top:${((h.y - 44) / WORLD_HEIGHT) * 100}%" data-hotspot="${h.id}" aria-label="${t(h.label)}" ${currentDialogue || state.ending ? "disabled" : ""}><span class="hotspot-symbol">${h.kind === "person" ? "···" : h.kind === "exit" ? icon("arrow") : icon("eye")}</span><span class="hotspot-label">${t(h.label)}</span></button>`,
+        `<button class="hotspot ${h.kind} ${goal?.scene === state.scene && goal.event === h.id ? "objective" : ""} ${currentDialogue ? "subdued" : ""}" style="left:${(h.x / WORLD_WIDTH) * 100}%;top:${((h.y - 44) / WORLD_HEIGHT) * 100}%" data-hotspot="${h.id}" aria-label="${t(h.label)}" ${currentDialogue || state.ending ? "disabled" : ""}><span class="hotspot-symbol">${h.kind === "person" ? "···" : h.kind === "exit" ? icon("arrow") : icon("eye")}</span><span class="hotspot-label">${t(h.label)}</span></button>`,
     )
     .join("");
   renderDialogue();
   const activeQuest = quests(state).find(q => !q.done && !q.optional);
-  document.querySelector("#quest-hud")!.innerHTML = `${icon('book')} ${activeQuest ? t(activeQuest.title) : tr('长夜已渡', 'The night is behind you')}`;
+  const destination = goal && scenes.find(s => s.id === goal.scene);
+  document.querySelector("#quest-hud")!.innerHTML = `${icon('book')} ${activeQuest ? t(activeQuest.title) : tr('长夜已渡', 'The night is behind you')}${destination && !state.ending ? ` · ${t(destination.name)}` : ''}`;
   document.querySelector("#stage")!.classList.toggle("has-dialogue", !atTitle && !!currentDialogue);
   document.querySelector("#stage")!.classList.toggle("has-ending", !atTitle && !!state.ending);
   document.querySelector("#touch-controls")!.innerHTML = `<button data-move="up" aria-label="${tr('向上','Move up')}">▲</button><button data-move="left" aria-label="${tr('向左','Move left')}">◀</button><button data-move="down" aria-label="${tr('向下','Move down')}">▼</button><button data-move="right" aria-label="${tr('向右','Move right')}">▶</button><button data-action="interact" aria-label="${tr('交互','Interact')}">◎</button>`;
@@ -359,7 +363,7 @@ function useItem() {
   const use = getItemUse(state, selectedItem);
   if (!use) return;
   if (currentDialogue) { notify(tr('先完成当前对话，再使用道具。','Finish the current conversation before using an item.')); return; }
-  if (state.ending) { notify(tr('在结局画面返回最后选择后，可以继续探索。','Return to the final choice from the ending to keep exploring.')); return; }
+  if (state.ending) { notify(tr('在结局画面返回最后选择后，可以继续探索。','Return to this route’s final choice from the ending to keep exploring.')); return; }
   if (use.scene && state.scene !== use.scene) {
     notify(use.hint ? t(use.hint) : tr('请先前往相关地点。','Visit the relevant location first.'));
     return;
@@ -373,7 +377,7 @@ function interact(h: Hotspot) {
   else if (h.dialogue) {
     currentDialogue = h.dialogue(state);
     world.stop();
-    world.keys.clear();
+    world.clearInput();
     persist();
     render();
   }
@@ -449,7 +453,7 @@ function openModal(name: string) {
   if (!modal) returnFocus = document.activeElement as HTMLElement;
   modal = name;
   world.enabled = false;
-  world.keys.clear();
+  world.clearInput();
   world.stop();
   renderModal();
   document.body.classList.add("modal-open");
@@ -484,7 +488,7 @@ function renderModal() {
       ["bag", "bag", tr("背包", "Belongings"), "I"],
       ["journal", "book", tr("手记", "Journal"), "J"],
       ["map", "map", tr("地图", "Map"), "M"],
-      ["endings", "boat", tr("余音", "Endings"), `${collected.length}/4`],
+      ["endings", "boat", tr("余音", "Endings"), `${collected.length}/${Object.keys(endings).length}`],
       ["saves", "save", tr("存档 / 读档", "Save / Load"), ""],
       ["settings", "settings", tr("设置", "Options"), ""],
       ["lang", "book", lang === "zh" ? "English" : "中文", ""],
@@ -500,7 +504,7 @@ function renderModal() {
     const opening = storyData.prologue.map(page => page.node);
     content = `<p class="modal-intro">${tr("真实历史时期下的原创虚构人物与事件。重读背景不会改变当前进度。", "Original fictional characters and events in a real historical period. Reading this does not alter your progress.")}</p><div class="memory-log">${opening.map(id => `<p>${t(dialogues[id].text)}</p>`).join("")}</div>`;
   } else if (modal === "journal") {
-    title = tr("旅人手记", "Traveler’s journal");
+    title = activeRoute(state) ? t(activeRoute(state)!.title) : tr("旅人手记", "Traveler’s journal");
     eyebrow = "NOTES FROM A LONG NIGHT";
     content = `<p class="modal-intro">${tr("写下的东西，就不再只属于黑夜。", "What is written no longer belongs only to the night.")}</p><div class="journal-entries">${quests(
       state,
@@ -520,35 +524,27 @@ function renderModal() {
     content = `<p class="modal-intro">${tr("选择物品查看线索。在对应场景使用道具，会走近相关人物或物件。", "Select an item to inspect it. Use it in the indicated location to approach the relevant person or object.")}</p><div class="bag-grid">${state.inventory.map((id) => `<button class="bag-item ${id === selectedItem ? "selected" : ""}" data-select-item="${id}">${icon(items[id].icon)}<span>${t(items[id].name)}</span></button>`).join("")}</div><div class="item-detail"><div>${icon(items[selectedItem].icon)}</div><h3>${t(items[selectedItem].name)}</h3><p>${t(items[selectedItem].description)}</p><p class="item-hint">${t(items[selectedItem].use.hint)}</p><div class="item-actions"><button class="use-item" data-action="use-item">${t(items[selectedItem].use.label)}</button></div></div>`;
   } else if (modal === "map") {
     title = tr("上海 · 夜行地图", "Shanghai · Night map");
-    eyebrow = "SIX PLACES, ONE LONG NIGHT";
+    eyebrow = "NINE PLACES, ONE LONG NIGHT";
     wide = true;
-    content = `<p class="modal-intro">${tr("点击已开放的地点前往。故事进展会解锁新的街区；可以随时回访。", "Choose an open location. Follow the story to unlock the district; revisit places at any time.")}</p><div class="district-map">${scenes.map((s, i) => `<button class="map-place ${unlock(state, s.id) ? "" : "locked"} ${state.scene === s.id ? "selected" : ""}" data-scene="${s.id}" data-locked="${!unlock(state, s.id)}" aria-label="${t(s.name)}${unlock(state, s.id) ? "" : " · " + t(lockReason(s.id))}"><span class="map-number">0${i + 1}</span>${icon(unlock(state, s.id) ? "pin" : "lock")}<h3>${t(s.name)}</h3><p>${unlock(state, s.id) ? t(s.subtitle) : t(lockReason(s.id))}</p><small>${state.scene === s.id ? tr("你在这里", "YOU ARE HERE") : state.visited.includes(s.id) ? tr("再次前往", "REVISIT") : unlock(state, s.id) ? tr("前往探索", "EXPLORE") : tr("尚未开放", "NOT YET OPEN")}</small></button>`).join("")}</div>`;
+    content = `<p class="modal-intro">${tr("金色标记是当前目标。新区域依次连通：槐生里西口 → 后弄 → 货栈 → 候船室 → 江岸。也可点击已开放地点快速前往。", "Gold marks your objective. Walk the connected lane → rear court → warehouse → ferry hall → quay, or fast travel to any open location.")}</p><div class="district-map">${scenes.map((s, i) => `<button class="map-place ${objective(state)?.scene === s.id ? "objective" : ""} ${unlock(state, s.id) ? "" : "locked"} ${state.scene === s.id ? "selected" : ""}" data-scene="${s.id}" data-locked="${!unlock(state, s.id)}" aria-label="${t(s.name)}${unlock(state, s.id) ? "" : " · " + t(lockReason(s.id))}"><span class="map-number">0${i + 1}</span>${icon(unlock(state, s.id) ? "pin" : "lock")}<h3>${t(s.name)}</h3><p>${unlock(state, s.id) ? t(s.subtitle) : t(lockReason(s.id))}</p><small>${state.scene === s.id ? tr("你在这里", "YOU ARE HERE") : state.visited.includes(s.id) ? tr("再次前往", "REVISIT") : unlock(state, s.id) ? tr("前往探索", "EXPLORE") : tr("尚未开放", "NOT YET OPEN")}</small></button>`).join("")}</div>`;
   } else if (modal === "endings") {
     title = tr("长夜的余音", "Echoes of the night");
-    eyebrow = `FOUR WAYS TO REACH THE SHORE · ${collected.length}/4`;
+    eyebrow = `FOUR ROUTES · EIGHT ENDINGS · ${collected.length}/${Object.keys(endings).length}`;
     const conditions: Record<EndingId, Text> = {
-      witness: L(
-        "收集校样、名册与证言；回访林岚，完成分存约定。",
-        "Collect all three documents, return to Lin Lan, and complete the preservation plan.",
-      ),
-      departure: L(
-        "获得转运名册与末班船票。",
-        "Obtain the transfer register and last ferry ticket.",
-      ),
-      silence: L(
-        "到达江岸后，选择烧毁证据。",
-        "Reach the shore, then choose to burn the evidence.",
-      ),
-      embers: L(
-        "获得名册、答应保护医生，并给顾先生看旧屋合影。",
-        "Obtain the register, protect the doctor, and show Mr. Gu the photograph.",
-      ),
+      witness: L("留证线：完成三项交接，并在封存时同意署名。", "Evidence route: complete three handovers and agree to sign at sealing."),
+      anonymous: L("留证线：完成三项交接，最终选择匿名保管。", "Evidence route: complete three handovers, then choose anonymous custody."),
+      embers: L("护人线：完成照护安排，回诊所守候。", "Care route: complete the arrangements and keep your own watches."),
+      relay: L("护人线：先邀请轮值，再完成交接。", "Care route: invite a rota and complete its handover."),
+      departure: L("离沪线：携带地址簿并核对远行条件，再登船。", "Departure route: take the address book, verify preparations, then board."),
+      returning: L("离沪线：完成准备后，决定退票回到里弄。", "Departure route: finish preparations, then cancel and return."),
+      silence: L("缄默线：交代退出后，销毁自己的陈述。", "Silence route: arrange withdrawal, then destroy your own statement."),
+      letterKept: L("缄默线：提前保留草稿，最终封存未寄。", "Silence route: retain the draft, then seal it undelivered."),
     };
-    content = `<p class="modal-intro">${tr("没有完美的选择。只有你愿意带到天亮的东西。结局收集不会因重新开始而清除。", "There is no perfect choice. Only what you choose to carry into the dawn. Discovered endings survive a new game.")}</p><div class="endings-grid">${(Object.keys(endings) as EndingId[]).map((id) => `<article class="ending-tile ${collected.includes(id) ? "discovered" : ""}"><span>${endings[id].number}</span><div><h3>${collected.includes(id) ? t(endings[id].title) : tr("未抵达的岸", "An unreached shore")}</h3><p>${t(conditions[id])}</p><small>${collected.includes(id) ? tr("已解锁", "DISCOVERED") : (id === "witness" && canWitness(state)) || (id === "embers" && canEmbers(state)) || (id === "departure" && has(state, "ticket") && has(state, "record")) || (id === "silence" && has(state, "record")) ? tr("已满足条件 · 在江岸选择", "AVAILABLE AT THE SHORE") : tr("尚待探索", "STILL TO BE FOUND")}</small></div></article>`).join("")}</div>`;
+    content = `<p class="modal-intro">${tr("没有完美的选择。只有你愿意带到天亮的东西。结局收集不会因重新开始而清除。", "There is no perfect choice. Only what you choose to carry into the dawn. Discovered endings survive a new game.")}</p><div class="endings-grid">${(Object.keys(endings) as EndingId[]).map((id) => `<article class="ending-tile ${collected.includes(id) ? "discovered" : ""}"><span>${endings[id].number}</span><div><h3>${collected.includes(id) ? t(endings[id].title) : tr("未抵达的岸", "An unreached shore")}</h3><p>${t(conditions[id])}</p><small>${collected.includes(id) ? tr("已解锁", "DISCOVERED") : endingAvailable(state, id) ? tr("已满足条件 · 在问讯窗口选择", "AVAILABLE AT THE ENQUIRY WINDOW") : tr("尚待探索", "STILL TO BE FOUND")}</small></div></article>`).join("")}</div>`;
   } else if (modal === "ending") {
     const e = endings[state.ending!];
     title = t(e.title);
-    eyebrow = `ENDING ${e.number} / IV · ${tr("长夜的余音", "AN ECHO OF THE NIGHT")}`;
+    eyebrow = `ENDING ${e.number} / VIII · ${tr("长夜的余音", "AN ECHO OF THE NIGHT")}`;
     content = `<div class="ending-art">${icon("boat")}<span>彼 岸</span></div><p class="ending-subtitle">${t(e.subtitle)}</p><div class="ending-prose">${t(
       e.text,
     )
@@ -556,7 +552,7 @@ function renderModal() {
       .map((p) => `<p>${p}</p>`)
       .join(
         "",
-      )}</div><div class="ending-actions"><button class="primary-button" data-action="return-choice">${tr("回到最后的选择", "Return to the final choice")}${icon("arrow")}</button><button class="secondary-button" data-action="endings">${tr("查看所有余音", "View all endings")}</button></div><p class="fiction-note">${tr("本作人物、地点细节及具体事件均为虚构。以真实历史时期为背景，献给被记住的人。", "The characters, specific events, and local places are fictional. Set against a real historical period, this story is dedicated to those remembered.")}</p>`;
+      )}</div><div class="ending-actions"><button class="primary-button" data-action="return-choice">${tr("回到本路线的最后选择", "Return to this route’s final choice")}${icon("arrow")}</button><button class="secondary-button" data-action="endings">${tr("查看所有余音", "View all endings")}</button></div><p class="fiction-note">${tr("本作人物、地点细节及具体事件均为虚构。以真实历史时期为背景，献给被记住的人。", "The characters, specific events, and local places are fictional. Set against a real historical period, this story is dedicated to those remembered.")}</p>`;
   } else if (modal === "settings") {
     title = tr("灯下小憩", "A pause beneath the lamp");
     eyebrow = "OPTIONS";
@@ -588,7 +584,7 @@ function renderModal() {
   } else {
     title = tr("在雨夜中行走", "Walking through the night");
     eyebrow = "A SMALL GUIDE";
-    content = `<p class="modal-intro">${tr("《雾渡》是一部首次正常阅读与探索约 25–35 分钟的原创叙事 RPG 原型。没有战斗，也没有倒计时。可以慢慢阅读，反复走访。", "The Other Shore is an original narrative RPG prototype, designed for about 25–35 minutes of first-time reading and exploration. There is no combat or countdown. Read at your own pace and revisit freely.")}</p><div class="help-rows"><p><kbd>WASD / ↑↓←→</kbd>${tr("在场景的街道或地板上移动", "Move along the street or floor")}</p><p><kbd>Enter / Space / E</kbd>${tr("与附近人物、物件或出口交互；显示全文", "Interact with nearby events; reveal the full passage")}</p><p><kbd>1–5</kbd>${tr("选择相应对话；空格推进单选段落", "Choose a dialogue option; Space advances single-choice passages")}</p><p><kbd>J / I / M</kbd>${tr("打开手记 / 行囊 / 地图", "Open journal / belongings / map")}</p><p><kbd>Esc</kbd>${tr("打开 / 关闭菜单；对话需要做出选择", "Open / close the menu; dialogue requires a choice")}</p></div><p class="modal-intro">${tr("鼠标或触屏：点击场景标记交互，点击地面移动，打开地图选择地点旅行。背包中可查看和使用物品。场景时刻是章节氛围，不是游戏计时器。", "Mouse or touch: select markers to interact, the ground to walk, or open the map to travel. Inspect and use items in the bag. Scene times convey atmosphere; they are not a timer.")}</p><p class="fiction-note">${tr("背景：中国文化大革命时期，1968 年的上海。沈砚、沈泊、林岚及所有具体事件均为原创虚构。包含政治迫害、失踪与创伤的非血腥描写。", "Setting: Shanghai in 1968, during China’s Cultural Revolution. Shen Yan, Shen Bo, Lin Lan, and all specific events are original fiction. Contains non-graphic depictions of political persecution, disappearance, and trauma.")}</p>`;
+    content = `<p class="modal-intro">${tr("《雾渡》是一部每条路线首次正常阅读与探索约一小时（随阅读速度变化）的原创叙事 RPG 原型。没有战斗，也没有倒计时。可以慢慢阅读，反复走访。", "The Other Shore is an original narrative RPG prototype, designed for about one hour per complete route (depending on reading pace) of first-time reading and exploration. There is no combat or countdown. Read at your own pace and revisit freely.")}</p><div class="help-rows"><p><kbd>WASD / ↑↓←→</kbd>${tr("在场景的街道或地板上移动", "Move along the street or floor")}</p><p><kbd>Enter / Space / E</kbd>${tr("与附近人物、物件或出口交互；显示全文", "Interact with nearby events; reveal the full passage")}</p><p><kbd>1–5</kbd>${tr("选择相应对话；空格推进单选段落", "Choose a dialogue option; Space advances single-choice passages")}</p><p><kbd>J / I / M</kbd>${tr("打开手记 / 行囊 / 地图", "Open journal / belongings / map")}</p><p><kbd>Esc</kbd>${tr("打开 / 关闭菜单；对话需要做出选择", "Open / close the menu; dialogue requires a choice")}</p></div><p class="modal-intro">${tr("鼠标或触屏：点击场景标记交互，点击地面移动，打开地图选择地点旅行。背包中可查看和使用物品。场景时刻是章节氛围，不是游戏计时器。", "Mouse or touch: select markers to interact, the ground to walk, or open the map to travel. Inspect and use items in the bag. Scene times convey atmosphere; they are not a timer.")}</p><p class="fiction-note">${tr("背景：中国文化大革命时期，1968 年的上海。沈砚、沈泊、林岚及所有具体事件均为原创虚构。包含政治迫害、失踪与创伤的非血腥描写。", "Setting: Shanghai in 1968, during China’s Cultural Revolution. Shen Yan, Shen Bo, Lin Lan, and all specific events are original fiction. Contains non-graphic depictions of political persecution, disappearance, and trauma.")}</p>`;
   }
   document.querySelector("#modal-root")!.innerHTML =
     `<div class="modal-backdrop"><section class="modal ${wide ? "wide" : ""} ${modal === "ending" ? "ending-modal" : ""}" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="icon-button modal-close" data-action="close" aria-label="${tr("关闭", "Close")}">${icon("close")}</button><span class="eyebrow">${eyebrow}</span><h2 id="modal-title">${title}</h2>${content}</section></div>`;
@@ -687,7 +683,7 @@ async function action(name: string) {
   if (name === 'confirm-reset') { enterGame(); return; }
   if (name === "return-choice") {
     state.ending = null;
-    currentDialogue = "finale";
+    currentDialogue = endingReturnNode(state);
     closeModal(false);
     persist();
     render();
@@ -819,7 +815,7 @@ document.addEventListener("keydown", (event) => {
     ].includes(key)
   ) {
     event.preventDefault();
-    if (world.enabled) world.keys.add(key);
+    if (world.enabled) world.press(key);
     return;
   }
   if (event.repeat) return;
@@ -856,25 +852,25 @@ document.addEventListener("keydown", (event) => {
   }
 });
 document.addEventListener("keyup", (e) =>
-  world.keys.delete(e.key.toLowerCase()),
+  world.release(e.key.toLowerCase()),
 );
 const moveKeys: Record<string,string> = {up:'w',left:'a',down:'s',right:'d'};
 document.addEventListener('pointerdown', e => {
   const button = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-move]');
   if (!button || !world.enabled) return;
   e.preventDefault(); effects.unlock();
-  world.keys.clear(); world.keys.add(moveKeys[button.dataset.move!]);
+  world.clearInput(); world.press(moveKeys[button.dataset.move!]);
   button.setPointerCapture(e.pointerId);
 });
 document.addEventListener('pointerup', e => {
-  if ((e.target as HTMLElement).closest('[data-move]')) world.keys.clear();
+  if ((e.target as HTMLElement).closest('[data-move]')) world.clearInput();
 });
-document.addEventListener('pointercancel', () => world.keys.clear());
-window.addEventListener("blur", () => world.keys.clear());
+document.addEventListener('pointercancel', () => world.clearInput());
+window.addEventListener("blur", () => world.clearInput());
 window.addEventListener("pagehide", () => persist());
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
-    world.keys.clear();
+    world.clearInput();
     persist();
   }
 });

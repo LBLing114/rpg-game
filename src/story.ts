@@ -15,10 +15,10 @@ import type {
   Text,
 } from "./types";
 
-const sceneIds: SceneId[] = ["lane", "home", "press", "clinic", "archive", "river"];
+const sceneIds: SceneId[] = ["lane", "home", "press", "clinic", "archive", "river", "courtyard", "warehouse", "waiting"];
 const itemIds: ItemId[] = ["letter", "key", "photo", "proof", "record", "testimony", "ticket"];
-const endingIds: EndingId[] = ["witness", "departure", "silence", "embers"];
-const flagIds: Flag[] = ["intro", "aunt", "trusted", "protected", "remembered", "copied", "confessed", "homeClue", "typeClue", "medicalClue", "archiveClue", "sharedPlan", "farewellAunt", "riverReady"];
+const endingIds: EndingId[] = ["witness", "departure", "silence", "embers", "anonymous", "relay", "returning", "letterKept"];
+const flagIds: Flag[] = ["intro", "aunt", "trusted", "protected", "remembered", "copied", "confessed", "homeClue", "typeClue", "medicalClue", "archiveClue", "sharedPlan", "farewellAunt", "riverReady", "courtyardClue", "freightClue", "tideClue", "courtyardOpen", "freightPublic", "routeWitness", "routeEmbers", "routeDeparture", "routeSilence", "witness1", "witness2", "witness3", "embers1", "embers2", "embers3", "departure1", "departure2", "departure3", "silence1", "silence2", "silence3", "namedCopy", "sharedCare", "takeAddress", "keepDraft"];
 const portraitIds = ["shen", "aunt", "lin", "doctor", "gu", "narrator"];
 
 /** Fail early with a precise content path when an authored module is malformed. */
@@ -132,15 +132,16 @@ export function validateStoryData(input: unknown): asserts input is StoryData {
     }
   };
   for (const [id, rule] of Object.entries(rules)) condition(rule, `conditions.${id}`, [id]);
-  const selector = (value: unknown, path: string) => {
+  const selector = (value: unknown, path: string, depth = 0): void => {
+    if (depth > 20) fail(path, "selector nesting is too deep");
     if (typeof value === "string") {
       own(value, dialogues, path);
       return;
     }
     const selection = object(value, path);
     condition(selection.when, `${path}.when`);
-    own(selection.then, dialogues, `${path}.then`);
-    own(selection.otherwise, dialogues, `${path}.otherwise`);
+    selector(selection.then, `${path}.then`, depth + 1);
+    selector(selection.otherwise, `${path}.otherwise`, depth + 1);
   };
 
   for (const [id, entry] of Object.entries(dialogues)) {
@@ -168,6 +169,31 @@ export function validateStoryData(input: unknown): asserts input is StoryData {
       if (choice.requires !== undefined) condition(choice.requires, `${pathChoice}.requires`);
     });
   }
+
+  const routes = list(data.routes, "routes");
+  const routeFlags: string[] = [];
+  const routeEndings: string[] = [];
+  routes.forEach((entry, i) => {
+    const route = object(entry, `routes[${i}]`);
+    routeFlags.push(member(route.flag, flagIds, `routes[${i}].flag`));
+    bilingual(route.title, `routes[${i}].title`);
+    own(route.start, dialogues, `routes[${i}].start`);
+    own(route.decision, dialogues, `routes[${i}].decision`);
+    list(route.endings, `routes[${i}].endings`).forEach(id => routeEndings.push(own(id, endings, `routes[${i}].endings`)));
+    const steps = list(route.steps, `routes[${i}].steps`);
+    if (!steps.length) fail(`routes[${i}].steps`, "expected investigation steps");
+    steps.forEach((value, j) => {
+      const step = object(value, `routes[${i}].steps[${j}]`);
+      const sid = member(step.scene, authoredSceneIds, "route step scene");
+      const scene = sceneRecords.find(s => s.id === sid)!;
+      member(step.event, (scene.hotspots as Record<string, unknown>[]).map(h => h.id as string), "route step event");
+      member(step.flag, flagIds, "route step flag");
+      own(step.node, dialogues, "route step node");
+      bilingual(step.title, "route step title"); bilingual(step.detail, "route step detail");
+    });
+  });
+  unique(routeFlags, "routes flags"); unique(routeEndings, "routes endings");
+  for (const id of endingIds) if (!routeEndings.includes(id)) fail("routes", `missing ending ${id}`);
 
   const prologue = list(data.prologue, "prologue").map((entry, i) => {
     const page = object(entry, `prologue[${i}]`);
@@ -252,6 +278,7 @@ export function validateStoryData(input: unknown): asserts input is StoryData {
     bilingual(quest.title, `quests[${i}].title`);
     bilingual(quest.detail, `quests[${i}].detail`);
     condition(quest.complete, `quests[${i}].complete`);
+    if (quest.when !== undefined) condition(quest.when, `quests[${i}].when`);
     if (quest.optional !== undefined && typeof quest.optional !== "boolean") fail(`quests[${i}].optional`, "expected a boolean");
   });
 }
@@ -295,7 +322,7 @@ export const dialogues: Record<string, Dialogue> = Object.fromEntries(
 function selectDialogue(state: State, selector: DialogueSelector): string {
   return typeof selector === "string"
     ? selector
-    : meetsCondition(state, selector.when) ? selector.then : selector.otherwise;
+    : selectDialogue(state, meetsCondition(state, selector.when) ? selector.then : selector.otherwise);
 }
 export const scenes: Scene[] = storyData.scenes.map((scene) => ({
   ...scene,
@@ -312,7 +339,33 @@ export function chapter(state: State): { index: number; title: Text } {
   return { index: selected.index, title: selected.title };
 }
 export function quests(state: State): { title: Text; detail: Text; done: boolean; optional: boolean }[] {
-  return storyData.quests.map(({ title, detail, complete, optional }) => ({
+  return storyData.quests.filter(q => !q.when || meetsCondition(state, q.when)).map(({ title, detail, complete, optional }) => ({
     title, detail, optional: !!optional, done: meetsCondition(state, complete),
   }));
+}
+
+export const activeRoute = (state: State) => storyData.routes.find(route => flag(state, route.flag));
+export function endingReturnNode(state: State): string {
+  return activeRoute(state)?.decision ?? "finale";
+}
+
+/** Next physical destination for the expanded investigation and committed route. */
+export function objective(state: State): { scene: SceneId; event: string } | undefined {
+  const route = activeRoute(state);
+  if (route) {
+    const step = route.steps.find(step => !flag(state, step.flag));
+    return step ?? { scene: 'waiting', event: 'window' };
+  }
+  if (!has(state, 'record')) return undefined;
+  if (!flag(state, 'courtyardClue')) return { scene: 'courtyard', event: 'letters' };
+  if (!flag(state, 'freightClue')) return { scene: 'warehouse', event: 'freight' };
+  if (!flag(state, 'tideClue')) return { scene: 'waiting', event: 'timetable' };
+  return { scene: 'river', event: 'finale' };
+}
+export function endingAvailable(state: State, id: EndingId): boolean {
+  const route = activeRoute(state);
+  if (!route) return false;
+  const index = route.endings.indexOf(id);
+  const choice = dialogues[route.decision].choices[index];
+  return !!choice && (!choice.requires || choice.requires(state));
 }

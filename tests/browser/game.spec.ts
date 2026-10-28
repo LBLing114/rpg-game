@@ -15,7 +15,7 @@ import {
   WORLD_WIDTH,
   type Point,
 } from "../../src/grid";
-import { scenes } from "../../src/story";
+import { scenes, storyData } from "../../src/story";
 import type { SceneId } from "../../src/types";
 
 test.setTimeout(120_000);
@@ -36,7 +36,8 @@ async function conversation(page: Page, stopAt: string[] = ["finale"]) {
     if (!(await page.locator(".dialogue-text").count())) return;
     const node = await page.locator("#dialogue").getAttribute("data-node");
     if (node && stopAt.includes(node)) return;
-    await choice(page);
+    await reveal(page);
+    await page.locator(".choices [data-choice]").first().click();
   }
   throw new Error("Dialogue did not reach its intended exit");
 }
@@ -111,9 +112,30 @@ async function fullJourney(page: Page, navigate = true) {
   await travel(page, "lane");
   await interact(page, "aunt");
   await conversation(page);
+  for (const [place,event] of [["courtyard","letters"],["warehouse","freight"],["waiting","timetable"]] as const) {
+    await travel(page, place); await interact(page, event); await conversation(page);
+  }
   await travel(page, "river");
   await interact(page, "finale");
   await conversation(page);
+}
+
+async function completeRoute(page: Page, index: number) {
+  const route = storyData.routes[index];
+  await choice(page, index);
+  await conversation(page);
+  for (const step of route.steps) {
+    await travel(page, step.scene);
+    await interact(page, step.event);
+    if (index === 3 && step.flag === 'silence1') {
+      await conversation(page, ['silenceDraft']);
+      await choice(page, 1);
+    }
+    await conversation(page);
+  }
+  await travel(page, 'waiting');
+  await interact(page, 'window');
+  await expect(page.locator('#dialogue')).toHaveAttribute('data-node', route.decision);
 }
 
 test("standalone HTML runs entirely inline and reaches an ending without network", async ({ page }) => {
@@ -130,7 +152,9 @@ test("standalone HTML runs entirely inline and reaches an ending without network
   await expect(page.locator('.portrait')).toHaveCount(0);
   await expect(page.locator(".typing-layout")).toContainText("上海，一九六八年");
   await fullJourney(page, false);
-  await choice(page, 3);
+  await completeRoute(page, 3);
+  await choice(page, 0);
+  await conversation(page);
   await expect(page.locator("#modal-title")).toHaveText("无声");
   expect(errors).toEqual([]);
   expect(network).toEqual([]);
@@ -167,21 +191,38 @@ test("typewriter reveals progressively and Enter/Space reveal before advancing",
   await expect(page.locator(".dialogue-text")).toHaveCount(0);
 });
 
-test("complete mouse journey, all seven items, all four endings, return to the last choice", async ({ page }) => {
+test("complete mouse journey across nine maps, four routes and eight endings", async ({ page }) => {
+  test.setTimeout(300_000);
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await fullJourney(page);
   const save = await readSave(page);
   expect(save.state.inventory).toHaveLength(7);
-  expect(save.state.visited).toHaveLength(6);
+  expect(save.state.visited).toHaveLength(9);
   expect(eventIsAdjacent("river", "finale", save.state)).toBe(true);
-  for (const [index, name] of [[0, "留名"], [1, "余灯"], [2, "渡雾"], [3, "无声"]] as const) {
-    await choice(page, index);
-    await expect(page.locator("#modal-title")).toHaveText(name);
-    await expect(page.locator(".ending-prose")).not.toBeEmpty();
-    await page.locator('[data-action="return-choice"]').click();
+  await menuAction(page, 'saves');
+  await page.locator('[data-action="slot-save-1"]').click();
+  await page.keyboard.press('Escape');
+  for (const [index, route] of storyData.routes.entries()) {
+    if (index) {
+      // Restore through the same manual save UI a player uses. Directly replacing
+      // autosave before reload would be overwritten by the pagehide autosave.
+      await menuAction(page, 'saves');
+      await page.locator('[data-action="slot-load-1"]').click();
+      await page.locator('[data-action="confirm-load"]').click();
+      await expect(page.locator('#dialogue')).toHaveAttribute('data-node', 'finale');
+    }
+    await completeRoute(page,index);
+    for (const [endingIndex, ending] of route.endings.entries()) {
+      await choice(page,endingIndex);
+      await conversation(page);
+      await expect(page.locator("#modal-title")).toHaveText(storyData.endings[ending].title.zh);
+      await expect(page.locator(".ending-prose")).not.toBeEmpty();
+      await page.locator('[data-action="return-choice"]').click();
+      await expect(page.locator('#dialogue')).toHaveAttribute('data-node',route.decision);
+    }
   }
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("wudu-endings")!))).toHaveLength(4);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("wudu-endings")!))).toHaveLength(8);
   expect(errors).toEqual([]);
 });
 

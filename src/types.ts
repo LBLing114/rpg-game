@@ -7,7 +7,10 @@ export type SceneId =
   | "press"
   | "clinic"
   | "archive"
-  | "river";
+  | "river"
+  | "courtyard"
+  | "warehouse"
+  | "waiting";
 export type ItemId =
   | "letter"
   | "key"
@@ -16,7 +19,7 @@ export type ItemId =
   | "record"
   | "testimony"
   | "ticket";
-export type EndingId = "witness" | "departure" | "silence" | "embers";
+export type EndingId = "witness" | "departure" | "silence" | "embers" | "anonymous" | "relay" | "returning" | "letterKept";
 export type Flag =
   | "intro"
   | "aunt"
@@ -31,7 +34,32 @@ export type Flag =
   | "archiveClue"
   | "sharedPlan"
   | "farewellAunt"
-  | "riverReady";
+  | "riverReady"
+  | "courtyardClue"
+  | "freightClue"
+  | "tideClue"
+  | "courtyardOpen"
+  | "freightPublic"
+  | "routeWitness"
+  | "routeEmbers"
+  | "routeDeparture"
+  | "routeSilence"
+  | "witness1"
+  | "witness2"
+  | "witness3"
+  | "embers1"
+  | "embers2"
+  | "embers3"
+  | "departure1"
+  | "departure2"
+  | "departure3"
+  | "silence1"
+  | "silence2"
+  | "silence3"
+  | "namedCopy"
+  | "sharedCare"
+  | "takeAddress"
+  | "keepDraft";
 export interface State {
   version: 1;
   scene: SceneId;
@@ -113,7 +141,7 @@ export interface StoryDialogueData extends Omit<Dialogue, "choices"> {
 
 export type DialogueSelector =
   | string
-  | { when: StoryCondition; then: string; otherwise: string };
+  | { when: StoryCondition; then: DialogueSelector; otherwise: DialogueSelector };
 
 export interface StoryHotspotData extends Omit<Hotspot, "x" | "y" | "dialogue"> {
   dialogue?: DialogueSelector;
@@ -137,13 +165,24 @@ export interface StoryChapterData {
 }
 
 export interface StoryQuestData {
+  when?: StoryCondition;
   optional?: boolean;
   title: Text;
   detail: Text;
   complete: StoryCondition;
 }
 
+export interface StoryRoute {
+  flag: Flag;
+  title: Text;
+  start: string;
+  decision: string;
+  endings: EndingId[];
+  steps: { scene: SceneId; event: string; node: string; flag: Flag; title: Text; detail: Text }[];
+}
+
 export interface StoryData {
+  routes: StoryRoute[];
   version: 1;
   flags: Flag[];
   evidenceItems: ItemId[];

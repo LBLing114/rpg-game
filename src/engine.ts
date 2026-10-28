@@ -25,6 +25,9 @@ export function newGame(): State {
   };
 }
 export function unlock(s: State, scene: SceneId): boolean {
+  if (scene === "courtyard") return has(s, "record");
+  if (scene === "warehouse") return s.flags.includes("courtyardClue");
+  if (scene === "waiting") return s.flags.includes("freightClue");
   if (scene === "home") return has(s, "key");
   if (scene === "clinic") return has(s, "proof");
   if (scene === "archive") return has(s, "record") || (has(s, "proof") && (has(s, "testimony") || s.visited.includes("archive")));
@@ -32,6 +35,9 @@ export function unlock(s: State, scene: SceneId): boolean {
   return true;
 }
 export function lockReason(scene: SceneId) {
+  if (scene === "courtyard") return L("找到名册后，沿槐生里西口去后弄核对退信。", "Find the register, then check returned letters in the rear court.");
+  if (scene === "warehouse") return L("先在后弄读退信箱，查清货栈编号。", "Examine the returned-letter box in the rear court first.");
+  if (scene === "waiting") return L("先核对货栈货单，找出改道的航班。", "Compare the freight papers in the warehouse first.");
   return scene === "home"
     ? L("先向周姨取得旧屋钥匙", "Get the house key from Aunt Zhou first")
     : scene === "archive"
@@ -50,7 +56,8 @@ export function lockReason(scene: SceneId) {
 export function arrivalFor(from: SceneId, to: SceneId): Point & { facing: Facing } {
   const destination = scenes.find(scene => scene.id === to)!;
   const entrance = destination.hotspots.find(event => event.target === from)
-    ?? destination.hotspots.find(event => event.target === "lane");
+    ?? destination.hotspots.find(event => event.target === "lane")
+    ?? destination.hotspots.find(event => event.target);
   if (!entrance) return { ...getSpawn(to), facing: "up" };
   const point = interactionPoint(to, entrance.id);
   const dx = point.x - entrance.x, dy = point.y - entrance.y;
@@ -108,7 +115,7 @@ const allItems = [
   "ticket",
 ];
 const allFlags: readonly string[] = storyData.flags;
-const allEndings: EndingId[] = ["witness", "departure", "silence", "embers"];
+const allEndings = Object.keys(storyData.endings) as EndingId[];
 export function decodeSave(raw: string | null): SaveData | null {
   try {
     if (!raw) return null;

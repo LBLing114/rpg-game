@@ -73,20 +73,11 @@ describe("original narrative progression", () => {
     expect(chapter(s).index).toBe(4);
     expect(quests(s).filter((q) => q.done)).toHaveLength(11);
   });
-  it.each(["witness", "embers", "departure", "silence"] as const)(
-    "reaches the %s ending through authored choices",
-    (ending) => {
-      const s = completeStory();
-      const index = dialogues.finale.choices.findIndex(
-        (c) => c.ending === ending,
-      );
-      const result = choose(s, "finale", index);
-      expect(result.state.ending).toBe(ending);
-      expect(result.next).toBeNull();
-      expect(quests(result.state).every((q) => q.done)).toBe(true);
-      expect(travel(result.state, "lane")).toBe(result.state);
-    },
-  );
+  it("old end-of-investigation saves do not skip the expanded routes", () => {
+    const s = completeStory();
+    for (let i = 0; i < 4; i++) expect(() => choose(s, "finale", i)).toThrow("Unavailable");
+    expect(choose(s, "finale", 4).next).toBeNull();
+  });
   it("choices of distrust and non-protection change available endings until revisited", () => {
     let s = finish(finish(newGame(), "aunt"), "desk");
     s = finish(s, "typecase");

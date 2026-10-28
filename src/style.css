@@ -401,3 +401,8 @@ html[lang="en"] .choice { font-family: Georgia, serif; letter-spacing: 0; }
 .has-prologue .stage-atmosphere { display: none; }
 .stage.arriving #world { animation-duration: 1s; }
 .prologue-scroll-hint { margin: 0 0 8px; color: #8c9797; font-size: 10px; text-align: right; }
+
+/* Quest destinations stay inside the game; exits and critical objects share a cue. */
+.hotspot.objective .hotspot-symbol { color: #ffe4a0; background: #55442be8; border: 1px solid #efd49a; min-width: 19px; height: 19px; box-shadow: 0 0 0 2px #211c16, 0 0 12px #e9ba6b45; }
+.map-place.objective { border-color: #efd49a; box-shadow: inset 3px 0 #c2a265; }
+.quest-hud { max-width: min(80%, 640px); text-align: left; }

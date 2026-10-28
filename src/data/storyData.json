@@ -14,7 +14,32 @@
     "archiveClue",
     "sharedPlan",
     "farewellAunt",
-    "riverReady"
+    "riverReady",
+    "courtyardClue",
+    "freightClue",
+    "tideClue",
+    "courtyardOpen",
+    "freightPublic",
+    "routeWitness",
+    "routeEmbers",
+    "routeDeparture",
+    "routeSilence",
+    "witness1",
+    "witness2",
+    "witness3",
+    "embers1",
+    "embers2",
+    "embers3",
+    "departure1",
+    "departure2",
+    "departure3",
+    "silence1",
+    "silence2",
+    "silence3",
+    "namedCopy",
+    "sharedCare",
+    "takeAddress",
+    "keepDraft"
   ],
   "evidenceItems": [
     "proof",
@@ -45,6 +70,19 @@
         },
         {
           "item": "record"
+        }
+      ]
+    },
+    "survey": {
+      "all": [
+        {
+          "flag": "courtyardClue"
+        },
+        {
+          "flag": "freightClue"
+        },
+        {
+          "flag": "tideClue"
         }
       ]
     }
@@ -897,58 +935,189 @@
         "en": "Before the dawn"
       },
       "role": {
-        "zh": "最后的选择",
-        "en": "The final choice"
+        "zh": "选择后进入独立路线",
+        "en": "Commit to a separate route"
       },
       "portrait": "shen",
       "text": {
-        "zh": "远处响起一声汽笛。\n口袋里的纸已经被体温焐热。你不能改变已经发生的事，却还可以决定，让什么渡过这条河。\n这一次，没有人替你作答。",
-        "en": "A ferry horn sounds in the distance.\nThe papers in your pocket are warm against your skin. You cannot change what has happened. But you can still choose what crosses this river.\nThis time, no one answers for you."
+        "zh": "三处记录已经接上，仍没有人能替你回答沈泊在哪里。接下来，要让纸留下、照顾仍在的人、准备离开，还是停止主动追查？\n这不是结局按钮。选择后需要完成该路线的三段事件，再作最后决定。想体验其他路线，可先从菜单保存到独立档位。",
+        "en": "The three records connect, but Shen Bo’s whereabouts remain unknown. Will you preserve the evidence, care for those here, prepare to leave, or stop the active inquiry?\nThis begins a route, not an ending card. Complete its three events before the final decision. Save in a separate slot now if you want to explore other routes."
       },
       "choices": [
         {
           "label": {
-            "zh": "与林岚分存证据，留下名字",
-            "en": "Keep separate copies with Lin Lan. Preserve the names."
+            "zh": "留证：与林岚安排封存和查阅",
+            "en": "Preserve: arrange custody and verification"
           },
-          "ending": "witness",
-          "requires": {
-            "rule": "witness"
-          }
-        },
-        {
-          "label": {
-            "zh": "留在上海，照顾仍在这里的人",
-            "en": "Stay in Shanghai. Care for those who remain."
-          },
-          "ending": "embers",
-          "requires": {
-            "rule": "embers"
-          }
-        },
-        {
-          "label": {
-            "zh": "带着信和真相，登上末班船",
-            "en": "Board the last ferry with the letter and the truth."
-          },
-          "ending": "departure",
           "requires": {
             "all": [
               {
-                "item": "ticket"
+                "rule": "survey"
+              },
+              {
+                "not": {
+                  "any": [
+                    {
+                      "flag": "routeWitness"
+                    },
+                    {
+                      "flag": "routeEmbers"
+                    },
+                    {
+                      "flag": "routeDeparture"
+                    },
+                    {
+                      "flag": "routeSilence"
+                    }
+                  ]
+                }
+              },
+              {
+                "rule": "witness"
+              }
+            ]
+          },
+          "next": "witnessStart",
+          "flags": [
+            "routeWitness"
+          ],
+          "note": {
+            "zh": "选择路线：留证线 · 纸的去处。按手记逐步完成，结局由后续决定。",
+            "en": "Chosen route: Evidence · Where the paper goes. Follow the journal; later decisions determine the ending."
+          }
+        },
+        {
+          "label": {
+            "zh": "护人：把照顾落实到今后的日子",
+            "en": "Care: make practical arrangements"
+          },
+          "requires": {
+            "all": [
+              {
+                "rule": "survey"
+              },
+              {
+                "not": {
+                  "any": [
+                    {
+                      "flag": "routeWitness"
+                    },
+                    {
+                      "flag": "routeEmbers"
+                    },
+                    {
+                      "flag": "routeDeparture"
+                    },
+                    {
+                      "flag": "routeSilence"
+                    }
+                  ]
+                }
+              },
+              {
+                "rule": "embers"
+              }
+            ]
+          },
+          "next": "embersStart",
+          "flags": [
+            "routeEmbers"
+          ],
+          "note": {
+            "zh": "选择路线：护人线 · 今后的夜班。按手记逐步完成，结局由后续决定。",
+            "en": "Chosen route: Care · The nights to come. Follow the journal; later decisions determine the ending."
+          }
+        },
+        {
+          "label": {
+            "zh": "离沪：准备交接与远行",
+            "en": "Depart: prepare handovers and a journey"
+          },
+          "requires": {
+            "all": [
+              {
+                "rule": "survey"
+              },
+              {
+                "not": {
+                  "any": [
+                    {
+                      "flag": "routeWitness"
+                    },
+                    {
+                      "flag": "routeEmbers"
+                    },
+                    {
+                      "flag": "routeDeparture"
+                    },
+                    {
+                      "flag": "routeSilence"
+                    }
+                  ]
+                }
+              },
+              {
+                "all": [
+                  {
+                    "item": "ticket"
+                  },
+                  {
+                    "item": "record"
+                  }
+                ]
+              }
+            ]
+          },
+          "next": "departureStart",
+          "flags": [
+            "routeDeparture"
+          ],
+          "note": {
+            "zh": "选择路线：离沪线 · 另一岸的地址。按手记逐步完成，结局由后续决定。",
+            "en": "Chosen route: Departure · An address beyond the river. Follow the journal; later decisions determine the ending."
+          }
+        },
+        {
+          "label": {
+            "zh": "缄默：交代退出调查的后果",
+            "en": "Silence: face the consequences of stopping"
+          },
+          "requires": {
+            "all": [
+              {
+                "rule": "survey"
+              },
+              {
+                "not": {
+                  "any": [
+                    {
+                      "flag": "routeWitness"
+                    },
+                    {
+                      "flag": "routeEmbers"
+                    },
+                    {
+                      "flag": "routeDeparture"
+                    },
+                    {
+                      "flag": "routeSilence"
+                    }
+                  ]
+                }
               },
               {
                 "item": "record"
               }
             ]
-          }
-        },
-        {
-          "label": {
-            "zh": "把证据投入炉火，重新沉默",
-            "en": "Burn the evidence. Return to silence."
           },
-          "ending": "silence"
+          "next": "silenceStart",
+          "flags": [
+            "routeSilence"
+          ],
+          "note": {
+            "zh": "选择路线：缄默线 · 没有递出的纸。按手记逐步完成，结局由后续决定。",
+            "en": "Chosen route: Silence · The undelivered page. Follow the journal; later decisions determine the ending."
+          }
         },
         {
           "label": {
@@ -2193,8 +2362,8 @@
             "sharedPlan"
           ],
           "note": {
-            "zh": "与林岚完成分存准备：保留来源与未知，患者信息隐去，医生姓名另封。江岸可选择“留名”。",
-            "en": "Preservation plan agreed with Lin: keep sources and uncertainties, mask patients, seal Luo’s name separately. The witness ending is available at the shore."
+            "zh": "与林岚完成分存准备：保留来源与未知，患者信息隐去，医生姓名另封。江岸可进入留证线。",
+            "en": "Preservation plan agreed with Lin: keep sources and uncertainties, mask patients, seal Luo’s name separately. The evidence route is available at the shore."
           }
         }
       ]
@@ -2351,6 +2520,3123 @@
           "next": "finale"
         }
       ]
+    },
+    "routeWait": {
+      "speaker": {
+        "zh": "夜行手记",
+        "en": "Night journal"
+      },
+      "portrait": "narrator",
+      "text": {
+        "zh": "手记里已经写下接下来要去的地方。眼前的材料不能代替尚未完成的那一步；把事情按约定做完，再回来。按 J 查看当前路线与地点。",
+        "en": "The journal names the next place to visit. These papers cannot replace the unfinished step. Complete the agreed task, then return. Press J to see the current route and destination."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收好手记，继续探索",
+            "en": "Close the journal and explore"
+          }
+        }
+      ]
+    },
+    "routeDone": {
+      "speaker": {
+        "zh": "夜行手记",
+        "en": "Night journal"
+      },
+      "portrait": "narrator",
+      "text": {
+        "zh": "这一步已经完成。你记下了参与者的答复和材料的去向，没有必要要求他们重新作一次承诺。下一步仍在手记中。",
+        "en": "This step is complete. You recorded the participants’ answers and the destination of the papers. They need not make the same promise again. The next task is in your journal."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收好手记，继续探索",
+            "en": "Close the journal and explore"
+          }
+        }
+      ]
+    },
+    "riverSurvey": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "名册只写了转出，没有写抵达。在把自己的明天交给一张纸之前，还需要查清这条路：槐生后弄的退信箱、沿江货栈的货单，以及候船室的旧航班表。三个地方连在一起，走过它们，才能知道那封信为什么迟了一年。",
+        "en": "The register records a departure, not an arrival. Before entrusting tomorrow to a piece of paper, follow the route: the returned-letter box in the rear court, the warehouse freight papers, and the ferry hall’s old timetable. Those places connect. They may explain why the letter took a year to reach you."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收好手记，继续探索",
+            "en": "Close the journal and explore"
+          }
+        }
+      ]
+    },
+    "suitcaseIdle": {
+      "speaker": {
+        "zh": "旧皮箱",
+        "en": "Old suitcase"
+      },
+      "portrait": "narrator",
+      "text": {
+        "zh": "皮箱藏在床脚，搭扣已经生锈。里面没有远行用的衣服，只有几张画到一半的图纸。今夜若真要走，必须回来认真决定带走什么。",
+        "en": "The suitcase under the bed has rusty clasps. It holds unfinished drawings rather than clothes for a journey. If you leave tonight, you must return and decide what to carry."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收好手记，继续探索",
+            "en": "Close the journal and explore"
+          }
+        }
+      ]
+    },
+    "wardIdle": {
+      "speaker": {
+        "zh": "帘后的病床",
+        "en": "Behind the curtain"
+      },
+      "portrait": "narrator",
+      "text": {
+        "zh": "帘后的人翻了一个身。床头杯子里的水已经凉了，罗医生把干净的布盖在杯口。此刻还没有人安排接下来几夜由谁值守。",
+        "en": "Someone turns behind the curtain. Water has cooled in the bedside cup; Luo covers it with a clean cloth. No one has yet arranged who will keep watch over the coming nights."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收好手记，继续探索",
+            "en": "Close the journal and explore"
+          }
+        }
+      ]
+    },
+    "amendmentIdle": {
+      "speaker": {
+        "zh": "更正表",
+        "en": "Correction forms"
+      },
+      "portrait": "narrator",
+      "text": {
+        "zh": "搁板上是一摞空白更正表。它们可以用来承认抄写错误，也可以把一件做过的事改成没有做过。纸张本身不会分辨这两者。",
+        "en": "Blank correction forms rest on the shelf. They could acknowledge a copying error, or turn an act into something that supposedly never happened. The paper cannot distinguish the two."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收好手记，继续探索",
+            "en": "Close the journal and explore"
+          }
+        }
+      ]
+    },
+    "court0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "西口的石板比正街低，雨水沿着一条细沟往江边走。两幢房子背对背站着，晾衣绳上只有夹子，没有衣服。退信箱钉在公用水槽旁，锁早坏了，箱口仍塞着报纸，像有人想替里面的东西挡一挡雨。\n我以为这里会有沈泊的新消息，先摸到的却是一叠收件人已经搬走的通知。每封信都写着一个完整地址；每一个完整地址，在另一头都成了找不到的人。",
+        "en": "The west passage lies lower than the main street. Rain follows a narrow gutter toward the river. Two houses stand back to back; only pegs remain on the washing line. The returned-letter box beside the communal sink has a broken lock. Newspaper stuffed into its mouth keeps some rain out.\nI expected news of Shen Bo. Instead I find notices for people who have moved away. Each envelope carries a complete address. At the other end of each complete address is somebody no one can find."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "court1"
+        }
+      ]
+    },
+    "court1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "周姨追来时，我正准备把一叠信拆开。她按住箱盖，说这些信不全是我们的。三楼有人去了外地，有人搬去亲戚家，也有人只是改了门牌，邮差便再没来过。她每逢晴天把信拿出来晒一遍，认得名字，却不知道该往哪里送。\n“你要查弟弟，我懂。可别人没回的信，不都该成为你的线索。”她把一只干净搪瓷盆推过来，让我只把写着沈家地址的信挑出来。",
+        "en": "Aunt Zhou catches up as I am about to open a bundle. She holds down the lid: these letters are not all ours. Some tenants moved to other towns or relatives’ homes; some merely received new door numbers, after which the postman stopped coming. On dry days she airs the letters. She knows the names, but not where to forward them.\n“I understand why you are looking. But other people’s unanswered letters do not all belong to your investigation.” She offers a clean enamel basin. We can sort the envelopes addressed to our family without opening the rest."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "court2"
+        }
+      ]
+    },
+    "court2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "有一只信封上同时盖着两个日期。早的一枚是去年十一月，晚的一枚是今年三月；中间夹着一张沿江货栈的退件条，写着“随货误转，候核”。纸面上的四个月只隔了一寸，我却想起那四个月里每天听见楼梯声，都以为终于有人来送消息。\n退件条的经手栏没有姓名，只有货位“乙七”。周姨说那是一排临时存放的铁皮柜，不是关人的地方。我把这句话也写下来，免得自己的愿望替一张小纸补上没有的意思。",
+        "en": "One envelope bears two dates: November last year and March this year. Between them is a warehouse return slip marked “misrouted with cargo; awaiting verification.” Four months occupy an inch of paper. I remember every footstep on the stairs during those months, each one briefly sounding like somebody bringing news.\nThere is no handler’s name, only bay B7. Zhou says that was a row of temporary metal lockers, not a place where people were held. I record that distinction too, before hope can supply information the slip does not contain."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "court3"
+        }
+      ]
+    },
+    "court3": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "箱底还有一张领取登记，有人替沈家签过一次“无人收”。那天我明明在家。周姨看见我的手发抖，先给我搬来凳子。她记得那次送信，只记得来人把东西放在弄口，喊了两声就走；我当时被要求留在单位，家里没人应门。\n我的“在家”原来指的是那间窄房，并不是这里。这是今晚第二次，我发现自己记得的事是真的，拼起来的结论却可能是错的。接下来该怎样问邻居，也会决定他们还肯不肯开门。",
+        "en": "At the bottom is a collection sheet marked “no recipient,” signed for our family. I was home that day. When my hands shake, Zhou brings a stool before answering. She recalls a messenger leaving the bundle at the lane entrance, calling twice, then going away. I had been required to remain at my work unit. Nobody answered this door.\nBy “home,” I meant my narrow assigned room, not this house. For the second time tonight, a memory can be accurate while the conclusion I build from it is wrong. How I question the neighbors now will affect whether they open their doors again."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "courtChoice"
+        }
+      ]
+    },
+    "courtChoice": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "隔壁的窗还亮着。公开念出退信上的名字，也许能迅速找到经手人；隔门只核对沈家的地址，会慢一些，却不必把所有住户重新叫到一起。周姨等着我决定，手始终搭在箱盖上。",
+        "en": "The next window is lit. Reading the names aloud might quickly locate a handler. Quietly checking only our address would take longer, but would not summon every tenant into the same inquiry. Zhou waits, one hand still on the lid."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "隔门核对地址，不公开他人的名字",
+            "en": "Check our address privately"
+          },
+          "next": "courtPrivate0"
+        },
+        {
+          "label": {
+            "zh": "请邻居出来，一起核对退信记录",
+            "en": "Ask the neighbors to compare the returns together"
+          },
+          "next": "courtPublic0",
+          "flags": [
+            "courtyardOpen"
+          ]
+        }
+      ]
+    },
+    "courtPrivate0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我敲门时只报了自家的门牌。里面的人先问我是谁派来的，听见“沈泊的哥哥”，门栓才轻轻响了一下。她没有出来，把一只旧邮袋从门缝递给周姨，说袋子是替货栈缝的，沈泊曾帮忙送过去。\n她不肯签字，也不肯让我记她的名字。我答应了，只画下邮袋上的补丁位置。一个人愿意说话，并不意味着他愿意被留在每一份抄本里。",
+        "en": "I give only our house number when I knock. Someone asks who sent me. The bolt shifts after I answer, “Shen Bo’s brother.” She stays inside and passes Zhou an old mail sack. She repaired it for the warehouse; Shen Bo once delivered it.\nShe will not sign anything or let me record her name. I agree and sketch the position of its patch instead. Being willing to speak does not mean agreeing to appear in every future copy."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "courtPrivate1"
+        }
+      ]
+    },
+    "courtPrivate1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "补丁正好遮住旧的转运标记，新的“乙七”写在旁边。信可能跟着袋子被当作货物放错了柜；这不是弟弟仍在那里生活的证明，却解释了退件条。周姨把未拆的信逐一放回去，说以后若需要藏一张纸，她可以先问过主人再借地方。\n临走时，那扇门又开了一指宽。里面的人提醒我：货栈今晚在点旧账，去中间的点交桌，不要只看柜门上的号码。",
+        "en": "The patch covers an old routing mark; B7 was added beside it. The letter may have gone into a freight locker with the sack. That does not prove my brother lived there, but it explains the return slip. Zhou replaces each unopened envelope. If I later need somewhere to keep a paper, she can ask a tenant’s permission first.\nThe door opens another inch before we leave. Tonight the warehouse is reconciling old accounts: I should inspect the central handover desk, not merely the locker numbers."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "courtyardClue"
+          ],
+          "note": {
+            "zh": "后弄：只核对沈家地址。乙七是货位，下一步去货栈点交桌。",
+            "en": "Rear court: checked only our address. B7 is a cargo bay. Next: warehouse handover desk."
+          }
+        }
+      ]
+    },
+    "courtPublic0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我请周姨把几位还醒着的邻居叫下来，先问他们是否愿意当面比对。有人带来凳子，有人只站在楼梯上。退信摊开以后，三个人对同一个日子说出了三种记忆：下雨、晴天、停电。直到看见信封背面的货栈印章，他们才承认自己记得的未必是同一次送信。\n一个年轻女人问我，明天若有人追问是谁聚在这里，我会怎样回答。我第一次发现，“大家一起核对”并不会自动使每个人更安全。",
+        "en": "I ask Zhou to invite the neighbors who are awake, first checking whether they want to compare records together. Some bring stools; one remains on the stairs. Three people remember the same date differently: rain, sunshine, a power cut. The warehouse stamp makes them admit they may remember different deliveries.\nA young woman asks what I will say if someone questions tomorrow’s gathering. “Checking together” does not automatically make everyone safer."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "courtPublic1"
+        }
+      ]
+    },
+    "courtPublic1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我们没有选一个说法压过其他说法，而是把三种记忆分栏写下。众人都认出邮袋上的补丁，货位“乙七”也得到核对。得到的是一个可以继续查的地点，不是一份邻居联名的指认。\n散去前，我把每人同意保留的那一行读给他听。有人划掉了姓名。周姨收起更正后的名单，叮嘱我以后来分存材料时也照这个规矩。楼梯重新安静下来，窗里亮着的灯却少了一盏。",
+        "en": "We put the three memories in separate columns instead of letting one defeat the others. Everyone recognizes the sack’s patch, and B7 is confirmed. We have a place to investigate, not a collective accusation signed by the neighbors.\nBefore dispersing, I read each person the line they have agreed to preserve. One crosses out a name. Zhou keeps the corrected list and says any future arrangement for storing papers must follow the same rule. The stairs fall quiet. One fewer window remains lit."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "courtyardClue"
+          ],
+          "note": {
+            "zh": "后弄：召集邻居比对；有人撤回署名。下一步去货栈点交桌。",
+            "en": "Rear court: compared returns together; one neighbor withdrew their name. Next: warehouse handover desk."
+          }
+        }
+      ]
+    },
+    "freight0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "货栈的门向里开，门后是一道被箱角磨白的弧线。装卸工已经收班，桌上只剩煤油灯和交接本。地面画着两条褪色的黄线，给推车留下通道，谁也不能把自己的箱子横在那里。\n我沿黄线找到乙七，那不是一只柜子，而是几年来不断挪动的一块货位牌。去年的乙七在东墙，今年已换到西面。若只凭今日的位置去找，我会把另一个人的东西当作弟弟留下的痕迹。",
+        "en": "The warehouse door has worn a pale arc into the floor. The loaders have gone; an oil lamp and handover book remain. Faded yellow lines mark the trolley aisle. Nobody may leave a private crate across it.\nB7 is not a particular locker but a movable bay sign. Last year it was on the east wall; now it stands to the west. Searching only today’s position could turn somebody else’s possessions into an imagined trace of my brother."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "freight1"
+        }
+      ]
+    },
+    "freight1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "林岚让我先看账页边上的改号说明。她小时候替父亲数过纸包，知道货名相同也未必是同一批东西。去年十一月，一袋退信被列进“废纸”，重量后来又被划掉；旁边另记一笔“取出邮袋，转候船室”。\n我问谁划的。她指向一枚很小的工号印，说不能把使用过这枚印的人都算成一个人。交接班会借印，也会有人忘记盖。我们要找的是能够相互校验的步骤，不是一个足够方便责怪的姓名。",
+        "en": "Lin asks me to read the renumbering note in the margin. As a child she counted paper bundles for her father: identical descriptions need not identify the same shipment. In November a sack of returned letters was entered as wastepaper, its weight later crossed out. Another line says, “mail sack removed; sent to ferry hall.”\nWho crossed it out? Lin points to a tiny employee stamp. A shared stamp does not identify a single person: workers lend it during shift changes, or forget to stamp at all. We need steps that corroborate one another, not a convenient name to blame."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "freight2"
+        }
+      ]
+    },
+    "freight2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "账簿中间少了一页，线头却还在。我几乎脱口而出说有人毁了证据，林岚已经翻到后面，找到装订时贴错的两页。缺失是真的，故意撕毁却只是我补上去的故事。\n补页提到一次临时改航：码头清点以后，原定的船改从另一处上客，候船通知迟了半日送到货栈。邮袋和搬运回执被放进同一只木箱，直到来年才重新开箱。信迟到的原因比我想象的琐碎，也比一场阴谋更难向等待的人说明。",
+        "en": "A page seems missing, with loose thread where it should be. Before I can call it destroyed evidence, Lin finds two leaves bound out of order farther back. The absence is real; deliberate destruction was a story I supplied.\nThe misplaced leaf describes a diverted sailing. Passengers boarded elsewhere after a quay inspection; the notice reached the warehouse half a day late. The mail sack and loading receipts went into one crate, opened only the following year. The delay has smaller causes than I imagined, and is harder to explain to someone who spent that year waiting."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "freight3"
+        }
+      ]
+    },
+    "freight3": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "附表里有沈泊那一批转运物品的编号，却没有乘客抵达的签名。货到了，不能证明人到了；人没有签收，也不能凭空证明人已经死了。我把两句话写在纸的两端，留出中间那块最难忍受的空白。\n林岚把灯移近。她说今晚可以誊一份货单带走，但原件上还有无关工人的工号和住址。照抄全部信息便于核对，遮去信息便于保护别人。我必须先决定这份纸准备交给谁看。",
+        "en": "The supplement lists property transferred with Shen Bo’s group, but bears no passenger arrival signature. Delivered cargo does not prove a person arrived. A missing signature does not prove a person died. I write those sentences at opposite ends of a sheet, leaving the unbearable blank between them.\nLin moves the lamp closer. We can transcribe the freight list, but it also contains unrelated workers’ numbers and addresses. A complete copy is easier to verify; a redacted one is safer to circulate. I must decide who this copy is meant for."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "freightChoice"
+        }
+      ]
+    },
+    "freightChoice": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "同一份货单，交给不同的人，可能带来完全不同的后果。林岚把两张空纸放在桌上：一张留完整的核对信息，一张只写与沈泊有关的条目。你准备怎样保存它？",
+        "en": "The same freight list can have different consequences in different hands. Lin lays out two blank sheets: one for verification details, one for entries concerning Shen Bo alone. How will you preserve it?"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "制作遮名抄本，原件位置单独记下",
+            "en": "Make a redacted copy; record the original location separately"
+          },
+          "next": "freightPrivate0"
+        },
+        {
+          "label": {
+            "zh": "保留完整抄本，逐人说明使用范围",
+            "en": "Keep full details and explain their use to each participant"
+          },
+          "next": "freightPublic0",
+          "flags": [
+            "freightPublic"
+          ]
+        }
+      ]
+    },
+    "freightPrivate0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我逐一略去无关的工号，把省略处画成方框。林岚提醒我不要把方框涂成与原文相同的黑色，否则以后的人会以为原件本来就缺字。我们在页首写“节录”，把货位、日期、页码留全，另用一张纸注明原件存放位置。\n这份纸失去了可以直接联系每位工人的能力，却保住了核对的路径。我不能再说它包含全部事实；它只是我有资格拿走的那部分。",
+        "en": "I omit unrelated employee numbers, marking omissions with boxes. Lin warns against blacking them out so completely that a later reader mistakes the omissions for damage in the original. We write “extract” at the top, preserving bay, date, and page number. The original’s location goes on a separate sheet.\nThis copy no longer lets a reader contact every worker directly, but keeps a path to verification. I cannot claim it contains the whole record. It contains the portion I can reasonably carry."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "freightPrivate1"
+        }
+      ]
+    },
+    "freightPrivate1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "货单背面的候船室编号被保留下来。林岚将两张纸朝不同方向折好，交给我时说，分开保存也意味着不能让唯一一个知道对应关系的人突然消失。以后若选留证这条路，还得找一个愿意接手核对的人。\n我从推车通道走出去，手指在纸边留下墨迹。下一处是候船室墙上的旧航班表。那里也许没有弟弟的答案，却能让我不再把去年的船和今晚的船当成同一班。",
+        "en": "The ferry hall reference on the back is retained. Lin folds the two sheets differently. Separate storage also means the connection cannot live only in one person’s head. If I choose to preserve evidence, someone must willingly take over the verification work.\nI leave along the trolley aisle, ink on my fingers. Next is the old timetable on the ferry hall wall. It may not answer what happened to my brother, but it can separate last year’s sailing from tonight’s."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "freightClue"
+          ],
+          "note": {
+            "zh": "货栈：制作遮名节录，保留原件位置。去候船室核对旧航班表。",
+            "en": "Warehouse: made a redacted extract and recorded the original location. Next: old timetable in the ferry hall."
+          }
+        }
+      ]
+    },
+    "freightPublic0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我把完整抄本放回桌面，没有立即收进口袋。林岚先去叫醒仍在值房的两位工人，请他们核对自己的条目。我听见其中一人问：“如果我不同意，你还会照抄吗？”\n我说会保留与沈泊有关的日期和货位，至于他的住址，会在给别人看的版本里删去。他拿着纸看了很久，自己划掉住址，又在旁边补了一个可由货栈转交口信的号码。完整并不等于任意流传，这个区别现在成了我的责任。",
+        "en": "I leave the full copy on the desk rather than pocketing it. Lin wakes two workers still in the duty room and asks them to verify their entries. One asks, “If I refuse, will you copy it anyway?”\nI will keep the date and bay relevant to Shen Bo, but omit his home address from any circulating version. After a long look he crosses out the address himself and substitutes a number through which the warehouse can forward a message. Complete information is not permission for unrestricted circulation. That distinction is now my responsibility."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "freightPublic1"
+        }
+      ]
+    },
+    "freightPublic1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "另一位工人不肯留下任何新的标记，却指出我把一个“七”抄成了“一”。这一笔如果带到候船室，整件事又会走上错误的岔路。我改好，读回给他听，再把完整抄本封进旧信封。\n封口处我写明只能由同意核对的人打开。它比遮名节录更便于复查，也要求我记得谁答应过什么。林岚指着东侧通道说，候船室的旧表还挂在那里，别让这次核对停在货物抵达的位置。",
+        "en": "The other worker leaves no new identifying mark, but catches a seven I have copied as a one. At the ferry hall that mistake could send the entire inquiry down another path. I correct it, read it back, and seal the full copy in an old envelope.\nOn the seal I limit access to the people who agreed to verify it. It is easier to check than an extract, but carries obligations to remember each person’s permission. Lin points east: the old timetable is still hanging there. Our inquiry must not stop at the arrival of the cargo."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "freightClue"
+          ],
+          "note": {
+            "zh": "货栈：完整抄本限制查阅，纠正一个货号。去候船室核对旧航班表。",
+            "en": "Warehouse: restricted access to the full copy and corrected a bay number. Next: ferry hall timetable."
+          }
+        }
+      ]
+    },
+    "tide0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "候船室的长凳被磨得发亮，靠窗的一张却落着灰。窗外就是江，玻璃上的水痕把岸灯拉成一条条细线。墙上新旧两张表没有完全重叠，旧表露出半个“临”字，我轻轻掀起下角，看见去年十一月的临时通知。\n那班船原来只负责把人送到下游换乘处。弟弟信里说的“江边”，既可能是这里，也可能是换乘以后另一处岸。信没有骗我，只是我们已经失去了写信时双方都懂的那部分背景。",
+        "en": "The ferry hall benches shine with wear, except for a dusty one by the window. Rain on the glass draws the quay lights into thin lines. A corner of last year’s temporary notice peeks from under the new timetable. I lift it carefully: November.\nThat sailing only carried people to a downstream transfer point. The “shore” in my brother’s letter might mean this quay or the bank beyond the transfer. The letter did not deceive me. We have lost the shared context that once made its words clear."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "tide1"
+        }
+      ]
+    },
+    "tide1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "售票窗里有人留着一碗凉茶，碗下压着改航后的回执。上面只有纸袋数，没有人名。罗医生给我的船票则是今晚的普通渡票，目的地只到对岸；渡过黄浦江，不等于已经离开上海，更不等于有一张通往安全生活的通行证。\n我以前愿意把一切希望都放进“登船”两个字里。现在看清这张票，竟有一点羞愧：如果我不问清楚，就会替帮助我的人承诺他们从未答应过的事。",
+        "en": "A bowl of cold tea pins down a receipt inside the ticket window. It counts paper sacks, not people. Luo’s ticket is an ordinary crossing for tonight, valid only to the opposite bank. Crossing the Huangpu is not the same as leaving Shanghai, much less a guarantee of safety.\nI had placed so much hope inside the word “board.” Reading the ticket carefully makes me ashamed: without asking, I might have credited those helping me with promises they never made."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "tide2"
+        }
+      ]
+    },
+    "tide2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我把三处记录并排放在长凳上：后弄证明信曾退回，货栈说明它被误装，候船室说明它等错了一班船。三张纸接起来，能解释迟到，却仍然不能回答弟弟现在在哪里。\n一年来，我常把不知道当作有人故意不告诉我。这一夜确实发现了被改写的材料，也发现了疏漏、胆怯和没人愿意负责的小事。它们共同延长了一个人的等待。我不能因此宽恕一切，也不能把所有空白都填成同一个恶人的名字。",
+        "en": "I lay out the three records on a bench. The court shows the letter was returned; the warehouse explains the mispacking; the hall explains the missed sailing. Together they account for the delay, but still cannot tell me where my brother is now.\nFor a year I often mistook not knowing for someone deliberately withholding an answer. Tonight revealed altered documents, but also oversights, fear, and small tasks nobody accepted. Together they prolonged a person’s wait. I need not forgive everything, nor fill every blank with the name of a single villain."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "tide3"
+        }
+      ]
+    },
+    "tide3": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "长凳另一头，林岚问我接下来要做什么。她不再劝我一定留下。我也不能要求罗医生、周姨和顾先生都按我的愿望安排余生。每个人帮过我，却没有因此欠我一条命。\n若要留证，得把保管与核对安排好；若要照顾人，得先问他们愿意怎样生活；若要离开，得交代留下的责任；若要闭口不言，也得承认沉默会把什么带走。江岸的决定只是这些事情的开头，不会是一句选择之后突然出现的答案。",
+        "en": "At the other end of the bench, Lin asks what I will do next. She no longer insists I stay. Nor can I arrange Luo’s, Zhou’s, or Gu’s remaining lives around my wishes. They helped me; that does not mean they owe me their lives.\nPreserving evidence requires custody and verification. Caring for people requires asking how they want to live. Leaving requires handing over responsibilities. Keeping silent requires facing what silence takes away. The choice on the quay will begin those tasks, not make an answer appear instantly."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "tide4"
+        }
+      ]
+    },
+    "tide4": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我收起纸，把今夜查清的事和仍然不知道的事分成两页。页数一样多，纸却不再像刚出门时那样轻。窗里的人敲了敲台面，提醒我将来无论办托交、寄存还是退票，都要回这张问讯桌核对，不能只听江边的传言。\n门外的风吹散了地上的一点雾。我可以去江岸决定下一段路，也可以先回去补完与林岚、罗医生和顾先生的约定。真正决定方向之前，还来得及认真听一次别人的回答。",
+        "en": "I divide what is established from what remains unknown. Both lists are equally long, but the papers feel heavier than when I left home. Someone taps the window counter: any later forwarding, storage, or ticket cancellation must be checked here, not settled by rumor on the quay.\nWind clears a little ground mist beyond the door. I can choose my next route at the shore, or first finish my promises to Lin, Luo, and Gu. Before committing, there is still time to listen carefully to another person’s answer."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "tideClue"
+          ],
+          "note": {
+            "zh": "航班核对完成：旧信迟到不等于沈泊现状。去江岸选择独立后半程；选择前可手动存档。",
+            "en": "Timetable checked: the late letter does not establish Shen Bo’s fate. Choose a route at the shore; save manually before committing."
+          }
+        }
+      ]
+    },
+    "witnessStart": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我决定先让材料留下来。林岚没有说“这样就好了”，只在空纸上列了三件事：货栈封存工作台上分开原件与抄本；后弄找自愿的寄存人；回印刷铺铅字盒旁核对最后一版。三件事做完，再去候船室问讯窗口交代查阅办法。\n从这一刻起，留证是接下来要走的路线。我们可以害怕，也可以停下来休息，但不能把一句“我会保存”当作已经保存妥当。",
+        "en": "I choose to preserve the record. Lin does not say that everything is settled. She lists three tasks: separate originals and copies at the warehouse sealing table; find willing keepers in the rear court; verify a final edition beside the press type case. Then arrange access at the ferry hall enquiry window.\nEvidence preservation is now our route. We may be afraid or need to rest, but saying “I will keep it” is not the same as keeping it safely."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收好手记，继续探索",
+            "en": "Close the journal and explore"
+          }
+        }
+      ]
+    },
+    "witness1_0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "封存台上有旧浆糊、棉线和几只拆过的信封。林岚让我先把带来的材料分成三堆：亲眼见过的原件、今晚抄下的内容、听别人讲述而无法独立核对的记忆。我把医生的证言放错了地方，又拿回来。署名不意味着每句话都变成了目击。\n她没有催我。纸从口袋里取出来时还温热，摊在桌上很快凉了。我第一次认真想，若明天拿到这些纸的人不认识我，他该凭什么相信这三堆东西之间的区别。",
+        "en": "The sealing table holds old paste, cotton thread, and opened envelopes. Lin asks me to make three piles: originals I have examined, tonight’s transcriptions, and recollections I cannot independently verify. I put Luo’s statement in the wrong pile, then retrieve it. A signature does not make every sentence eyewitness testimony.\nShe does not hurry me. The papers cool quickly on the table. If tomorrow’s reader has never met me, how will they know the difference between these piles?"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "witness1_1"
+        }
+      ]
+    },
+    "witness1_1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我们做了一个封套，不写“真相”，只写取证的日期与地点。第三份校样的缺口、名册的空白签收栏、医生愿意承担的那一段记忆，都有各自的页码。不能确定的字不再被我顺手补全，而是在旁边加注“原字不清”。\n林岚拿起我最初那份抄本，上面把沈泊可能的去向写得很肯定。我承认那是愿望。她让我保留这张错抄的纸，并写明更正日期：让别人看到我怎样改过，也比假装一开始就没有错更可靠。",
+        "en": "Our folder is labelled with dates and places, not “the truth.” The chipped proof, the blank receipt column, and the portion Luo accepts responsibility for each receive page numbers. I stop silently completing unclear characters and mark them illegible instead.\nLin finds my first transcription, which confidently states a possible destination for Shen Bo. I admit it was a wish. She asks me to retain the mistaken sheet with a dated correction. Showing how an error was corrected is more credible than pretending it never existed."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "witness1_2"
+        }
+      ]
+    },
+    "witness1_2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "最后还缺一个责任说明。林岚愿意写自己核对过印刷痕迹，不愿替诊所和档案室作保；我可以说明看见过哪些纸，却不能替弟弟写他没有机会说出的证词。\n我看着留给署名的空处，想起当年那份印着我名字的材料。曾经有人替我说话，如今我更不能替别人答应。署名会使后来的人有处追问，也可能使追问先落到还活着的人身上。这一次，我至少能决定自己的名字如何出现。",
+        "en": "A statement of responsibility remains. Lin will say she checked the printing marks, not vouch for the clinic or archive. I can state which papers I examined, but cannot compose testimony my brother never had a chance to give.\nThe signature space recalls the accusation printed in my name. Having once been spoken for, I cannot speak for everyone else now. A signature gives future readers someone to question; it may also put living people first in danger. This time I can decide how my own name appears."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "witnessAttribution"
+        }
+      ]
+    },
+    "witnessAttribution": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "只留下查阅编号，材料仍可以等待后来的人；写下自己的名字，则意味着允许他们把核对的问题带到我面前。林岚已经签好她同意承担的范围，把笔放在我这边。",
+        "en": "A reference number can leave the record waiting for future readers. Adding my name permits them to bring their questions to me. Lin signs only the work she agrees to stand behind and places the pen beside me."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "署自己的名字，只承担亲自核对的部分",
+            "en": "Sign for the parts I personally verified"
+          },
+          "next": "witnessNamed0",
+          "flags": [
+            "namedCopy"
+          ]
+        },
+        {
+          "label": {
+            "zh": "保留匿名查阅编号，不留下自己的住址",
+            "en": "Use an anonymous reference without my address"
+          },
+          "next": "witnessAnon0"
+        }
+      ]
+    },
+    "witnessNamed0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我写“沈砚”，字比平时小。下面一行说明我见过哪些原件，哪一处只看过抄本。写完时手心全是汗，纸上却没有突然多出能保护人的力量。林岚重新读了一遍，把“证明沈泊无罪”改成“对既有指控提出可核对的疑问”。\n我不喜欢这句话的迟疑，可它更接近我们确实拥有的东西。名字不能让空白消失，也不能替别人决定如何看待我的弟弟。",
+        "en": "I write Shen Yan in smaller letters than usual, followed by which originals and copies I examined. My palm is wet, but the paper has acquired no power to protect anyone. Lin changes “proves Shen Bo innocent” to “raises verifiable questions about the existing accusation.”\nI dislike the uncertainty, yet it describes what we possess. A name cannot erase a blank or dictate how others judge my brother."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "witnessNamed1"
+        }
+      ]
+    },
+    "witnessNamed1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "封套外不写住址，署名页放在里面；谁可以打开，由寄存人与我共同约定。林岚留下一张没有名字的目录，方便找回对应的材料。若我后来不愿公开，目录仍可留下，署名页则继续封存。\n这不保证安全，只把不相同的用途分开。接下来必须去后弄长凳旁问寄存人的意见。我带走封套时，刻意没有把它塞进最容易忘记的那层夹袋。",
+        "en": "No address appears outside. The signed page stays inside; access will be agreed with the keeper. Lin retains an unnamed index linking the materials. If I later decline publication, the index can remain while the signature stays sealed.\nThis is not a guarantee of safety, only a separation of uses. Next I must ask the keepers beside the rear-court bench. I put the folder somewhere I cannot casually forget."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "witness1"
+          ],
+          "note": {
+            "zh": "留证第一步：署名限定责任。下一步去后弄寄存处征求同意。",
+            "en": "Evidence step one: signed with limited responsibility. Next: ask the rear-court keepers."
+          }
+        }
+      ]
+    },
+    "witnessAnon0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我没有签名，把封套编为“雨夜一”。林岚问，若别人怀疑这是一份编造的材料，该向谁追问。我不能用“他们会懂”来回答，只能把原件的页码、抄录的顺序和更正经过再核对一次。\n匿名减轻了当下的危险，也使将来的核对更困难。这不是一个没有代价的聪明办法。我在说明里写明：保管人只保管纸，不替纸上每句话担保。",
+        "en": "I leave the signature blank and label the folder Rain Night One. Lin asks whom a skeptical reader can question. “They will understand” is no answer. I check source pages, transcription order, and corrections again.\nAnonymity reduces one danger and makes future verification harder. It is no costless clever solution. I specify that the keeper holds the papers without vouching for every sentence."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "witnessAnon1"
+        }
+      ]
+    },
+    "witnessAnon1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我把自己写过的解释拆成两部分，能对应原件的留下，只有我一个人记得的另封。林岚同意以后若收到核对请求，先询问我是否愿意出面。没有这次同意，她不会代我把名字补上。\n从货栈出去时，我知道这条路最后能够留下材料，却不能要求它同时替我恢复名誉。后弄长凳旁还需要一个人愿意保管“雨夜一”，这件事不能替他决定。",
+        "en": "I separate explanations supported by originals from memories only I hold. Lin will ask my permission if a reader later requests verification. Without that permission she will not supply my name.\nLeaving the warehouse, I understand that this route can preserve the record without necessarily restoring my reputation. Someone beside the rear-court bench must still agree to keep Rain Night One. I cannot make that decision for them."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "witness1"
+          ],
+          "note": {
+            "zh": "留证第一步：匿名封存，不能在结尾突然公开署名。下一步去后弄寄存处。",
+            "en": "Evidence step one: anonymous custody; public attribution is not available at the conclusion. Next: rear-court deposit."
+          }
+        }
+      ]
+    },
+    "witness2_0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "周姨把长凳擦干，没让封套立刻进屋。她说一户人家答应收一封信，和答应保管可能招来询问的材料，是两回事。她愿意替我去问，却要我站在这里等，不能跟进门把人逼得不好拒绝。\n我等了很久，听见水槽边有人拧衣服。一只猫从脚边过去，什么也没有发生。原来所谓把命运交到别人手里，有时只是接受一扇门可以一直不开。",
+        "en": "Zhou dries the bench but does not take the folder indoors. Accepting a letter and accepting papers that may bring questioning are different commitments. She will ask, but I must wait outside rather than follow her in and make refusal difficult.\nWater drips from laundry by the sink. A cat passes. Nothing happens for a long time. Entrusting something to another person can mean accepting that a door may remain closed."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "witness2_1"
+        }
+      ]
+    },
+    "witness2_1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "第一户拒绝了。周姨出来时没说理由，只把封套交还给我。我差点问是不是他们不相信沈泊，又把话咽下去。帮不帮我不能成为衡量一个邻居是否正直的考试。\n第二户愿意保管目录，不愿保管正文；第三户愿意短期收下正文，但若有搬家的可能，要提前通知我取回。我们把期限写到纸上，没有使用“永远”这样的字。保存一段记忆也需要有人记得换房、潮气和屋顶漏水。",
+        "en": "The first household refuses. Zhou gives no reason, simply returning the folder. I nearly ask whether they disbelieve Shen Bo, then stop. Helping me cannot become a test of a neighbor’s decency.\nA second household accepts the index but not the text. A third accepts the text temporarily, provided I retrieve it before they move. We write down a term instead of “forever.” Preserving memory also involves roofs, damp, and changes of address."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "witness2_2"
+        }
+      ]
+    },
+    "witness2_2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我们用不同的旧报纸包住目录与正文，封口都留出检视受潮的位置。周姨不肯让我给她一个只知道存在哪里、却不知道怎样取回的暗号。她说若我明天不来，也要有人能照着纸上的办法办事。\n我写下三种情况：我来取、我托人来取、我无法来取。每一种都需要怎样核对，由寄存人挑选自己接受的办法。最后一栏空了很久，谁也没有问“无法”指的是什么。",
+        "en": "We wrap the index and text in different newspapers, leaving a way to inspect for damp. Zhou refuses a secret code that identifies a hiding place without explaining retrieval. If I do not come tomorrow, somebody must still know what to do.\nI list three situations: I collect it, I send someone, or I cannot come. Each keeper chooses acceptable checks for each situation. The last column stays blank for a long time. Nobody asks what “cannot” might mean."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "witness2_3"
+        }
+      ]
+    },
+    "witness2_3": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "长凳上的纸终于少了一半。我不是把危险从自己身上卸给别人，而是得到了几个有条件的同意。每条条件都使事情麻烦一点，也使其中的人重新成为能说“不”的人。\n周姨提醒我带着目录回印刷铺铅字盒，再同林岚比一遍。现在任何一个抄错的页码，都可能让刚刚答应帮忙的人白等。走之前，我把取回日期读了两次。她说这一次，记得的人不只你一个。",
+        "en": "Half the papers finally leave the bench. I have not transferred my danger to strangers; I have received several conditional agreements. Each condition complicates the arrangement and restores someone’s ability to refuse.\nZhou sends me back to the press type case to compare the index with Lin. A wrong page number could strand the very people who just agreed to help. I read the collection date twice. This time, Zhou says, more than one person remembers it."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "witnessCourtReaction"
+        }
+      ]
+    },
+    "witnessCourtReaction": {
+      "speaker": {
+        "zh": "周姨",
+        "en": "Aunt Zhou"
+      },
+      "portrait": "aunt",
+      "text": {
+        "zh": "寄存并没有结束在一个点头里。周姨翻出刚才核对退信时的记录，让我对照自己当时答应过邻居的事，再决定这份新目录可以留下哪些信息。",
+        "en": "Custody is not settled by a nod. Zhou retrieves the notes from the returned-letter inquiry. I must compare this new index with what I promised the neighbors earlier."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "按公开询问时的约定逐人确认",
+            "en": "Confirm each agreement from the public inquiry"
+          },
+          "requires": {
+            "flag": "courtyardOpen"
+          },
+          "next": "witnessPublicEcho"
+        },
+        {
+          "label": {
+            "zh": "维持隔门核对时的隐私约定",
+            "en": "Keep the privacy agreed during private checks"
+          },
+          "requires": {
+            "not": {
+              "flag": "courtyardOpen"
+            }
+          },
+          "next": "witnessPrivateEcho"
+        }
+      ]
+    },
+    "witnessPublicEcho": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "先前在楼梯上划掉姓名的年轻女人又来了。她愿意收下目录，却要求只写她选择的代号，并由她决定何时撤回。她不是忽然变得勇敢；是看见我把那次划掉的名字确实删去了，才愿意多答应一步。\n我重新抄好目录，把有误的一页在她面前划废。她拿走纸时仍然发抖。我没有对她说不必害怕。",
+        "en": "The woman who crossed out her name on the stairs returns. She will hold the index under a name she chooses, with the right to withdraw. She has not suddenly become fearless. Seeing that I actually removed her earlier name makes one further agreement possible.\nI recopy the index and void the mistaken page before her. Her hands still tremble. I do not tell her there is nothing to fear."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下约定，回印刷铺铅字盒核对",
+            "en": "Record the agreement; return to the press type case"
+          },
+          "flags": [
+            "witness2"
+          ],
+          "note": {
+            "zh": "公开询问的后果：寄存人要求代号与撤回权；已遵守。下一步印刷铺。",
+            "en": "Public inquiry consequence: the keeper requires an alias and withdrawal rights. Honored. Next: press."
+          }
+        }
+      ]
+    },
+    "witnessPrivateEcho": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "那扇始终只开一指宽的门后传来一句话：“这回也不记名字？”我把封面给她看。她让周姨拿进去，只收正文，不收能指向别家的目录。之前没有被迫公开的信任，现在成为一次有限的托付。\n我仍不知道她的全名。对保管这份纸来说，她同意承担的范围比一个能写在感谢名单上的名字更重要。",
+        "en": "The door opens its familiar inch. “Still no names?” I show her the cover. She lets Zhou bring in the text, but not an index pointing to other homes. The privacy kept earlier has become a limited act of trust.\nI still do not know her full name. For this arrangement, the responsibility she accepts matters more than a name I could put on a list of thanks."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下约定，回印刷铺铅字盒核对",
+            "en": "Record the agreement; return to the press type case"
+          },
+          "flags": [
+            "witness2"
+          ],
+          "note": {
+            "zh": "私下核对的后果：邻居愿意有限寄存，继续不记姓名。下一步印刷铺。",
+            "en": "Private inquiry consequence: limited custody without names. Next: press."
+          }
+        }
+      ]
+    },
+    "witness3_0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "印刷铺的机轮已经停了，铅字盒里还能闻到油墨。我把目录放在当初找到缺口的那格旁边，这一次要找的不是别人改过什么，而是我们自己有没有又改错什么。\n林岚把两份抄本背对背举向灯。行数一样，不代表内容一样。一处“未见签收”被我写成了“无人签收”，只差一个字，意思却已经跨过了我们没有资格跨过的地方。她让我自己把它改回来。",
+        "en": "The press wheel is still, but the type case smells of ink. I place the index beside the compartment where we found the chipped rule. This time we are checking not another person’s alteration, but our own errors.\nLin holds two copies against the lamp. Equal line counts do not mean equal content. I changed “receipt not seen” into “nobody signed.” One word crossed a boundary we had no right to cross. She asks me to correct it myself."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "witness3_1"
+        }
+      ]
+    },
+    "witness3_1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我在更正处画了细线，没有把原字刮掉。林岚讲起她第一次替人排字，师傅只告诉她别把名字排错，没有告诉她名字后面也会有一个不愿被写进故事的人。她后来才明白，印对了字，也可能印错了人的意思。\n今晚的材料里，她写明自己当年见过排版，却没有看见命令从哪里来。这个缺口也许会令将来的读者失望，但我们不能为了让故事完整，就替她造出一个记忆。",
+        "en": "I draw a fine line through the error rather than scrape it away. Lin remembers being told, at her first typesetting job, never to misspell a name. Nobody explained that a correctly printed name might belong to someone unwilling to enter the story at all.\nIn tonight’s account she states that she saw the layout, not where the order originated. A future reader may be disappointed. We cannot invent a memory to make the account feel complete."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "witness3_2"
+        }
+      ]
+    },
+    "witness3_2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我们又看货单的查阅范围。遮名的节录需要另附原件位置，完整抄本需要保留那些只许核对、不许传播的约定。两种办法都不能在印成第二份以后悄悄丢掉限制。\n林岚在每页底部写上版本日期。旧稿不与新稿混放，但也不焚毁；错误曾经存在过，就不必装作不存在。她把最后那张纸交给我时，手指上有一道油墨洗不掉的裂口。纸很薄，留下它的人却还要过明天。",
+        "en": "We check access restrictions on the freight list. The redacted extract needs the original’s location; the full copy must retain promises limiting verification and circulation. Neither restriction can quietly disappear when a second copy is made.\nLin dates every page. Old drafts are separated but not burned. Errors existed; we need not pretend otherwise. A split in her ink-stained finger will not wash clean. The paper is thin, but the people keeping it must still live through tomorrow."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "witness3_3"
+        }
+      ]
+    },
+    "witness3_3": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "目录、正文、原件去处终于能够互相对应。我问她，这会不会太慢。她回答，如果目的只是让我今晚觉得自己做成了一件大事，可以快得多；如果希望一年以后还有人看得懂，就值得慢这一会。\n我把那张错写过弟弟去向的草稿也封好。它记录的不只是一个错误，还有我怎样从急着得到答案，学会留下一条别人能继续走的路。接下来去候船室问讯窗口，决定这份记录最后以什么方式面向后来的人。",
+        "en": "Index, text, and source locations finally agree. I ask whether we are moving too slowly. If the purpose were merely to make me feel accomplished tonight, Lin says, we could go much faster. If someone should still understand it a year from now, this care is worth taking.\nI seal the draft that wrongly stated my brother’s destination. It records both an error and my attempt to leave a route another person can follow. Next: the ferry hall enquiry window, to decide how the record will meet future readers."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "witness3"
+          ],
+          "note": {
+            "zh": "留证三步完成。去候船室问讯窗口，选择具名查阅或匿名封存。",
+            "en": "Evidence tasks complete. Visit the ferry hall enquiry window: attributed access or anonymous custody."
+          }
+        }
+      ]
+    },
+    "embersStart": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我决定留下，但留下不能只是一句献给自己的漂亮话。罗医生请我先到诊所帘后的病床，问清顾先生愿意接受什么照顾；再去后弄煤炉旁安排取水与夜班；最后到候船室靠窗长凳，与来接班的人把事情说透。\n人不该因为成为我的救赎，就失去自己选择生活的权利。今晚我要学的，可能是怎样帮忙而不替人做主。",
+        "en": "I choose to stay, but staying cannot be a fine sentence addressed only to myself. Luo asks me to visit the curtained bed and learn what care Gu will accept, arrange water and night watches by the rear-court stove, then meet the next helper on the ferry hall window bench.\nBeing part of my redemption must not cost somebody their right to choose a life. Tonight I may need to learn how to help without taking command."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收好手记，继续探索",
+            "en": "Close the journal and explore"
+          }
+        }
+      ]
+    },
+    "embers1_0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "顾先生没有睡着。他听见我说要留下照顾他，先问了一个让我答不上来的问题：“留下多久？”我想说一直，罗医生却把空水杯放在我手里，让我先去倒一杯温水。\n回来时，顾先生正在把鞋子摆齐。他说自己还会走路，也能记住喜欢喝什么茶，只是有些日子不能独自出门。我不能因为他忘了一些事情，就把他整个人放进“需要照顾”的一格。",
+        "en": "Gu is awake. When I offer to stay and care for him, he asks how long. I nearly say forever. Luo puts an empty cup in my hand and asks for warm water first.\nWhen I return, Gu is aligning his shoes. He can still walk and remember his preferred tea, though some days he cannot go out alone. Forgetting some things does not place his entire person inside a box marked needs care."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "embers1_1"
+        }
+      ]
+    },
+    "embers1_1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "床边放着一张旧照片，我认得青芜，却不认得旁边那个拿饭盒的人。顾先生说那是多年以前来听课的学生，后来不常见面，偶尔还替他送药。他要求我们不要把这张照片给别人看，不愿每个熟悉的人都被拉进今晚的事情。\n我把照片翻扣回来。罗医生在值班本上只记“家属保管”，没有把我当作当然的家属。想替一个人撑住生活，第一步竟是承认自己还不知道多少门该敲，多少抽屉不该打开。",
+        "en": "An old photograph lies by the bed. I recognize Qingwu, but not the person holding a lunch tin. Gu says it is a former student, seldom seen now, who sometimes brings medicine. He asks us not to show the picture around. Not everyone he knows belongs in tonight’s inquiry.\nI turn it face down. Luo records that the family holds it, without automatically treating me as family. Helping someone maintain a life begins with admitting how many doors I do not know, and which drawers I should not open."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "embers1_2"
+        }
+      ]
+    },
+    "embers1_2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "医生拿出几张空白纸，让顾先生自己说需要什么：早上有人陪着取药，夜里有一盏能看清门口的灯，若临时搬房，先告诉他去哪里。他说得很慢，我却发现每一件都比“我会照顾你”更具体。\n剩下的是谁来做。我可以接下第一段夜班，也可以请周姨帮忙找愿意轮换的人。一个人的承诺容易说清，几个人的承诺更不容易因一次生病便全部落空；但参与的人越多，要解释和保护的事情也越多。",
+        "en": "Luo brings blank paper and lets Gu state his needs: company when collecting medicine, a light showing the door at night, and advance notice if he must move. He speaks slowly, yet each request is more concrete than my offer to care for him.\nWho will do it? I can take the first watches, or ask Zhou to find willing helpers. One person’s promise is simpler; several people are less vulnerable to a single illness. More helpers also mean more arrangements and more privacy to protect."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "embersPlan"
+        }
+      ]
+    },
+    "embersPlan": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "顾先生愿意接受帮助，但不愿被搬来搬去。罗医生只能保证诊所的值班，不能替所有人承担今后的日子。你愿意怎样开始？",
+        "en": "Gu accepts help but does not want to be moved repeatedly. Luo can cover clinic duty, not everyone’s future. How will you begin?"
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "先接下自己的夜班，再逐项邀请别人轮值",
+            "en": "Take my own watch, then invite specific help"
+          },
+          "next": "embersShared0",
+          "flags": [
+            "sharedCare"
+          ]
+        },
+        {
+          "label": {
+            "zh": "只答应眼下能做的三夜，不招募别人",
+            "en": "Promise only three nights I can cover myself"
+          },
+          "next": "embersAlone0"
+        }
+      ]
+    },
+    "embersShared0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我写下自己能够来的三个晚上，划掉需要回单位点名的时段。承认这些限制有些难堪，却比临时消失更诚实。罗医生把剩下的空格留着，说不能为了表格好看，就把别人没有答应的名字填进去。\n顾先生看完，把其中一晚的陪同改成了敲门询问。他说那天若精神好，想自己坐在窗边。空格第一次像是一种尊重，而不只是安排不周。",
+        "en": "I write three evenings I can attend, excluding the hours I must report at my work unit. Admitting limits is embarrassing but more honest than vanishing unexpectedly. Luo leaves the remaining spaces blank: we cannot fill them with names that have not agreed.\nGu changes one visit into a knock to ask whether he needs company. If he feels well, he wants to sit by the window alone. A blank can express respect, not simply poor planning."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "embersShared1"
+        }
+      ]
+    },
+    "embersShared1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我们约定，后弄愿意帮忙的人只领取自己承诺的那一段，不需要知道顾先生全部的病史。医生保留用药说明，顾先生决定哪些私人事情可以讲。我要去煤炉旁问取水和热饭的办法。\n走到门口，他叫住我，说别为了照顾他把弟弟的事全丢下。我答应继续找，也答应不再把找不到的焦急变成要求他记起更多的理由。",
+        "en": "Helpers in the rear court will receive only the task they accept, not Gu’s whole medical history. Luo keeps the medicine instructions; Gu controls private disclosures. I will ask about water and hot food beside the communal stove.\nAt the door Gu tells me not to abandon my brother’s case for his sake. I promise to keep searching, and not use my frustration to demand more memories from him."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "embers1"
+          ],
+          "note": {
+            "zh": "护人第一步：答应具体夜班，顾先生保留拒绝与调整的权利。下一步后弄煤炉。",
+            "en": "Care step one: specific watches, with Gu free to refuse or revise. Next: rear-court stove."
+          }
+        }
+      ]
+    },
+    "embersAlone0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我没有把未来许诺得很远，只写下三夜。顾先生点头，说三夜也是日子，不必因为不能许诺一生就看轻它。我把第四夜留空，答应三夜之后再问一次，而不是假装空格不存在。\n罗医生提醒我，一个人接班时尤其要有联系不上我的办法。他不会把药物交给未经说明的人，也不会因为我说自己能撑，就把疲倦当作已经解决。",
+        "en": "I promise three nights rather than a distant future. Gu says three nights are still part of a life; their limit does not make them worthless. I leave the fourth blank and promise to ask again, instead of pretending there is no gap.\nLuo wants a fallback if I cannot be reached. He will not leave medicine with an uninstructed helper or treat exhaustion as solved merely because I insist I can endure it."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "embersAlone1"
+        }
+      ]
+    },
+    "embersAlone1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我把单位的报到时间告诉医生，想到过去总怕别人知道自己的日程，如今却需要一个人知道我什么时候应该出现。顾先生把窗边那张空凳留给我，没有要求我坐满整夜。\n后弄的水和煤仍要安排。留下来不是放弃一切去照顾一个人，而是在原本就拥挤的生活里找到一块确实可以交给他的时间。这条路最后会是一项有限的守候，不会突然变成已经建好的互助网。",
+        "en": "I tell Luo my reporting hours. Once I feared anyone knowing my schedule; now someone must know when I should arrive. Gu leaves me the window stool without asking that I occupy it all night.\nWater and coal still need arranging. Staying means finding real time inside an already crowded life, not magically abandoning every obligation. This path will end with a limited watch, not a mutual-aid network we never built."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "embers1"
+          ],
+          "note": {
+            "zh": "护人第一步：承诺三夜独立守候，不自动获得互助网结局。下一步后弄煤炉。",
+            "en": "Care step one: three personal watches; no unearned network ending. Next: rear-court stove."
+          }
+        }
+      ]
+    },
+    "embers2_0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "公用煤炉没有我想象中一直烧着。夜里各家轮流用，炉口边用粉笔写着一个个时段。周姨说，若插进一锅热水，就要有人晚一点洗衣服或热饭。小事看似不值一提，却不能因为我的事情听上去更重要，就把别人的日子推开。\n我挨个询问，才知道最晚那一格原是替楼上的小孩留的。他母亲早班回来，要给他擦身。我们把顾先生的热水提前，谁也没有失去原来那一格。",
+        "en": "The communal stove is not kept burning all night. Chalk marks divide its use between households. An extra pot can delay someone’s washing or meal. Small needs cannot be displaced simply because my story sounds more urgent.\nOnly by asking do I learn that the latest slot is reserved for a child upstairs, whose mother returns from an early shift. We move Gu’s water earlier. Nobody loses their existing turn."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "embers2_1"
+        }
+      ]
+    },
+    "embers2_1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "取水比安排炉火更费工。水槽到诊所要走过一段没灯的路，热水瓶的提手又松了。一个邻居教我用旧布垫住把手，周姨找出有木塞的瓶子。我把路线走了一遍，记下哪里积水，哪里门槛高，回来时才发现自己一滴水也不该洒在别人门前。\n我学建筑时画过许多看起来合理的走道。今晚真正需要的，只是一条疲倦的人提着水也能走稳的路。",
+        "en": "Carrying water takes more work than reserving the stove. The clinic path is dark, and the flask handle is loose. A neighbor shows me a cloth grip; Zhou finds a sound stopper. I walk the route, noting puddles and thresholds, and realize I must not leave a slippery trail at another person’s door.\nIn architecture school I drew many plausible corridors. Tonight the useful design is simply a path a tired person can walk while carrying hot water."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "embers2_2"
+        }
+      ]
+    },
+    "embers2_2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "周姨没有替所有人答应。她给愿意帮忙的人分别说了取水、送饭和敲门的事，不需要每个人都做同样多。一位邻居只能隔天把瓶子放到门口，另一位只能在我临时缺席时带一句话。\n这些小小的限制让我安心了一点：他们说的是自己真的能做的事。我们没有成立什么，也没有写一份漂亮的联名书。只把谁同意了哪件事记清楚，让没有同意的人也可以平常地从炉边走过。",
+        "en": "Zhou does not consent on everyone’s behalf. Willing neighbors hear separate requests for water, food, or a knock at the door. One can leave a flask out every other day; another can only carry a message when I am absent.\nTheir limits reassure me: these are tasks they can actually do. We form no grand organization and sign no impressive joint declaration. We record specific agreements, leaving everyone else free to pass the stove without being judged."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "embers2_3"
+        }
+      ]
+    },
+    "embers2_3": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "煤火暗下去时，我把第三天以后的空格重新看了一遍。若我选择招募轮值，就带着已经得到的同意继续核对；若我只答应三夜，就让医生知道何时需要重新安排。没有任何一格是靠一句“总会有办法”填满的。\n周姨把瓶塞压紧，叫我去候船室靠窗长凳见下一位带口信的人。那人只愿在半公开的地方谈，不愿把住址告诉陌生人。接受帮助，也要接受别人选择见面的方式。",
+        "en": "As the fire dims, I review the gaps after the third day. If I invited a rota, I must verify the agreements received. If I promised only three nights, Luo must know when another arrangement is needed. “Something will work out” fills no space.\nZhou tightens the flask stopper and directs me to the ferry hall window bench. A messenger prefers a public meeting and will not give a stranger their address. Accepting help includes accepting how someone chooses to meet."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "embers2"
+          ],
+          "note": {
+            "zh": "后弄：热水时段、搬运路线与有限轮值已落实。下一步候船室靠窗长凳。",
+            "en": "Rear court: water slot, carrying route, and limited help arranged. Next: ferry hall window bench."
+          }
+        }
+      ]
+    },
+    "embers3_0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "长凳上坐着一个手里攥着布包的人。她说不必知道她与顾先生的关系，只要知道她愿意明早送一次早饭。我没有追问。她先看见我手里的轮值表，问上面为什么留那么多空格。\n我把每个空格解释给她听：未同意、时间未定、或顾先生希望独处。她听完，把自己那一格改成了“先敲门”。一张表终于开始记录一个人的生活，而不只是记录我们想为他做多少事。",
+        "en": "A woman on the bench holds a cloth parcel. I need not know how she knows Gu, only that she will bring breakfast tomorrow. I do not press. She asks why the schedule has so many blanks.\nI explain: no agreement yet, an uncertain time, or Gu’s wish for solitude. She changes her entry to “knock first.” The schedule begins to record a person’s life instead of measuring how much we want to do for him."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "embers3_1"
+        }
+      ]
+    },
+    "embers3_1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "她问，如果第二天顾先生不肯开门，是否要立刻把人叫来。我想起自己一年里有多少次听见敲门便屏住呼吸，没有把沉默简单写成出事。医生的说明区分了普通拒绝、约定后的失联和需要立即求助的情况。\n我把说明读给她听，请她复述一遍，不是考她，而是检查我有没有说清楚。她漏掉一句，我也发现自己抄漏了医生留下的联系办法。好在这张长凳上的核对发生在真正需要它之前。",
+        "en": "She asks whether a closed door tomorrow means she should immediately summon people. Remembering how often a knock made me hold my breath, I do not equate silence with disaster. Luo distinguishes ordinary refusal, an unexplained missed agreement, and an urgent need for help.\nI read his instructions and ask her to repeat them, to check my explanation rather than test her. She misses a line; I discover I omitted Luo’s contact instructions. We are fortunate to catch this on a bench before anyone needs them."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "embers3_2"
+        }
+      ]
+    },
+    "embers3_2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "布包里是两只碗，不是药，也不是钱。她说旧碗边缘有缺口，顾先生手不稳，换一只好拿的比劝他多喝水有用。我忽然明白，照顾有时不是增加一句温柔的话，而是撤掉一件让人每天都要费力的东西。\n我把碗收下，给她一张写着接收日期的小纸。她笑我太郑重，却还是折好放进口袋。有人愿意记得她交出了什么，这件事也并不多余。",
+        "en": "The parcel contains two bowls, not medicine or money. Gu’s old bowl has a chipped rim; with unsteady hands, a better grip helps more than advice to drink enough. Care sometimes means removing a small daily difficulty rather than adding another kind sentence.\nI accept them and write a dated receipt. She smiles at the formality but keeps it. Remembering what someone contributed is not entirely unnecessary."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "embers3_3"
+        }
+      ]
+    },
+    "embers3_3": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "天色未亮，第一顿早饭已经有了去处。我没有从这件小事里看见对往后的保证，却看见一条可以在出错时及时询问的路。若轮值已经得到同意，问讯窗口可以替大家寄存一份只写时段的表；若只有我的三夜，就留下我自己的交接说明。\n我站起来时，布包比文件沉。寻找弟弟的事情仍在，过去的错误也不会被一只碗抵消。只是今夜以后，我不必再把“没有找到答案”理解成“什么也不能做”。",
+        "en": "Before dawn, the first breakfast has a destination. It promises no safe future, but offers a way to ask when something goes wrong. If the rota has consent, the enquiry window can hold a copy listing times only. If I have promised three nights alone, it can hold my personal handover note.\nThe bowls weigh more than the papers. My brother remains missing; a bowl cannot cancel past mistakes. Yet not finding an answer no longer means there is nothing I can do."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "embers3"
+          ],
+          "note": {
+            "zh": "护人三步完成。到问讯窗口，决定守候三夜或交接互助轮值。",
+            "en": "Care tasks complete. At the enquiry window, choose personal watches or the agreed rota."
+          }
+        }
+      ]
+    },
+    "departureStart": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我决定先为离开作准备。船票只到对岸，后面的路仍要自己走。我得回旧屋床脚收拾皮箱，再到货栈待运木箱处交代留下的材料，最后去候船室靠窗长凳核对接应地址。\n离开不会替我撤销对任何人的承诺，也不能证明我比留下的人更清醒。只有把这些事一件件办完，登船才不只是从一个恐惧里逃进另一个想象。",
+        "en": "I begin preparing to leave. The ticket reaches only the far bank; the journey beyond remains mine. I must pack the suitcase at home, hand over materials beside the warehouse outbound crate, and verify a contact at the ferry hall window bench.\nLeaving cancels no promise and proves no superiority over those staying. Only by doing these tasks can boarding become more than escaping one fear into another imagined place."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收好手记，继续探索",
+            "en": "Close the journal and explore"
+          }
+        }
+      ]
+    },
+    "departure1_0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "皮箱打开时，箱底的樟脑味比记忆里重。十一年前装满书的地方，如今放着几张没画完的住宅图。最早一张上，我给每户都画了朝南的窗，却没有想过谁有权决定一个人最后住在哪间房里。\n我把图纸展开，折痕已经脆了。带走它们，是保存过去的自己，还是给路上的人添一件必须解释的东西？箱子只有这么大，凡是装进去的，都要由接下来的身体背着走。",
+        "en": "The opened suitcase smells strongly of mothballs. Where books lay eleven years ago are unfinished housing drawings. On the earliest, every family has a south-facing window. I had not asked who could decide which room a person must finally occupy.\nThe folds are brittle. Would carrying them preserve my former self or add another object requiring explanation? Space is limited. Whatever I pack must be carried by the body taking the next road."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "departure1_1"
+        }
+      ]
+    },
+    "departure1_1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "抽屉最底下有母亲记下的亲戚住址。其中一户在对岸，更远一户在南方，最后一次来信都是几年前。我不能把一个旧地址当作已经张开的门。那家人也许搬走，也许同样受着盘问，也许只是无力再添一副碗筷。\n我把需要核对的事写在背面：人是否仍住在那里，是否愿意见我，若不能收留，是否可以代收一封回信。三个问题不是同一个问题，不能只得到其中一个答复就把另外两个也当作答应。",
+        "en": "At the drawer’s bottom are addresses in my mother’s handwriting: one across the river, another farther south. Their last letters are years old. An old address is not an open door. They may have moved, face questioning themselves, or simply lack room at the table.\nI list separate questions: do they still live there, will they see me, and if they cannot host me, will they receive a letter? Answering one does not answer the others."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "departure1_2"
+        }
+      ]
+    },
+    "departure1_2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "合影要放在皮箱里还是贴身带着，我想了很久。顾先生已经看过它，记起了青芜；原件却还是家里的东西，不属于我一个人的痛苦。我在背面写下今夜离开的日期，又停笔，划掉“离开”，改成“准备出门”。\n事情没有发生之前，不该先替它写一个完成时。接下来我要决定是否沿旧地址核对远行的可能，或把这张渡票只当作一次过江后再回来的路。两条路都需要诚实地告诉别人，我能够答应什么。",
+        "en": "I hesitate over whether the photograph belongs in the case or close to my body. Gu has seen it and remembered Qingwu, but the original belongs to a household, not solely to my grief. I write tonight’s date on the back, then replace “departed” with “preparing to go.”\nAn event deserves no past tense before it happens. I must decide whether to verify the old address for a longer journey or treat the crossing as something from which I may return. Either route requires honest promises."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "departureAddress"
+        }
+      ]
+    },
+    "departureAddress": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "母亲的地址簿和诊所给的渡票摆在一起。你可以核对远方接应，准备真正离开；也可以只收拾一个轻包，不把未经确认的住处写成未来。",
+        "en": "Mother’s address book lies beside the ferry ticket. You can verify a contact and prepare to travel farther, or pack lightly without turning an unconfirmed home into a promised future."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "带上地址簿，逐项核对远行条件",
+            "en": "Take the address book and verify the onward journey"
+          },
+          "next": "departureAddressed0",
+          "flags": [
+            "takeAddress"
+          ]
+        },
+        {
+          "label": {
+            "zh": "只带过江所需，保留回来照看的打算",
+            "en": "Pack for the crossing and keep a plan to return"
+          },
+          "next": "departureLight0"
+        }
+      ]
+    },
+    "departureAddressed0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我把地址簿夹在信封里，没有把亲戚的名字写到箱盖上。两件换洗衣服、一小包干粮、图纸中的一张，最后才是那几份无法轻易替代的材料。其他东西留在原处，我给周姨写了一张清单，注明哪些可以动，哪些要等我回来再说。\n清单让“以后”变得具体，也让我不能假装离开只涉及自己的身体。一个空下来的房间仍然需要有人知道钥匙在哪里。",
+        "en": "I slip the address book into an envelope rather than write a relative’s name on the case. Clothes, food, one drawing, then the hard-to-replace papers go inside. For Zhou I list what may be moved and what should await my return.\nThe list gives substance to “later.” Departure involves more than my body. An empty room still needs someone to know where its key is."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "departureAddressed1"
+        }
+      ]
+    },
+    "departureAddressed1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我把备用钥匙放在周姨约定的位置，没有因为她曾经替我保管旧屋，就默认她愿意再保管一年。信里写着若她不便，可以把钥匙交回诊所转告我。\n出门前我对着屋里说了一声“走了”。没有人回答。这一次，我没有把安静理解成房子已经原谅我。接下来到货栈待运木箱，安排不能带走的纸。",
+        "en": "I leave the spare key where Zhou agreed, without assuming that past help obliges her to another year. My note provides a way to return it through the clinic if necessary.\nI say goodbye to the room. Nothing answers. I do not mistake the silence for forgiveness. Next is the warehouse outbound crate, where I must arrange the papers I cannot carry."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "departure1"
+          ],
+          "note": {
+            "zh": "离沪第一步：带地址簿核对接应，留房屋交接单。下一步货栈待运木箱。",
+            "en": "Departure step one: verify the address; leave a house handover. Next: warehouse outbound crate."
+          }
+        }
+      ]
+    },
+    "departureLight0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我没有拿走地址簿，只抄了对岸那一处的门牌，注明“尚未核实”。皮箱太重，我改用布包，装一件衣服和今晚的材料。周姨见到包的时候问我是不是还会回来，我没有为了让她宽心而马上点头。\n我说先过江看看，若没有可靠的去处，就回来把房子与下一步安排清楚。她不喜欢这个不确定的回答，却没有再替我补上一个更好听的承诺。",
+        "en": "I leave the address book, copying only the near-bank contact and marking it unverified. The suitcase is too heavy; a cloth bag holds one shirt and the papers. Zhou asks whether I will return. I do not nod merely to comfort her.\nI will cross and assess matters. Without a reliable destination, I will return to settle the house and next steps. She dislikes the uncertainty but does not supply a prettier promise for me."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "departureLight1"
+        }
+      ]
+    },
+    "departureLight1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我把没有拿走的东西摆回原来的位置，像给一个可能回来的自己留路。不是所有犹豫都该被叫作懦弱；有时只是终于不肯把一张票当成整个人生的答案。\n货栈还有该交代的材料。即使只离开一段时间，我也不能让别人不知道这些纸去了哪里。我把布包系紧，没有把门锁死两遍。",
+        "en": "I replace what I leave behind, keeping a path for a self who may return. Not every hesitation is cowardice. Sometimes it means refusing to make one ticket answer an entire life.\nEven a short absence requires explaining where the papers will go. I tie the bag securely and lock the door once, not twice."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "departure1"
+          ],
+          "note": {
+            "zh": "离沪第一步：只准备短程过江，保留返回计划。下一步货栈待运木箱。",
+            "en": "Departure step one: a short crossing with a return plan. Next: warehouse outbound crate."
+          }
+        }
+      ]
+    },
+    "departure2_0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "待运木箱上写着不同人家的姓，字迹有新有旧。工人问我哪一件要托运，我把皮箱拉回脚边，说先来问规矩。他指着台面上的条款：货物会经过几次转手，没有人替私人物件保证随时可取。\n我原以为把东西交给一个更大的系统，就能少担心一些。看着条款才明白，少看见一件东西的过程，并不等于它的过程就变得可靠。弟弟的旧信已经替我上过这一课。",
+        "en": "The outbound crates bear family names in old and new ink. A worker asks what I am consigning. I keep the bag at my feet and ask the terms first. Cargo changes hands repeatedly; nobody promises that private belongings can be retrieved whenever needed.\nI had thought a larger system would relieve my worry. Not seeing an object’s journey does not make that journey reliable. My brother’s old letter has already taught me this."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "departure2_1"
+        }
+      ]
+    },
+    "departure2_1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "林岚带来一张薄纸，要我分清哪些带走、哪些留下、哪些只带索引。我不能让所有证据只跟着同一只箱子走，也不能在没有问过的情况下把她的证言寄往一个她不认识的地址。\n我们逐条核对，她允许我携带的是关于印刷过程的节录，未公开的姓名继续留在原处。医生的部分也是如此。我带走的仍能说明疑点，只是不能再冒称自己有权把整座弄堂的人都交给远方阅读。",
+        "en": "Lin brings a sheet for separating what travels, what stays, and what is represented only by an index. Everything cannot depend on one case. Nor may I send her account to an unknown address without permission.\nShe agrees to an extract about printing; undisclosed names remain here. Luo’s account receives the same care. What I carry still supports questions, but does not give me authority to send an entire neighborhood to distant readers."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "departure2_2"
+        }
+      ]
+    },
+    "departure2_2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "工人给我的不是一张能够保证抵达的凭证，而是一张说明接收了什么的凭证。我把这句话读了两遍，觉得它与档案室的名册很像。纸记录一个环节，不自动替下一环负责。\n我选择把最难替代的材料留在贴身包里，其余交给已经同意的保管人。收据写清日期与页数，内容只写“私人纸件”。林岚留下一份，叮嘱我如果改道，也要设法让她知道。",
+        "en": "The worker’s receipt certifies what was received, not that it will arrive. It resembles the archive register: a record of one stage does not guarantee the next.\nIrreplaceable papers stay close to me. Others go to agreed keepers. The receipt specifies date and page count, describing the contents only as private papers. Lin keeps a copy and asks for word if I change course."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "departure2_3"
+        }
+      ]
+    },
+    "departure2_3": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我曾把离开想成身后的一切突然安静。现在要写的交接比打包还多：旧屋的钥匙、分存的页数、亲戚可能拒绝接应的备用安排。每写一项，都有一个活人的位置出现在纸上。\n货栈的木箱仍在等装车，我没有把自己的包放进去。去候船室靠窗长凳见带口信的人，是下一步。对岸是否有门会开，必须由门里的人来回答。",
+        "en": "I once imagined departure as everything behind me falling silent. The handover now takes longer than packing: the house key, stored page counts, a fallback if relatives decline. Each line makes space for a living person.\nThe crates await loading. My bag stays with me. Next I meet the messenger on the ferry hall window bench. Only the person behind a door can say whether it will open."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "departure2"
+          ],
+          "note": {
+            "zh": "货栈交接完成：关键纸件随身，其余按约寄存。下一步候船室靠窗长凳。",
+            "en": "Warehouse handover complete: essential papers stay with me; others in agreed custody. Next: ferry hall window bench."
+          }
+        }
+      ]
+    },
+    "departure3_0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "带口信的人没有递来一封欢迎信，只说那户人家还住在原处，愿意让我先去敲门。他不知道能不能留宿，更不知道我最后想去哪里。我感谢他把不知道说得清楚。\n过去一年，我常常拿别人一句含糊的安慰替自己编出一整段未来。现在桌上只有今晚这张船票、一个未必接纳的门牌和我能够独自承担的路程。东西少了一些，轮廓却清楚了。",
+        "en": "The messenger brings no welcome letter. The household remains at the address and permits a knock; he cannot promise lodging or know my eventual destination. I thank him for clearly stating what he does not know.\nFor a year I built whole futures from vague reassurance. Now there is tonight’s ticket, a door that may not offer shelter, and a distance I can undertake myself. The inventory is smaller and clearer."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "departure3_1"
+        }
+      ]
+    },
+    "departure3_1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我把到对岸以后的顺序写在票背：先确认能否暂住，再问是否可代收信，最后才谈南下。若第一步失败，就回到渡口，不去另一个从未约好的家门前把自己的困境变成他们的责任。\n长凳上的人说，很多人走的时候都只问最后一段路，把中间那些必须吃饭、睡觉、解释来历的日子忘了。我没有反驳。我在国外读过书，也仍然需要从一顿饭和一处能坐下的地方开始。",
+        "en": "On the ticket back I list the order: ask about temporary lodging, ask about receiving mail, then discuss farther travel. If the first fails, return to the ferry rather than arrive uninvited elsewhere and make my need their obligation.\nPeople often ask only about the final destination, the messenger says, forgetting the meals, sleep, and explanations in between. I have studied abroad, yet still need to begin with food and somewhere to sit."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "departure3_2"
+        }
+      ]
+    },
+    "departure3_2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "汽笛响时，我忽然很想把皮箱丢在这里，轻轻松松走上船。可包里有别人信任我的部分，也有我答应带回来消息的地址。轻装不该靠假装这些事不存在。\n我给周姨写了一张短笺，交到约定转交的位置：不写“我已经安全”，只写接下来准备怎样联系。若我最后改变主意留在上海，也要回来取走这张短笺，免得让一个人对着并未发生的离别等信。",
+        "en": "At the horn I want to abandon the bag and board unburdened. But it contains trust and addresses to which I promised news. Travelling lightly cannot depend on pretending those obligations vanished.\nI leave Zhou a note at the agreed forwarding point. It describes how I plan to contact her, not that I am already safe. If I remain in Shanghai, I must retrieve it rather than leave someone waiting on a departure that never happened."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "departure3_3"
+        }
+      ]
+    },
+    "departure3_3": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "候船窗已经亮起灯，问讯的人在清理台面。我仍可以把过江当作真正离开的第一步，前提是准备已经做过；也可以收回给周姨的短笺，走回里弄，在更清楚自己处境以后重新安排明天。\n哪一种都不能抹去今晚的调查。不同的是，这些材料接下来由一个远行的人携带，还是由一个决定暂留的人继续核对。我站起来，才发现自己一直握着船票，票角已被汗浸软。",
+        "en": "The enquiry window is lit. I can make the crossing the first step of a longer departure, if I have prepared for that journey. Or I can retrieve Zhou’s note and return to the lane, making tomorrow’s arrangements with clearer knowledge.\nNeither choice erases tonight’s inquiry. The difference is whether a traveler carries the record onward or someone staying continues to check it. I stand and discover the ticket’s corner has softened in my hand."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "departure3"
+          ],
+          "note": {
+            "zh": "离沪三步完成。去问讯窗口选择登船继续远行，或退票回到里弄。",
+            "en": "Departure tasks complete. At the enquiry window: board for the onward journey, or cancel and return."
+          }
+        }
+      ]
+    },
+    "silenceStart": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我说自己已经承受不住再让更多人卷进来。没有人因此叫我懦夫，林岚也没有替我宽恕一切。她只问：准备沉默到哪一步，哪些东西是我的，哪些仍属于别人？\n我得先回档案室看更正表，再到旧屋皮箱旁整理未寄出的信，最后在候船室靠窗长凳向帮助过我的人交代。这条路不会靠一把火立刻结束。即使停止追查，已经说过的话仍然需要有人负责。",
+        "en": "I say I cannot bear drawing more people into this. Nobody calls me a coward; Lin does not forgive everything on their behalf. She asks how far I intend silence to go, and which papers are mine to dispose of.\nI must examine the archive correction forms, sort the unsent letter beside the suitcase at home, then explain myself on the ferry hall window bench. A flame will not finish this route instantly. Even stopping leaves responsibility for words already spoken."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "收好手记，继续探索",
+            "en": "Close the journal and explore"
+          }
+        }
+      ]
+    },
+    "silence1_0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "更正表的纸比名册新，边角没有翻阅留下的黑色。上面留着几栏：原记载、拟更正、理由、经手人。只要填好，就能让后来查档的人先看见另一种说法。我把笔拿起来，又放下。\n我想撤回的是自己愿意继续追查的承诺，并不是已经看见的事实。两者如果混写在一张表上，下一次来找沈泊的人可能连今晚这条断断续续的路都走不到。",
+        "en": "The correction forms are newer than the register, their corners unworn. They provide boxes for the original entry, amendment, reason, and handler. Once completed, a future reader would encounter a different account first. I lift the pen, then set it down.\nI want to withdraw my promise to investigate, not the facts I have seen. Combining those actions could erase even this broken route for the next person looking for Shen Bo."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "silence1_1"
+        }
+      ]
+    },
+    "silence1_1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "一份废弃的更正表夹在下面，把“未收到回执”改成了“已办结”。我不知道这张表最后有没有生效，也不愿再凭一张草稿替一个陌生人定罪。但那两个词让我感到寒冷：事情可以没有答案，手续却可以已经结束。\n我在空纸上写了自己的范围：不再主动传递个人抄本，不要求他人代我追问，不改动原始名册。写到第三条，才发现它不是对自己的保护，而是给一个以后可能来到这里的人留下一点东西。",
+        "en": "An abandoned form changes “receipt not received” to “case completed.” I do not know whether it took effect, and will not condemn a stranger on a draft alone. The words chill me: a question can remain unanswered while its paperwork is finished.\nOn separate paper I limit my withdrawal: stop circulating my copies, stop asking others to inquire for me, leave the original register untouched. The third rule protects a future visitor more than it protects me."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "silence1_2"
+        }
+      ]
+    },
+    "silence1_2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "林岚进来时没有劝我重新勇敢，只把我借走的页码逐一核对。她要知道我是否准备连她自己的记录也一并毁掉。我说没有权这样做。她点头，却没有笑。\n停止调查不能使已经承担的危险全部消失，也不能让别人失去继续保留自身记忆的权利。我能决定的，是我亲手写下的那份未寄陈述。它是交给火，还是封起来暂时不递，必须在回旧屋之前想清楚。",
+        "en": "Lin does not urge courage. She checks the page numbers I borrowed, asking whether I intend to destroy her own record as well. I have no right to do that. She nods without smiling.\nStopping cannot erase every risk already taken or remove another person’s right to retain a memory. What I control is my own unsent statement. Before returning home, I must decide whether it is to be destroyed or sealed without delivery."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "silenceDraft"
+        }
+      ]
+    },
+    "silenceDraft": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "桌上只有你自己写的陈述，不包含名册原件、医生证言或林岚的记录。毁去它会失去一份可以重读的自述；封存它则意味着将来仍可能需要面对纸上的问题。",
+        "en": "Only your own statement lies here, not the original register, Luo’s testimony, or Lin’s record. Destroying it removes an account you could revisit. Sealing it leaves the possibility of facing its questions later."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "准备销毁自己的陈述，保留他人的原件",
+            "en": "Prepare to destroy my statement; preserve others’ originals"
+          },
+          "next": "silenceBurnPlan0"
+        },
+        {
+          "label": {
+            "zh": "保留一份封存草稿，暂不递交",
+            "en": "Keep a sealed draft without submitting it"
+          },
+          "next": "silenceKeepPlan0",
+          "flags": [
+            "keepDraft"
+          ]
+        }
+      ]
+    },
+    "silenceBurnPlan0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我把待销毁的页码另列一张清单。写清哪些是自己的话，才知道过去有多少句看似属于我的指控，其实只是听来的。我一页页删去转述，没有把它们当作证据再复制一次。\n林岚把属于她的那部分收回，说会自己决定怎样保管。她没有答应替我忘记今晚，也没有权替其他人答应。我的决定缩回到它实际能够触及的大小：几张纸，一个人。",
+        "en": "I list the pages intended for destruction. Separating my words reveals how many apparent accusations were merely things I heard. I remove those repetitions instead of reproducing them as evidence.\nLin takes back her portion and will decide its custody herself. She promises neither to forget tonight nor to speak for everyone else. My decision becomes its actual size: several pages, one person."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "silenceBurnPlan1"
+        }
+      ]
+    },
+    "silenceBurnPlan1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "回旧屋前，我把空白更正表放回搁板。没有填上“已办结”，也没有补写一个并不存在的解释。名册仍然留在原处，缺失的回执仍然缺失。\n我不知道这算不算最后一点坚持。也许只是终于不愿为了让自己的日子容易过些，就替弟弟的下落编一个足够整齐的结尾。皮箱旁还有未寄出的家信，需要分清哪些话可以烧，哪些属于我还欠着的回答。",
+        "en": "I replace the blank correction form. No “completed” stamp, no invented explanation. The register remains where it was; its missing receipt stays missing.\nPerhaps this is a last small stand, or merely a refusal to invent a tidy fate for my brother to make my life easier. Beside the suitcase waits a family letter. I still need to distinguish words I may destroy from answers I owe."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "silence1"
+          ],
+          "note": {
+            "zh": "缄默第一步：只销毁自己的陈述，不改原档。下一步旧屋皮箱。",
+            "en": "Silence step one: only my own statement may be destroyed; the archive stays intact. Next: home suitcase."
+          }
+        }
+      ]
+    },
+    "silenceKeepPlan0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我在草稿封面写“未递”，不写“作废”。里面有尚未证实的猜测，我用不同的线标出，免得后来的人误把一时的愤怒当成已经核对过的结论。封口日期是今晚，不是假装事情从未发生的某个过去。\n林岚问我是否希望她替我保管。我说先留在自己能找到的地方，若以后转交，会重新征求她同意。不能把迟疑也无声地托付给别人。",
+        "en": "I write “not submitted,” not “void.” I mark unverified guesses distinctly so a later reader will not mistake anger for a checked conclusion. The sealing date is tonight, not an invented earlier time pretending nothing happened.\nLin offers custody. I will first keep it somewhere I can find and ask again if that changes. I cannot silently make another person responsible even for my hesitation."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "silenceKeepPlan1"
+        }
+      ]
+    },
+    "silenceKeepPlan1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "名册原件留在桌上，封存草稿回到我的口袋。此刻我没有决定什么时候再打开，只决定不给未来的自己伪造一个从未知道这些事的过去。\n走出档案室时，我仍然害怕。保留纸并没有让我比准备烧纸的人高明；它只多留下一种可能，也多留下一份需要承担的风险。接下来回旧屋皮箱旁，把没寄出的家信写完。",
+        "en": "The register stays; the sealed draft returns to my pocket. I set no date to reopen it. I only refuse to give my future self a fabricated past in which I never knew these things.\nI remain afraid. Keeping a page makes me no wiser than someone destroying one. It preserves a possibility and a risk. Next I return to the suitcase and finish the unsent family letter."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "silence1"
+          ],
+          "note": {
+            "zh": "缄默第一步：保留标注疑点的封存草稿。下一步旧屋皮箱。",
+            "en": "Silence step one: preserve a sealed draft with uncertainties marked. Next: home suitcase."
+          }
+        }
+      ]
+    },
+    "silence2_0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "旧屋的门比来时容易推开，也许只是木头被雨气泡软了。皮箱旁的抽屉里有一封我写给弟弟却没寄的信，开头竟是在问他为什么把事情弄成这样。我坐下来，读完了自己曾经准备寄出去的责怪。\n当时我已经知道他被带走，却还把没有回信看作一种故意的沉默。我想把整封信撕掉，好像这样就能使那个轻易相信传言的自己也不存在。纸的纤维在指间绷紧，我终于还是松开了手。",
+        "en": "The door opens more easily, perhaps only because rain has swollen the wood. In the drawer is a letter I never sent my brother. It begins by asking why he made such a mess. I sit and read the blame I once intended to mail.\nI knew he had been taken away, yet treated no reply as a deliberate silence. I want to tear up the letter, as though that could erase the self who believed rumors. The fibers tighten between my hands. I let go."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "silence2_1"
+        }
+      ]
+    },
+    "silence2_1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我另拿一张纸，把今晚知道的写给他：名字怎样被补印，转出与抵达为什么不是一回事，旧信怎样在几处地方迟迟没有被送到。写到最后，我仍没有地址可以把它寄出去。\n接着是更难写的一句：我曾经怪过你。没有解释自己也是多么害怕，没有在后面接一个“但是”。如果有一天这封信能到他手里，他有权不立即原谅；如果永远到不了，也不该因此变成一封只求让我好受些的信。",
+        "en": "On a new sheet I tell him what tonight established: the added name, the difference between transfer and arrival, and the places where his letter waited. I still have no address to send it to.\nThen comes the harder sentence: I blamed you. I add neither an account of my own fear nor a “but.” If the letter reaches him, he may refuse immediate forgiveness. If it never does, it still should not exist merely to soothe me."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "silence2_2"
+        }
+      ]
+    },
+    "silence2_2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "家信与调查陈述终于分开。前者是我欠弟弟的话，后者是准备交给外界查阅的材料；不能因为害怕后者，就把前者也归入必须消失的一堆。母亲曾把不同人的信分别扎好，我第一次理解那不只是爱整齐。\n我用旧棉线把家信系起，放在合影后面。是否保留调查草稿，照档案室作出的选择办理。旧屋里没有人替我监督，决定仍然需要在这里算数。",
+        "en": "The family letter and investigative statement are finally separate. One contains words I owe my brother; the other was prepared for outside readers. Fear of the latter need not make the former disappear. Mother tied different people’s letters in separate bundles. I begin to understand why.\nI tie the family letter behind the photograph. The investigative draft follows my archive decision. No one is here to enforce it; the decision must still mean something."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "silence2_3"
+        }
+      ]
+    },
+    "silence2_3": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "窗外有人收起晾衣绳，木夹落在盆里，声音清楚得像小时候。那时我以为屋里关上门，外面的事便会远些。如今才知道，关门只能决定谁暂时进来，不能决定已经发生的事还算不算发生过。\n我得去候船室靠窗长凳，把停下来的打算告诉帮助过我的人。不是请他们批准，也不是索要宽慰，而是不让他们继续按一个我已经撤回的承诺等下去。",
+        "en": "Outside, clothes pegs fall into a basin with a sound from childhood. I once thought closing a door pushed the outside world away. A door can limit who enters for a while; it cannot decide whether the past happened.\nAt the ferry hall window bench I must tell those who helped that I am stopping. I need neither permission nor comfort, but must not let them keep waiting on a promise I have withdrawn."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "silence2"
+          ],
+          "note": {
+            "zh": "旧屋：家信与调查草稿分开；不把停查变成否认事实。下一步候船室靠窗长凳。",
+            "en": "Home: family letter separated from the investigative draft. Stopping is not denying facts. Next: ferry hall window bench."
+          }
+        }
+      ]
+    },
+    "silence3_0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "林岚听完没有立即回答。候船室里有人在扫地，扫帚每次经过长凳底下，我们都要把脚抬起来。这个小动作重复了几次，她才说她不准备停止保管自己的记录。\n我点头，没有把她的坚持听成对我的指责。她也没有把我的退出解释成所有证据都变得不可信。我们第一次在同一张长凳上明确承认，可以经历同一夜，却不走同一条路。",
+        "en": "Lin listens without answering. A cleaner passes the broom under the bench; we lift our feet several times before she says she will keep her own record.\nI do not take her persistence as an accusation. She does not treat my withdrawal as proof the evidence is worthless. We can have lived through the same night without taking the same road."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "silence3_1"
+        }
+      ]
+    },
+    "silence3_1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我把她交给我的查阅约定归还，逐条说明已经告诉过谁、哪些纸从未离开过口袋。她最关心的不是我是否愿意继续，而是别人是否还会以为她同意公开所有名字。\n我们把范围重新写清。罗医生仍然保管病人的记录，周姨仍可收留家信，没有一项权利因我害怕便被收回。我的沉默只能属于我自己，不能变成要求他们一起闭口的命令。",
+        "en": "I return Lin’s access agreements and specify whom I contacted and which papers never left my pocket. Her chief concern is whether others might still believe she consented to every name being published.\nWe clarify the limits. Luo retains patient records; Zhou may still keep family letters. My fear revokes none of their rights. My silence belongs to me; it cannot become an order for everyone else to be silent."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "silence3_2"
+        }
+      ]
+    },
+    "silence3_2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "她问我是否需要把已经准备的寄存通知撤回。我说需要，至少不能让一个陌生人替我等一只永远不会送来的封套。问讯窗口可以记下取消托交，原件的位置不必写进去。\n我想到最初那封迟到的信。有人多写清楚一行，后来的人也许就能少等一段时间。即使选择停止，我仍能做这件很小的事。它不会挽救整段人生，却可以避免我再制造一个新的误会。",
+        "en": "She asks whether to cancel pending custody notices. Yes: no stranger should wait for a folder that will never arrive. The enquiry window can record the cancellation without learning where the originals are.\nA clear extra line might once have shortened the wait for my brother’s letter. Even stopping, I can avoid creating a new misunderstanding. That will not redeem a whole life, but it remains worth doing."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "silence3_3"
+        }
+      ]
+    },
+    "silence3_3": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我把最后的安排带到窗口前。若准备销毁，只能销毁自己有权处置的陈述，不能借着一阵火替别人决定遗忘；若保留了草稿，可以封存未寄，不再声称自己已经递出它。\n外面仍有船在走。没有一班替我带来确定的消息。今晚快结束了，害怕没有结束。我能选择的，是害怕以后怎样生活，而不是让害怕证明所有努力从一开始就不值得。",
+        "en": "At the window I carry the final arrangement. Destruction can cover only my own statement, not another person’s right to remember. If I retained a draft, I may seal it undelivered without pretending it has been submitted.\nBoats still move outside. None brings certainty. The night is ending; fear is not. I can decide how to live after fear, rather than let fear prove nothing was ever worth doing."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "记下并继续探索",
+            "en": "Record this and explore"
+          },
+          "flags": [
+            "silence3"
+          ],
+          "note": {
+            "zh": "缄默三步完成。到问讯窗口取消托交，再处理自己的陈述。",
+            "en": "Silence tasks complete. At the enquiry window, cancel forwarding and settle your statement."
+          }
+        }
+      ]
+    },
+    "witnessDecision": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "问讯员只肯替我们存一个查阅办法，不肯替内容作保证。我可以让有条件查阅的署名页随目录留下，也可以把身份继续封住，只留足够找到原件的路径。两种结尾都需要寄存人的约定继续有效。",
+        "en": "The clerk will hold access instructions, not guarantee the contents. I may leave the restricted signature page with the index, or keep identities sealed and preserve only a path to the originals. Both depend on the keepers’ agreements."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "按署名约定留下可追问的名字",
+            "en": "Leave a name that readers may question"
+          },
+          "requires": {
+            "all": [
+              {
+                "flag": "routeWitness"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "witness1"
+                  },
+                  {
+                    "flag": "witness2"
+                  },
+                  {
+                    "flag": "witness3"
+                  }
+                ]
+              },
+              {
+                "flag": "namedCopy"
+              }
+            ]
+          },
+          "next": "witnessEnd0"
+        },
+        {
+          "label": {
+            "zh": "继续匿名封存，留下核对路径",
+            "en": "Keep identities sealed and preserve the trail"
+          },
+          "next": "anonymousEnd0",
+          "requires": {
+            "all": [
+              {
+                "flag": "routeWitness"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "witness1"
+                  },
+                  {
+                    "flag": "witness2"
+                  },
+                  {
+                    "flag": "witness3"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "witnessEnd0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "问讯员把说明读了两遍，要求我删去一句“可证明全部经过”。我照做。这份纸将来可能经过不耐烦的人、不相信我的人，甚至根本不愿接下去读的人；它不能因此先把不确定的部分写成确定。\n署名页进了内封，外面只有查阅条件和联系办法。我的名字终于再次出现在一份与自己有关的材料上，这次它没有替任何别人作答。",
+        "en": "The clerk asks me to remove “establishes the entire sequence.” I do. Future readers may be impatient, skeptical, or unwilling to continue. That cannot justify converting uncertainty into certainty in advance.\nThe signed page goes inside, with access terms outside. My name appears on a document concerning me again. This time it answers for nobody else."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "witnessEnd1"
+        }
+      ]
+    },
+    "witnessEnd1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "天将亮时，林岚来取另一份目录。她没有和我握手庆祝，只问保管人若搬家，该去哪里找新的联系方式。我把那一栏指给她看，又把遗漏的第二个转交办法补上。\n我们仍然不知道沈泊在哪里，也没有得到洗清一切的保证。只是从今以后，若有人愿意问，那些疑问不必再从一封没有回信的信开始。",
+        "en": "Near dawn Lin collects the second index. Instead of celebrating, she asks where to get new contact details if a keeper moves. I show her, then add a missing backup.\nWe still do not know where Shen Bo is. Nothing guarantees vindication. But another inquiry need not begin from a letter without a reply."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "witnessEnd2"
+        }
+      ]
+    },
+    "witnessEnd2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "回去时我经过后弄，没有敲那些收下封套的门。答应过的检视日期还没到，他们也该有一段不被我的事情占据的清晨。我在手记末尾写下自己的名字，旁边是下一次核对的日期。\n留名没有使夜色一下子退去。它只是让将来的追问找到一个愿意回答“这一部分是我核对的，其余我还不知道”的人。",
+        "en": "I pass the rear court without knocking. The agreed inspection date has not arrived; the keepers deserve a morning not occupied by my case. I put my name beside the next verification date.\nLeaving a name does not dispel the dark. It gives a future question someone willing to answer: I checked this part; the rest I do not yet know."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "让这一夜结束",
+            "en": "Let the night end"
+          },
+          "ending": "witness",
+          "requires": {
+            "all": [
+              {
+                "flag": "routeWitness"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "witness1"
+                  },
+                  {
+                    "flag": "witness2"
+                  },
+                  {
+                    "flag": "witness3"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "anonymousEnd0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我把署名页继续封在里面，或在尚未署名的位置保留空白。问讯员只收到编号与查阅步骤。他提醒我，匿名材料可能被搁置很久，甚至始终没有人愿意承认收到。\n我没有把这句话当作劝退。决定不公开身份以后，就不能又要求它拥有公开作证的全部力量。林岚留下原件索引，至少让等待不是完全没有方向。",
+        "en": "The signature stays sealed, or its space remains blank. The clerk receives only references and access steps. Anonymous material may wait a long time, perhaps without acknowledgment.\nI accept that consequence. Concealing identity cannot demand all the power of public testimony. Lin leaves the source index so the waiting retains a direction."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "anonymousEnd1"
+        }
+      ]
+    },
+    "anonymousEnd1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "后弄的人按约收下第二份目录，只在我的收条上画了自己的代号。那一小笔不证明他们赞同我所有判断，只说明曾经接过这件东西。我们没有把这些不同的意思混在一起。\n我把收条放在弟弟的信后面。今夜没有一个名字被我替别人补上，也没有一处不知道被写成已经查清。纸因此显得不够完整，却留出了后来的人继续工作的地方。",
+        "en": "A keeper receives the second index and marks the receipt with an agreed sign. It acknowledges custody, not agreement with every conclusion. We keep those meanings separate.\nI place it behind my brother’s letter. No name was added on someone else’s behalf, and no unknown declared resolved. The record looks incomplete, leaving room for another reader’s work."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "anonymousEnd2"
+        }
+      ]
+    },
+    "anonymousEnd2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "几年以后，是否会有人按编号找到这只封套，我不能预知。清晨的水槽边，有人照常洗碗，封套就在离水声很近的地方，被仔细垫高了一寸。\n我仍在这座城市里，没有恢复原来的职位，也没有得到一个能大声讲述的胜利。只是有一份不署名的记录，暂时没有消失。",
+        "en": "I cannot know whether anyone will follow the reference years from now. At dawn someone washes dishes by the sink. Nearby, the folder is carefully raised an inch above the damp.\nI remain in the city without my old position or a victory to announce. For now, an unsigned record has not disappeared."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "让这一夜结束",
+            "en": "Let the night end"
+          },
+          "ending": "anonymous",
+          "requires": {
+            "all": [
+              {
+                "flag": "routeWitness"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "witness1"
+                  },
+                  {
+                    "flag": "witness2"
+                  },
+                  {
+                    "flag": "witness3"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "embersDecision": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "问讯窗口可以保存一份不含病史的交接表。你可以回诊所开始自己答应的三夜，也可以在已取得轮值同意的前提下，把这份安排交给几个人共同接续。",
+        "en": "The window can hold a handover without medical details. You may begin your promised watches at the clinic, or, if the rota has been agreed, entrust its continuation to several people."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "回诊所，守好自己答应的三夜",
+            "en": "Return to the clinic for my promised watches"
+          },
+          "next": "embersEnd0",
+          "requires": {
+            "all": [
+              {
+                "flag": "routeEmbers"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "embers1"
+                  },
+                  {
+                    "flag": "embers2"
+                  },
+                  {
+                    "flag": "embers3"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "label": {
+            "zh": "交接已同意的轮值，让帮助能够接续",
+            "en": "Hand over the agreed rota"
+          },
+          "requires": {
+            "all": [
+              {
+                "flag": "routeEmbers"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "embers1"
+                  },
+                  {
+                    "flag": "embers2"
+                  },
+                  {
+                    "flag": "embers3"
+                  }
+                ]
+              },
+              {
+                "flag": "sharedCare"
+              }
+            ]
+          },
+          "next": "relayEnd0"
+        }
+      ]
+    },
+    "embersEnd0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我在表上圈出自己的三夜，余下的格子保持原样，没有为了让结尾好看就把它们填满。问讯员把联系说明收好，说若我临时来不了，必须照上面写的办法通知。\n回诊所的路上，热水瓶有些重。我停下换手，第一次允许自己在答应帮忙以后仍然觉得累。能承认累，才知道什么时候该请人替一下。",
+        "en": "I circle my three watches, leaving other spaces unchanged rather than filling them for a pleasing conclusion. The clerk stores the contact note and reminds me to follow it if I cannot come.\nOn the way back the flask grows heavy. I stop to switch hands. Admitting tiredness after promising help lets me recognize when to ask for relief."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "embersEnd1"
+        }
+      ]
+    },
+    "embersEnd1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "顾先生见我进门，问今天是哪一天。我告诉他，又把日期写在能看见的纸上。他没有立即想起青芜，也没有因为我留下就变成一个完整恢复的人。我们坐了一会，他说水温刚好。\n我把旧碗换下，窗帘留出他要求的缝。没有戏剧性的答案到来，只有几件先前说过的小事，被照着做了一遍。",
+        "en": "Gu asks the date. I tell him and write it where he can see. He neither immediately remembers Qingwu nor becomes restored because I stayed. After a while he says the water is the right temperature.\nI replace the chipped bowl and leave the curtain gap he requested. No dramatic answer arrives. Several small agreed things are done."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "embersEnd2"
+        }
+      ]
+    },
+    "embersEnd2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "第三夜结束以后，我还要重新问他，也要重新看自己的日程。留下是一件需要不断确认的事，不是今晚的一次选择替所有以后签好名。\n手记里关于弟弟的那几页没有合上。我把灯往顾先生看得见的地方移了些，等天亮后，再继续写自己不知道的部分。",
+        "en": "After the third night I must ask again and check my own schedule. Staying requires renewed agreement, not one decision signing for every future day.\nThe pages about my brother remain open. I move the lamp where Gu can see it. After dawn I will continue recording what I do not know."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "让这一夜结束",
+            "en": "Let the night end"
+          },
+          "ending": "embers",
+          "requires": {
+            "all": [
+              {
+                "flag": "routeEmbers"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "embers1"
+                  },
+                  {
+                    "flag": "embers2"
+                  },
+                  {
+                    "flag": "embers3"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "relayEnd0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "轮值表交出去之前，我逐个读回已经得到的答复。没有答应的名字仍然不在上面，愿意退出的人也有清楚的办法。问讯员只保留联络纸，不保存病史。\n我忽然担心这样的安排太松散，周姨却说，能让人退出的帮助，才值得请别人进入。她把自己负责的那一小格折进围裙口袋。",
+        "en": "Before handing over the rota, I read back each agreement. Unasked names remain absent, and there is a clear way to withdraw. The clerk stores contacts, not medical histories.\nI worry the arrangement is too loose. Zhou says help that permits departure is help worth inviting people into. She folds her small part into her apron pocket."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "relayEnd1"
+        }
+      ]
+    },
+    "relayEnd1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "第一个替班的人迟到了，不是什么背叛，只是家里水壶漏了。我们按约捎去口信，调换了热水时段。安排第一次出错，也第一次没有因为一个人缺席就全部垮掉。\n顾先生听见门外说话，让我们别把轮值当作一件比吃饭还大的事。我答应把表放低一点，不让每次抬头都先看见自己的名字被谁照看着。",
+        "en": "The first relief helper is late because a kettle leaked. We send the agreed message and swap water slots. The plan fails once without collapsing around one absence.\nGu asks us not to make the rota more important than his meals. I move the chart lower so he need not see a record of supervision every time he looks up."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "relayEnd2"
+        }
+      ]
+    },
+    "relayEnd2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我终于能腾出一个上午继续查弟弟的事，也能按时回来接自己的班。没有谁接过别人全部的人生，只有几个人把力所能及的一小段接在一起。\n煤炉旁的粉笔字会被擦去，再写新的日期。留下来的不是一个英雄，而是一种今天做不到时仍知道该去问谁的办法。",
+        "en": "I have a morning to continue searching for my brother, then return for my watch. Nobody assumes another person’s entire life. Several people join the small portions they can manage.\nChalk dates by the stove will be erased and replaced. What remains is no hero, but a way to know whom to ask when today becomes too much."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "让这一夜结束",
+            "en": "Let the night end"
+          },
+          "ending": "relay",
+          "requires": {
+            "all": [
+              {
+                "flag": "routeEmbers"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "embers1"
+                  },
+                  {
+                    "flag": "embers2"
+                  },
+                  {
+                    "flag": "embers3"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "departureDecision": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "窗口开始核对今夜的票。已核实远行条件，可以把过江当作离沪的第一步；也可以取回周姨的短笺，退掉这张票，带着已经厘清的责任回去。",
+        "en": "The window checks tonight’s tickets. With onward preparations verified, the crossing can begin a departure. Or retrieve Zhou’s note, cancel the ticket, and return with clearer responsibilities."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "按核对过的安排登船，继续远行",
+            "en": "Board and follow the verified onward plan"
+          },
+          "requires": {
+            "all": [
+              {
+                "flag": "routeDeparture"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "departure1"
+                  },
+                  {
+                    "flag": "departure2"
+                  },
+                  {
+                    "flag": "departure3"
+                  }
+                ]
+              },
+              {
+                "flag": "takeAddress"
+              }
+            ]
+          },
+          "next": "departureEnd0"
+        },
+        {
+          "label": {
+            "zh": "取回短笺，退票回到槐生里",
+            "en": "Retrieve the note, cancel, and return to the lane"
+          },
+          "next": "returningEnd0",
+          "requires": {
+            "all": [
+              {
+                "flag": "routeDeparture"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "departure1"
+                  },
+                  {
+                    "flag": "departure2"
+                  },
+                  {
+                    "flag": "departure3"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "departureEnd0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "问讯员在票角剪下一个小口，告诉我到对岸以后先在哪里等。他不认识我的弟弟，也不知道我为何要走。我没有把他的一句指路解释成对整段路的保证。\n上船前，我检查了一遍交接收条和地址簿。林岚没有来送，她要回去开铺；周姨要替楼上的孩子热水。没有人在岸边排成一列目送我，生活仍旧有它各自不能耽搁的事。",
+        "en": "The clerk clips the ticket and tells me where to wait across the river. He knows neither my brother nor my reasons. Directions are not a guarantee for the whole journey.\nI check the receipts and address book. Lin must open the shop; Zhou heats water for the child upstairs. Nobody forms a farewell line. Their lives have tasks that cannot wait."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "departureEnd1"
+        }
+      ]
+    },
+    "departureEnd1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "船离岸的时候，上海没有一下子消失。窗里仍是熟悉的屋顶，只是角度缓缓变了。我把手放在纸包上，想起弟弟十一年前替我提走的那只箱子，如今只能由自己提着。\n对岸还会有询问，有拒绝，也可能有一张让我暂时坐下的凳子。我没有把将来写成已经获得的自由，只在信纸背面添上一个能够回信的转交办法。",
+        "en": "Shanghai does not vanish when the ferry leaves. Familiar roofs slowly change angle. I rest a hand on the papers and remember the case my brother carried eleven years ago. This one is mine to carry.\nThere may be questions and refusal across the river, perhaps a stool offered briefly. I do not describe freedom as already won. I add a forwarding arrangement for replies."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "departureEnd2"
+        }
+      ]
+    },
+    "departureEnd2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "到了约定的门前，我没有立刻把所有经历倾倒给开门的人，只先报上姓名，问现在是否方便。那人让开半步，够一个带着行李的人站进避雨的地方。\n离开上海的路从这个小小的半步继续，仍然曲折，仍然没有弟弟的答案。至少这一次，我带走的不是一份替一切作结的判词，而是一封还能往来下去的信。",
+        "en": "At the agreed door I give my name and ask whether this is a suitable time, rather than pouring out my whole history. The person moves half a step, enough for someone with a bag to shelter from rain.\nThe road away continues from that small space, uncertain and without my brother’s answer. I carry not a verdict closing everything, but a letter that may yet receive a reply."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "让这一夜结束",
+            "en": "Let the night end"
+          },
+          "ending": "departure",
+          "requires": {
+            "all": [
+              {
+                "flag": "routeDeparture"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "departure1"
+                  },
+                  {
+                    "flag": "departure2"
+                  },
+                  {
+                    "flag": "departure3"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "returningEnd0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我把票交回窗口，说明不再乘这一班。问讯员划掉的是一次行程，不是对一个人的评价。取回写给周姨的短笺时，我竟松了一口气：至少不会有人因为我没有真正离开，却迟迟等不到回信。\n皮箱没有白收拾。哪些材料该带，哪些承诺不能丢，已经清楚写在纸上。只是今晚我选择用这些准备把生活接回去，而不是推到对岸再说。",
+        "en": "I return the ticket. The clerk cancels a journey, not a judgment on a person. Retrieving Zhou’s note brings relief: nobody will wait for news of a departure that never occurred.\nPacking was not wasted. The papers and promises are clearer. Tonight I will use that preparation to resume life here, rather than postpone it to the far bank."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "returningEnd1"
+        }
+      ]
+    },
+    "returningEnd1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "槐生里的灯还没全灭。周姨见我回来，只问吃过没有。我说没有，她指了指炉边，没替我的决定起一个好听的名字，也没有说早知道我走不了。\n我把钥匙交接单改成新的日期，再去诊所说明还在本地。那些原本为离开准备的通知，一份份改成留下来的安排。决定有了后果，不只是把船票藏回口袋。",
+        "en": "Some lane lights remain on. Zhou asks whether I have eaten and points to the stove. She gives my decision no noble name, nor says she knew I would fail to leave.\nI update the key handover and tell the clinic I remain nearby. Departure notices become arrangements for staying. The decision has consequences beyond putting the ticket away."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "returningEnd2"
+        }
+      ]
+    },
+    "returningEnd2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "天亮时，我把皮箱放回床脚，没有把它锁死。以后仍可能有另一班船，但不必由今晚替所有以后回答。\n桌上的图纸还缺一扇窗。我没有立刻拿笔去补，而是先把今天能够完成的事情写在旁边：回访保管人，送一张更正的收条，继续问弟弟的去向。回到原处，也可以从不同的地方开始。",
+        "en": "At dawn the suitcase returns beneath the bed, unlocked. There may be another sailing; tonight need not answer for every future night.\nA drawing still lacks a window. Before adding it, I list what I can actually do today: visit a keeper, deliver a corrected receipt, ask again about my brother. Returning to a place can still mean beginning elsewhere."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "让这一夜结束",
+            "en": "Let the night end"
+          },
+          "ending": "returning",
+          "requires": {
+            "all": [
+              {
+                "flag": "routeDeparture"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "departure1"
+                  },
+                  {
+                    "flag": "departure2"
+                  },
+                  {
+                    "flag": "departure3"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "silenceDecision": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "问讯员已经取消代你托交的安排。现在只剩你自己的陈述：可以把它销毁，让调查在自己这里停下；若先前保留了草稿，也可以封存未寄，把将来的决定留给以后。",
+        "en": "Forwarding on your behalf has been cancelled. Your own statement remains. You may destroy it and stop your inquiry, or, if you retained a draft, seal it undelivered and leave a future decision open."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "销毁自己的陈述，停止继续追查",
+            "en": "Destroy my statement and stop the inquiry"
+          },
+          "next": "silenceEnd0",
+          "requires": {
+            "all": [
+              {
+                "flag": "routeSilence"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "silence1"
+                  },
+                  {
+                    "flag": "silence2"
+                  },
+                  {
+                    "flag": "silence3"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "label": {
+            "zh": "封存已经保留的草稿，不寄也不否认",
+            "en": "Seal the retained draft without submitting or denying it"
+          },
+          "requires": {
+            "all": [
+              {
+                "flag": "routeSilence"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "silence1"
+                  },
+                  {
+                    "flag": "silence2"
+                  },
+                  {
+                    "flag": "silence3"
+                  }
+                ]
+              },
+              {
+                "flag": "keepDraft"
+              }
+            ]
+          },
+          "next": "letterKeptEnd0"
+        }
+      ]
+    },
+    "silenceEnd0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "问讯员让出炉边的位置，我把属于自己的那几页一张张放进去。名册原件不在这里，医生的记录和林岚的纸也不在这里。我没有得到一场能让所有人一起忘掉过去的火。\n纸卷起来时，我认出自己写错又改过的一个字。它最后比旁边的墨迹多亮了一瞬，便也看不清了。烧掉陈述没有改变那件事发生过，只使以后少了一个能够读到我声音的地方。",
+        "en": "The clerk makes room by the stove. I feed in only my own pages. The register, Luo’s records, and Lin’s papers are elsewhere. There is no fire capable of making everyone forget together.\nA corrected character briefly glows as the sheet curls. Destroying the statement changes no event. It removes one place where a future reader could hear my voice."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "silenceEnd1"
+        }
+      ]
+    },
+    "silenceEnd1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "林岚来收回空封套，没有问我后不后悔。我说她可以保留自己已经写下的东西，不需要为了照顾我的决定也跟着烧掉。她说这本来就是她要自己决定的事。\n我们道别时，隔着一张刚擦过的桌子。我知道有些亲近不会因为一夜的共同经历便永久留下，也不会因为分道就证明过去的帮助全是假的。",
+        "en": "Lin retrieves the empty folder without asking whether I regret it. I say she may retain her own record. She reminds me that was always her decision.\nWe part across a freshly wiped table. Shared danger guarantees no permanent closeness; different paths do not make earlier help false."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "silenceEnd2"
+        }
+      ]
+    },
+    "silenceEnd2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "往后的日子里，我没有再主动递出陈述。弟弟的家信仍留在合影后面，偶尔翻开，纸边已经比今晚柔软。\n别人问起那一夜，我有时说走了很远，有时什么也不说。生活并未因此安稳，害怕也没有完全消失。只是从此有一段可以被留下的自述，在我亲手点过的炉火里停住了。",
+        "en": "Afterward I do not submit another statement. The family letter remains behind the photograph, its edges softening with occasional handling.\nAsked about that night, I sometimes say I walked far, sometimes nothing. Life is not thereby secure, nor fear gone. One account that might have survived stopped in a fire I chose."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "让这一夜结束",
+            "en": "Let the night end"
+          },
+          "ending": "silence",
+          "requires": {
+            "all": [
+              {
+                "flag": "routeSilence"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "silence1"
+                  },
+                  {
+                    "flag": "silence2"
+                  },
+                  {
+                    "flag": "silence3"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "letterKeptEnd0": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我在封口上写下今晚的日期，没有填写收件人。问讯员提醒我，这样就不会成为一件已经受理的事。我说知道，不需要他用一个回执安慰我。\n封套回到我的手里。它没有发出，也没有作废；其中每一句尚未确定的话都带着记号，不能在多年以后被我偷偷改称当时就已知道的事实。",
+        "en": "I date the seal but leave the recipient blank. The clerk warns that nothing has been formally received. I understand; I need no comforting receipt.\nThe folder returns to my hands, neither sent nor void. Uncertain sentences are marked, so I cannot later pretend I knew them as facts tonight."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "letterKeptEnd1"
+        }
+      ]
+    },
+    "letterKeptEnd1": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "我回旧屋，把封套放到与家信不同的抽屉。周姨只知道有一份私人物件需要防潮，不必替它承担一份她没有读过的责任。\n放好以后，我没有马上觉得轻松。留着它意味着可能再看见自己的退缩，也意味着将来如果愿意，仍能找到那个正在犹豫的人亲手写下的经过。",
+        "en": "At home I place the folder in a drawer separate from the family letter. Zhou knows only that a private paper needs keeping dry, not that she must answer for unread contents.\nRelief does not arrive immediately. Keeping it means meeting my hesitation again. It also lets a future self find the account written by the person hesitating now."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "继续",
+            "en": "Continue"
+          },
+          "next": "letterKeptEnd2"
+        }
+      ]
+    },
+    "letterKeptEnd2": {
+      "speaker": {
+        "zh": "沈砚",
+        "en": "Shen Yan"
+      },
+      "portrait": "shen",
+      "text": {
+        "zh": "后来某个晴天，我把抽屉里的纸拿出来晒。封口还在，收件人那一栏仍空着。窗外有人叫卖，城市并没有因为一封未寄的信停下来等我。\n我也没有把等待说成已经完成的勇敢。只是把纸翻到背面，记下这次检视的日期。那封信还没有出发，但它暂时仍有出发的可能。",
+        "en": "On a later dry day I air the papers. The seal holds; the recipient remains blank. The city outside has not paused for an unsent letter.\nI do not rename waiting as accomplished courage. I turn the folder over and date the inspection. The letter has not begun its journey. For now, it still could."
+      },
+      "choices": [
+        {
+          "label": {
+            "zh": "让这一夜结束",
+            "en": "Let the night end"
+          },
+          "ending": "letterKept",
+          "requires": {
+            "all": [
+              {
+                "flag": "routeSilence"
+              },
+              {
+                "all": [
+                  {
+                    "flag": "silence1"
+                  },
+                  {
+                    "flag": "silence2"
+                  },
+                  {
+                    "flag": "silence3"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
     }
   },
   "scenes": [
@@ -2438,6 +5724,15 @@
           },
           "kind": "exit",
           "target": "river"
+        },
+        {
+          "id": "courtyard",
+          "label": {
+            "zh": "沿西口去后弄",
+            "en": "West passage to rear court"
+          },
+          "kind": "exit",
+          "target": "courtyard"
         }
       ]
     },
@@ -2489,6 +5784,51 @@
           },
           "kind": "exit",
           "target": "lane"
+        },
+        {
+          "id": "suitcase",
+          "label": {
+            "zh": "床脚的皮箱",
+            "en": "Suitcase by the bed"
+          },
+          "kind": "object",
+          "dialogue": {
+            "when": {
+              "flag": "routeSilence"
+            },
+            "then": {
+              "when": {
+                "flag": "silence2"
+              },
+              "then": "routeDone",
+              "otherwise": {
+                "when": {
+                  "flag": "silence1"
+                },
+                "then": "silence2_0",
+                "otherwise": "routeWait"
+              }
+            },
+            "otherwise": {
+              "when": {
+                "flag": "routeDeparture"
+              },
+              "then": {
+                "when": {
+                  "flag": "departure1"
+                },
+                "then": "routeDone",
+                "otherwise": {
+                  "when": {
+                    "flag": "routeDeparture"
+                  },
+                  "then": "departure1_0",
+                  "otherwise": "routeWait"
+                }
+              },
+              "otherwise": "suitcaseIdle"
+            }
+          }
         }
       ]
     },
@@ -2530,7 +5870,25 @@
             "en": "Type case"
           },
           "kind": "object",
-          "dialogue": "typecase"
+          "dialogue": {
+            "when": {
+              "flag": "routeWitness"
+            },
+            "then": {
+              "when": {
+                "flag": "witness3"
+              },
+              "then": "routeDone",
+              "otherwise": {
+                "when": {
+                  "flag": "witness2"
+                },
+                "then": "witness3_0",
+                "otherwise": "routeWait"
+              }
+            },
+            "otherwise": "typecase"
+          }
         },
         {
           "id": "lane",
@@ -2600,6 +5958,33 @@
           },
           "kind": "exit",
           "target": "lane"
+        },
+        {
+          "id": "ward",
+          "label": {
+            "zh": "帘后的病床",
+            "en": "Curtained bed"
+          },
+          "kind": "object",
+          "dialogue": {
+            "when": {
+              "flag": "routeEmbers"
+            },
+            "then": {
+              "when": {
+                "flag": "embers1"
+              },
+              "then": "routeDone",
+              "otherwise": {
+                "when": {
+                  "flag": "routeEmbers"
+                },
+                "then": "embers1_0",
+                "otherwise": "routeWait"
+              }
+            },
+            "otherwise": "wardIdle"
+          }
         }
       ]
     },
@@ -2660,6 +6045,33 @@
           },
           "kind": "exit",
           "target": "lane"
+        },
+        {
+          "id": "amendment",
+          "label": {
+            "zh": "更正表搁板",
+            "en": "Correction forms"
+          },
+          "kind": "object",
+          "dialogue": {
+            "when": {
+              "flag": "routeSilence"
+            },
+            "then": {
+              "when": {
+                "flag": "silence1"
+              },
+              "then": "routeDone",
+              "otherwise": {
+                "when": {
+                  "flag": "routeSilence"
+                },
+                "then": "silence1_0",
+                "otherwise": "routeWait"
+              }
+            },
+            "otherwise": "amendmentIdle"
+          }
         }
       ]
     },
@@ -2688,10 +6100,35 @@
           "kind": "exit",
           "dialogue": {
             "when": {
-              "flag": "riverReady"
+              "any": [
+                {
+                  "flag": "routeWitness"
+                },
+                {
+                  "flag": "routeEmbers"
+                },
+                {
+                  "flag": "routeDeparture"
+                },
+                {
+                  "flag": "routeSilence"
+                }
+              ]
             },
-            "then": "finale",
-            "otherwise": "riverArrival"
+            "then": "routeWait",
+            "otherwise": {
+              "when": {
+                "rule": "survey"
+              },
+              "then": {
+                "when": {
+                  "flag": "riverReady"
+                },
+                "then": "finale",
+                "otherwise": "riverArrival"
+              },
+              "otherwise": "riverSurvey"
+            }
           }
         },
         {
@@ -2711,6 +6148,436 @@
           },
           "kind": "exit",
           "target": "lane"
+        },
+        {
+          "id": "waiting",
+          "label": {
+            "zh": "候船室侧门",
+            "en": "Ferry hall side door"
+          },
+          "kind": "exit",
+          "target": "waiting"
+        }
+      ]
+    },
+    {
+      "id": "courtyard",
+      "name": {
+        "zh": "槐生后弄",
+        "en": "Rear Court"
+      },
+      "subtitle": {
+        "zh": "退信、煤炉与尚未熄灭的窗",
+        "en": "Returned letters, a shared stove, and lit windows"
+      },
+      "description": {
+        "zh": "退信、煤炉与尚未熄灭的窗",
+        "en": "Returned letters, a shared stove, and lit windows"
+      },
+      "time": "02:40",
+      "hotspots": [
+        {
+          "id": "lane",
+          "label": {
+            "zh": "回槐生里",
+            "en": "Huaisheng Lane"
+          },
+          "kind": "exit",
+          "target": "lane"
+        },
+        {
+          "id": "warehouse",
+          "label": {
+            "zh": "沿江货栈",
+            "en": "Riverside warehouse"
+          },
+          "kind": "exit",
+          "target": "warehouse"
+        },
+        {
+          "id": "letters",
+          "label": {
+            "zh": "退信箱",
+            "en": "Returned-letter box"
+          },
+          "kind": "object",
+          "dialogue": {
+            "when": {
+              "flag": "courtyardClue"
+            },
+            "then": "routeDone",
+            "otherwise": "court0"
+          }
+        },
+        {
+          "id": "relay",
+          "label": {
+            "zh": "长凳旁的寄存处",
+            "en": "Bench-side deposit"
+          },
+          "kind": "object",
+          "dialogue": {
+            "when": {
+              "flag": "routeWitness"
+            },
+            "then": {
+              "when": {
+                "flag": "witness2"
+              },
+              "then": "routeDone",
+              "otherwise": {
+                "when": {
+                  "flag": "witness1"
+                },
+                "then": "witness2_0",
+                "otherwise": "routeWait"
+              }
+            },
+            "otherwise": "routeWait"
+          }
+        },
+        {
+          "id": "boiler",
+          "label": {
+            "zh": "公用煤炉",
+            "en": "Communal stove"
+          },
+          "kind": "object",
+          "dialogue": {
+            "when": {
+              "flag": "routeEmbers"
+            },
+            "then": {
+              "when": {
+                "flag": "embers2"
+              },
+              "then": "routeDone",
+              "otherwise": {
+                "when": {
+                  "flag": "embers1"
+                },
+                "then": "embers2_0",
+                "otherwise": "routeWait"
+              }
+            },
+            "otherwise": "routeWait"
+          }
+        }
+      ]
+    },
+    {
+      "id": "warehouse",
+      "name": {
+        "zh": "沿江货栈",
+        "en": "Riverside Warehouse"
+      },
+      "subtitle": {
+        "zh": "货物有去向，人却没有回执",
+        "en": "Cargo has a destination; people have no receipt"
+      },
+      "description": {
+        "zh": "货物有去向，人却没有回执",
+        "en": "Cargo has a destination; people have no receipt"
+      },
+      "time": "03:10",
+      "hotspots": [
+        {
+          "id": "courtyard",
+          "label": {
+            "zh": "后弄门口",
+            "en": "Rear court"
+          },
+          "kind": "exit",
+          "target": "courtyard"
+        },
+        {
+          "id": "waiting",
+          "label": {
+            "zh": "候船室通道",
+            "en": "Passage to ferry hall"
+          },
+          "kind": "exit",
+          "target": "waiting"
+        },
+        {
+          "id": "freight",
+          "label": {
+            "zh": "点交桌的货单",
+            "en": "Freight handover papers"
+          },
+          "kind": "object",
+          "dialogue": {
+            "when": {
+              "flag": "freightClue"
+            },
+            "then": "routeDone",
+            "otherwise": "freight0"
+          }
+        },
+        {
+          "id": "seal",
+          "label": {
+            "zh": "封存工作台",
+            "en": "Sealing table"
+          },
+          "kind": "object",
+          "dialogue": {
+            "when": {
+              "flag": "routeWitness"
+            },
+            "then": {
+              "when": {
+                "flag": "witness1"
+              },
+              "then": "routeDone",
+              "otherwise": {
+                "when": {
+                  "flag": "routeWitness"
+                },
+                "then": "witness1_0",
+                "otherwise": "routeWait"
+              }
+            },
+            "otherwise": "routeWait"
+          }
+        },
+        {
+          "id": "cargo",
+          "label": {
+            "zh": "待运木箱",
+            "en": "Outbound crate"
+          },
+          "kind": "object",
+          "dialogue": {
+            "when": {
+              "flag": "routeDeparture"
+            },
+            "then": {
+              "when": {
+                "flag": "departure2"
+              },
+              "then": "routeDone",
+              "otherwise": {
+                "when": {
+                  "flag": "departure1"
+                },
+                "then": "departure2_0",
+                "otherwise": "routeWait"
+              }
+            },
+            "otherwise": "routeWait"
+          }
+        }
+      ]
+    },
+    {
+      "id": "waiting",
+      "name": {
+        "zh": "夜航候船室",
+        "en": "Night Ferry Hall"
+      },
+      "subtitle": {
+        "zh": "改道的船期与最后一张桌子",
+        "en": "A changed sailing and one last desk"
+      },
+      "description": {
+        "zh": "改道的船期与最后一张桌子",
+        "en": "A changed sailing and one last desk"
+      },
+      "time": "04:05",
+      "hotspots": [
+        {
+          "id": "warehouse",
+          "label": {
+            "zh": "货栈通道",
+            "en": "Warehouse passage"
+          },
+          "kind": "exit",
+          "target": "warehouse"
+        },
+        {
+          "id": "river",
+          "label": {
+            "zh": "走向江岸",
+            "en": "Onto the quay"
+          },
+          "kind": "exit",
+          "target": "river"
+        },
+        {
+          "id": "timetable",
+          "label": {
+            "zh": "旧航班表",
+            "en": "Old sailing notice"
+          },
+          "kind": "object",
+          "dialogue": {
+            "when": {
+              "flag": "tideClue"
+            },
+            "then": "routeDone",
+            "otherwise": "tide0"
+          }
+        },
+        {
+          "id": "window",
+          "label": {
+            "zh": "问讯窗口",
+            "en": "Enquiry window"
+          },
+          "kind": "object",
+          "dialogue": {
+            "when": {
+              "flag": "routeSilence"
+            },
+            "then": {
+              "when": {
+                "all": [
+                  {
+                    "flag": "silence1"
+                  },
+                  {
+                    "flag": "silence2"
+                  },
+                  {
+                    "flag": "silence3"
+                  }
+                ]
+              },
+              "then": "silenceDecision",
+              "otherwise": "routeWait"
+            },
+            "otherwise": {
+              "when": {
+                "flag": "routeDeparture"
+              },
+              "then": {
+                "when": {
+                  "all": [
+                    {
+                      "flag": "departure1"
+                    },
+                    {
+                      "flag": "departure2"
+                    },
+                    {
+                      "flag": "departure3"
+                    }
+                  ]
+                },
+                "then": "departureDecision",
+                "otherwise": "routeWait"
+              },
+              "otherwise": {
+                "when": {
+                  "flag": "routeEmbers"
+                },
+                "then": {
+                  "when": {
+                    "all": [
+                      {
+                        "flag": "embers1"
+                      },
+                      {
+                        "flag": "embers2"
+                      },
+                      {
+                        "flag": "embers3"
+                      }
+                    ]
+                  },
+                  "then": "embersDecision",
+                  "otherwise": "routeWait"
+                },
+                "otherwise": {
+                  "when": {
+                    "flag": "routeWitness"
+                  },
+                  "then": {
+                    "when": {
+                      "all": [
+                        {
+                          "flag": "witness1"
+                        },
+                        {
+                          "flag": "witness2"
+                        },
+                        {
+                          "flag": "witness3"
+                        }
+                      ]
+                    },
+                    "then": "witnessDecision",
+                    "otherwise": "routeWait"
+                  },
+                  "otherwise": "routeWait"
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "bench",
+          "label": {
+            "zh": "靠窗长凳",
+            "en": "Window bench"
+          },
+          "kind": "object",
+          "dialogue": {
+            "when": {
+              "flag": "routeSilence"
+            },
+            "then": {
+              "when": {
+                "flag": "silence3"
+              },
+              "then": "routeDone",
+              "otherwise": {
+                "when": {
+                  "flag": "silence2"
+                },
+                "then": "silence3_0",
+                "otherwise": "routeWait"
+              }
+            },
+            "otherwise": {
+              "when": {
+                "flag": "routeDeparture"
+              },
+              "then": {
+                "when": {
+                  "flag": "departure3"
+                },
+                "then": "routeDone",
+                "otherwise": {
+                  "when": {
+                    "flag": "departure2"
+                  },
+                  "then": "departure3_0",
+                  "otherwise": "routeWait"
+                }
+              },
+              "otherwise": {
+                "when": {
+                  "flag": "routeEmbers"
+                },
+                "then": {
+                  "when": {
+                    "flag": "embers3"
+                  },
+                  "then": "routeDone",
+                  "otherwise": {
+                    "when": {
+                      "flag": "embers2"
+                    },
+                    "then": "embers3_0",
+                    "otherwise": "routeWait"
+                  }
+                },
+                "otherwise": "routeWait"
+              }
+            }
+          }
         }
       ]
     }
@@ -2727,8 +6594,8 @@
         "en": "Paper may fall silent. Memory will not."
       },
       "text": {
-        "zh": "你没有登船。黎明前，你按约定把校样、名册与证言的副本分别藏好。林岚保管另一份，原始出处与尚未知晓的部分一并保留。\n没有人在第二天宣布你无罪。日子依旧艰难，但从此，真相不再只寄居于一个人的记忆。\n多年以后，有人在旧书夹页里读到沈泊的名字。那不是一行编号，也不是一项指控。那是一个曾经放过纸船的人。",
-        "en": "You do not board. Before dawn, you hide your copies of the proof, register, and testimony as agreed. Lin keeps the other set, preserving both their sources and their uncertainties.\nNo one declares you innocent the next day. Life remains difficult. But the truth no longer lives in only one person’s memory.\nYears later, someone finds Shen Bo’s name between the pages of an old book. Not a number. Not an accusation. A person who once launched paper boats."
+        "zh": "回去时我经过后弄，没有敲那些收下封套的门。答应过的检视日期还没到，他们也该有一段不被我的事情占据的清晨。我在手记末尾写下自己的名字，旁边是下一次核对的日期。\n留名没有使夜色一下子退去。它只是让将来的追问找到一个愿意回答“这一部分是我核对的，其余我还不知道”的人。",
+        "en": "I pass the rear court without knocking. The agreed inspection date has not arrived; the keepers deserve a morning not occupied by my case. I put my name beside the next verification date.\nLeaving a name does not dispel the dark. It gives a future question someone willing to answer: I checked this part; the rest I do not yet know."
       }
     },
     "departure": {
@@ -2742,8 +6609,8 @@
         "en": "Leaving is another way to go on living."
       },
       "text": {
-        "zh": "你把信收进贴近心口的衣袋。船离岸时，上海没有回头看你。\n去吴淞的水路很短，往后的路却没有人能告诉你。船票不能保证安全，也没有带来弟弟的消息。\n但你带走了他的名字，和那封没有署日期的信。有一天，你会在另一个有灯的地方，把这一夜写完。",
-        "en": "You place the letter close to your heart. As the ferry leaves, Shanghai does not look back.\nThe journey to Wusong is short. No one can tell you what follows. The ticket guarantees no safety and brings no news of your brother.\nBut you carry his name and the undated letter. One day, somewhere with a light, you will finish writing this night."
+        "zh": "到了约定的门前，我没有立刻把所有经历倾倒给开门的人，只先报上姓名，问现在是否方便。那人让开半步，够一个带着行李的人站进避雨的地方。\n离开上海的路从这个小小的半步继续，仍然曲折，仍然没有弟弟的答案。至少这一次，我带走的不是一份替一切作结的判词，而是一封还能往来下去的信。",
+        "en": "At the agreed door I give my name and ask whether this is a suitable time, rather than pouring out my whole history. The person moves half a step, enough for someone with a bag to shelter from rain.\nThe road away continues from that small space, uncertain and without my brother’s answer. I carry not a verdict closing everything, but a letter that may yet receive a reply."
       }
     },
     "silence": {
@@ -2757,8 +6624,8 @@
         "en": "The fire dies. The rain goes on."
       },
       "text": {
-        "zh": "你把随身的抄件与校样放进江边值守棚的炉里。纸卷起来，名字逐渐看不见。\n你知道，档案原件仍在，罗医生和林岚也仍有自己的记忆。这把火烧不掉事实，只烧掉了你准备继续追查的那份凭据。你选择暂时不再去问。\n第二天，你像往常一样低着头走过街口。没有人拦住你，也没有人替你保证安全。\n很多年后，你仍会梦见那道空白的签收栏。梦里，沈泊没有责怪你。他只是等着你，决定要不要重新拿起笔。",
-        "en": "You place your carried copies and proof in the stove of the riverside watch shelter. Paper curls; names disappear.\nThe original register remains in the archive. Luo and Lin still have their own memories. Fire cannot destroy those facts, only the material you intended to pursue. You choose, for now, to stop asking.\nNext morning you walk past the street corner as usual. Nobody stops you; nobody promises safety.\nYears later you still dream of the empty receipt field. In the dream Shen Bo does not accuse you. He waits for you to decide whether to take up a pen again."
+        "zh": "往后的日子里，我没有再主动递出陈述。弟弟的家信仍留在合影后面，偶尔翻开，纸边已经比今晚柔软。\n别人问起那一夜，我有时说走了很远，有时什么也不说。生活并未因此安稳，害怕也没有完全消失。只是从此有一段可以被留下的自述，在我亲手点过的炉火里停住了。",
+        "en": "Afterward I do not submit another statement. The family letter remains behind the photograph, its edges softening with occasional handling.\nAsked about that night, I sometimes say I walked far, sometimes nothing. Life is not thereby secure, nor fear gone. One account that might have survived stopped in a fire I chose."
       }
     },
     "embers": {
@@ -2772,17 +6639,100 @@
         "en": "Keep a lamp for someone yet to return."
       },
       "text": {
-        "zh": "你回到诊所，把名册收进干燥的抽屉。你答应罗医生，替他走夜路；答应顾先生，常来听他讲青芜的事。\n你不再把整座城市都当作审判自己的房间。它也有生病的人、等门的人，和一盏可以添油的灯。\n每到下雨，周姨都会多留一把伞。你没有找到沈泊。但如果他回来，他仍有门可敲。",
-        "en": "You return to the clinic and place the register in a dry drawer. You promise to make Dr. Luo’s night visits, and to listen when Mr. Gu speaks of Qingwu.\nThe city is no longer only a room in which you are judged. It also holds the ill, the waiting, and a lamp that can be refilled.\nWhen it rains, Aunt Zhou keeps an extra umbrella. You have not found Shen Bo. But if he returns, there will still be a door to knock on."
+        "zh": "第三夜结束以后，我还要重新问他，也要重新看自己的日程。留下是一件需要不断确认的事，不是今晚的一次选择替所有以后签好名。\n手记里关于弟弟的那几页没有合上。我把灯往顾先生看得见的地方移了些，等天亮后，再继续写自己不知道的部分。",
+        "en": "After the third night I must ask again and check my own schedule. Staying requires renewed agreement, not one decision signing for every future day.\nThe pages about my brother remain open. I move the lamp where Gu can see it. After dawn I will continue recording what I do not know."
+      }
+    },
+    "anonymous": {
+      "number": "V",
+      "title": {
+        "zh": "无名存证",
+        "en": "The unsigned record"
+      },
+      "subtitle": {
+        "zh": "纸留下了，名字仍在封套里。",
+        "en": "The papers remain; the name stays sealed."
+      },
+      "text": {
+        "zh": "几年以后，是否会有人按编号找到这只封套，我不能预知。清晨的水槽边，有人照常洗碗，封套就在离水声很近的地方，被仔细垫高了一寸。\n我仍在这座城市里，没有恢复原来的职位，也没有得到一个能大声讲述的胜利。只是有一份不署名的记录，暂时没有消失。",
+        "en": "I cannot know whether anyone will follow the reference years from now. At dawn someone washes dishes by the sink. Nearby, the folder is carefully raised an inch above the damp.\nI remain in the city without my old position or a victory to announce. For now, an unsigned record has not disappeared."
+      }
+    },
+    "relay": {
+      "number": "VI",
+      "title": {
+        "zh": "接灯",
+        "en": "Passing the lamp"
+      },
+      "subtitle": {
+        "zh": "几个人各自接住一小段夜。",
+        "en": "Several people take a small part of the night."
+      },
+      "text": {
+        "zh": "我终于能腾出一个上午继续查弟弟的事，也能按时回来接自己的班。没有谁接过别人全部的人生，只有几个人把力所能及的一小段接在一起。\n煤炉旁的粉笔字会被擦去，再写新的日期。留下来的不是一个英雄，而是一种今天做不到时仍知道该去问谁的办法。",
+        "en": "I have a morning to continue searching for my brother, then return for my watch. Nobody assumes another person’s entire life. Several people join the small portions they can manage.\nChalk dates by the stove will be erased and replaced. What remains is no hero, but a way to know whom to ask when today becomes too much."
+      }
+    },
+    "returning": {
+      "number": "VII",
+      "title": {
+        "zh": "归巷",
+        "en": "Back to the lane"
+      },
+      "subtitle": {
+        "zh": "退回一张票，重新安排明天。",
+        "en": "One cancelled ticket, tomorrow arranged anew."
+      },
+      "text": {
+        "zh": "天亮时，我把皮箱放回床脚，没有把它锁死。以后仍可能有另一班船，但不必由今晚替所有以后回答。\n桌上的图纸还缺一扇窗。我没有立刻拿笔去补，而是先把今天能够完成的事情写在旁边：回访保管人，送一张更正的收条，继续问弟弟的去向。回到原处，也可以从不同的地方开始。",
+        "en": "At dawn the suitcase returns beneath the bed, unlocked. There may be another sailing; tonight need not answer for every future night.\nA drawing still lacks a window. Before adding it, I list what I can actually do today: visit a keeper, deliver a corrected receipt, ask again about my brother. Returning to a place can still mean beginning elsewhere."
+      }
+    },
+    "letterKept": {
+      "number": "VIII",
+      "title": {
+        "zh": "未寄",
+        "en": "Unsent"
+      },
+      "subtitle": {
+        "zh": "还没有出发，也没有被抹去。",
+        "en": "Not yet sent, not erased."
+      },
+      "text": {
+        "zh": "后来某个晴天，我把抽屉里的纸拿出来晒。封口还在，收件人那一栏仍空着。窗外有人叫卖，城市并没有因为一封未寄的信停下来等我。\n我也没有把等待说成已经完成的勇敢。只是把纸翻到背面，记下这次检视的日期。那封信还没有出发，但它暂时仍有出发的可能。",
+        "en": "On a later dry day I air the papers. The seal holds; the recipient remains blank. The city outside has not paused for an unsent letter.\nI do not rename waiting as accomplished courage. I turn the folder over and date the inspection. The letter has not begun its journey. For now, it still could."
       }
     }
   },
   "chapters": [
     {
+      "index": 5,
+      "title": {
+        "zh": "第五章 · 各自的清晨",
+        "en": "CHAPTER V · SEPARATE MORNINGS"
+      },
+      "when": {
+        "any": [
+          {
+            "flag": "routeWitness"
+          },
+          {
+            "flag": "routeEmbers"
+          },
+          {
+            "flag": "routeDeparture"
+          },
+          {
+            "flag": "routeSilence"
+          }
+        ]
+      }
+    },
+    {
       "index": 4,
       "title": {
-        "zh": "第四章 · 天亮之前",
-        "en": "CHAPTER IV · BEFORE THE DAWN"
+        "zh": "第四章 · 迟到的回声",
+        "en": "CHAPTER IV · DELAYED ECHOES"
       },
       "when": {
         "item": "record"
@@ -2965,12 +6915,269 @@
     },
     {
       "title": {
+        "zh": "退信去过哪里",
+        "en": "Where the letter went"
+      },
+      "detail": {
+        "zh": "找到名册后，去槐生后弄退信箱核对地址。",
+        "en": "After the register, inspect the returned-letter box in the rear court."
+      },
+      "complete": {
+        "flag": "courtyardClue"
+      }
+    },
+    {
+      "title": {
+        "zh": "货物与人的区别",
+        "en": "Cargo is not a passenger"
+      },
+      "detail": {
+        "zh": "去沿江货栈点交桌，核对货位与邮袋去向。",
+        "en": "Inspect the warehouse handover papers; distinguish cargo from passengers."
+      },
+      "complete": {
+        "flag": "freightClue"
+      }
+    },
+    {
+      "title": {
+        "zh": "不是同一班船",
+        "en": "Not the same sailing"
+      },
+      "detail": {
+        "zh": "查看候船室旧航班表，再去江岸决定下一条路线。",
+        "en": "Read the ferry hall timetable, then choose a route at the shore."
+      },
+      "complete": {
+        "flag": "tideClue"
+      }
+    },
+    {
+      "title": {
+        "zh": "决定接下来的路",
+        "en": "Choose the next route"
+      },
+      "detail": {
+        "zh": "去江岸整理发现，选择留证、护人、离沪或缄默。可先手动存档。",
+        "en": "Choose preservation, care, departure or silence at the shore. Save first if desired."
+      },
+      "complete": {
+        "any": [
+          {
+            "flag": "routeWitness"
+          },
+          {
+            "flag": "routeEmbers"
+          },
+          {
+            "flag": "routeDeparture"
+          },
+          {
+            "flag": "routeSilence"
+          }
+        ]
+      }
+    },
+    {
+      "title": {
+        "zh": "封存与署名",
+        "en": "Seal and attribution"
+      },
+      "detail": {
+        "zh": "前往沿江货栈，调查封存工作台。",
+        "en": "Visit Riverside Warehouse; inspect Sealing table."
+      },
+      "complete": {
+        "flag": "witness1"
+      },
+      "when": {
+        "flag": "routeWitness"
+      }
+    },
+    {
+      "title": {
+        "zh": "寄存人的答复",
+        "en": "The keepers’ answers"
+      },
+      "detail": {
+        "zh": "前往槐生后弄，调查长凳旁的寄存处。",
+        "en": "Visit Rear Court; inspect Bench-side deposit."
+      },
+      "complete": {
+        "flag": "witness2"
+      },
+      "when": {
+        "flag": "routeWitness"
+      }
+    },
+    {
+      "title": {
+        "zh": "可以被核对的版本",
+        "en": "A verifiable edition"
+      },
+      "detail": {
+        "zh": "前往长明印刷铺，调查铅字盒。",
+        "en": "Visit Changming Press; inspect Type case."
+      },
+      "complete": {
+        "flag": "witness3"
+      },
+      "when": {
+        "flag": "routeWitness"
+      }
+    },
+    {
+      "title": {
+        "zh": "问过病人的安排",
+        "en": "A plan the patient accepts"
+      },
+      "detail": {
+        "zh": "前往仁安诊所，调查帘后的病床。",
+        "en": "Visit Ren’an Clinic; inspect Curtained bed."
+      },
+      "complete": {
+        "flag": "embers1"
+      },
+      "when": {
+        "flag": "routeEmbers"
+      }
+    },
+    {
+      "title": {
+        "zh": "煤炉旁的轮值",
+        "en": "A rota by the stove"
+      },
+      "detail": {
+        "zh": "前往槐生后弄，调查公用煤炉。",
+        "en": "Visit Rear Court; inspect Communal stove."
+      },
+      "complete": {
+        "flag": "embers2"
+      },
+      "when": {
+        "flag": "routeEmbers"
+      }
+    },
+    {
+      "title": {
+        "zh": "把承诺交到手上",
+        "en": "Handing over the promise"
+      },
+      "detail": {
+        "zh": "前往夜航候船室，调查靠窗长凳。",
+        "en": "Visit Night Ferry Hall; inspect Window bench."
+      },
+      "complete": {
+        "flag": "embers3"
+      },
+      "when": {
+        "flag": "routeEmbers"
+      }
+    },
+    {
+      "title": {
+        "zh": "皮箱里的取舍",
+        "en": "What the suitcase carries"
+      },
+      "detail": {
+        "zh": "前往沈家旧屋，调查床脚的皮箱。",
+        "en": "Visit The Shen Home; inspect Suitcase by the bed."
+      },
+      "complete": {
+        "flag": "departure1"
+      },
+      "when": {
+        "flag": "routeDeparture"
+      }
+    },
+    {
+      "title": {
+        "zh": "带走与留下",
+        "en": "Cargo and responsibilities"
+      },
+      "detail": {
+        "zh": "前往沿江货栈，调查待运木箱。",
+        "en": "Visit Riverside Warehouse; inspect Outbound crate."
+      },
+      "complete": {
+        "flag": "departure2"
+      },
+      "when": {
+        "flag": "routeDeparture"
+      }
+    },
+    {
+      "title": {
+        "zh": "一张票的边界",
+        "en": "What a ticket can promise"
+      },
+      "detail": {
+        "zh": "前往夜航候船室，调查靠窗长凳。",
+        "en": "Visit Night Ferry Hall; inspect Window bench."
+      },
+      "complete": {
+        "flag": "departure3"
+      },
+      "when": {
+        "flag": "routeDeparture"
+      }
+    },
+    {
+      "title": {
+        "zh": "更正还是抹去",
+        "en": "Correction or erasure"
+      },
+      "detail": {
+        "zh": "前往旧档案室，调查更正表搁板。",
+        "en": "Visit The Old Archive; inspect Correction forms."
+      },
+      "complete": {
+        "flag": "silence1"
+      },
+      "when": {
+        "flag": "routeSilence"
+      }
+    },
+    {
+      "title": {
+        "zh": "抽屉里的未寄信",
+        "en": "The unsent letter"
+      },
+      "detail": {
+        "zh": "前往沈家旧屋，调查床脚的皮箱。",
+        "en": "Visit The Shen Home; inspect Suitcase by the bed."
+      },
+      "complete": {
+        "flag": "silence2"
+      },
+      "when": {
+        "flag": "routeSilence"
+      }
+    },
+    {
+      "title": {
+        "zh": "最后一次说明",
+        "en": "One last explanation"
+      },
+      "detail": {
+        "zh": "前往夜航候船室，调查靠窗长凳。",
+        "en": "Visit Night Ferry Hall; inspect Window bench."
+      },
+      "complete": {
+        "flag": "silence3"
+      },
+      "when": {
+        "flag": "routeSilence"
+      }
+    },
+    {
+      "title": {
         "zh": "渡过长夜",
         "en": "Through the long night"
       },
       "detail": {
-        "zh": "到江岸整理这一夜的发现，再决定自己的去留。可随时回访补齐线索。",
-        "en": "Reflect at the shore and choose your path. Revisit freely before deciding."
+        "zh": "完成当前路线三段事件，到候船室问讯窗口作最后选择，读完其后果。",
+        "en": "Complete all three route tasks, decide at the ferry hall enquiry window, and read the aftermath."
       },
       "complete": {
         "endingReached": true
@@ -3043,6 +7250,236 @@
         "zh": "槐生里 · 入夜",
         "en": "Huaisheng Lane · Nightfall"
       }
+    }
+  ],
+  "routes": [
+    {
+      "flag": "routeWitness",
+      "title": {
+        "zh": "留证线 · 纸的去处",
+        "en": "Evidence · Where the paper goes"
+      },
+      "start": "witnessStart",
+      "decision": "witnessDecision",
+      "endings": [
+        "witness",
+        "anonymous"
+      ],
+      "steps": [
+        {
+          "scene": "warehouse",
+          "event": "seal",
+          "node": "witness1_0",
+          "flag": "witness1",
+          "title": {
+            "zh": "封存与署名",
+            "en": "Seal and attribution"
+          },
+          "detail": {
+            "zh": "前往沿江货栈，调查封存工作台。",
+            "en": "Visit Riverside Warehouse; inspect Sealing table."
+          }
+        },
+        {
+          "scene": "courtyard",
+          "event": "relay",
+          "node": "witness2_0",
+          "flag": "witness2",
+          "title": {
+            "zh": "寄存人的答复",
+            "en": "The keepers’ answers"
+          },
+          "detail": {
+            "zh": "前往槐生后弄，调查长凳旁的寄存处。",
+            "en": "Visit Rear Court; inspect Bench-side deposit."
+          }
+        },
+        {
+          "scene": "press",
+          "event": "typecase",
+          "node": "witness3_0",
+          "flag": "witness3",
+          "title": {
+            "zh": "可以被核对的版本",
+            "en": "A verifiable edition"
+          },
+          "detail": {
+            "zh": "前往长明印刷铺，调查铅字盒。",
+            "en": "Visit Changming Press; inspect Type case."
+          }
+        }
+      ]
+    },
+    {
+      "flag": "routeEmbers",
+      "title": {
+        "zh": "护人线 · 今后的夜班",
+        "en": "Care · The nights to come"
+      },
+      "start": "embersStart",
+      "decision": "embersDecision",
+      "endings": [
+        "embers",
+        "relay"
+      ],
+      "steps": [
+        {
+          "scene": "clinic",
+          "event": "ward",
+          "node": "embers1_0",
+          "flag": "embers1",
+          "title": {
+            "zh": "问过病人的安排",
+            "en": "A plan the patient accepts"
+          },
+          "detail": {
+            "zh": "前往仁安诊所，调查帘后的病床。",
+            "en": "Visit Ren’an Clinic; inspect Curtained bed."
+          }
+        },
+        {
+          "scene": "courtyard",
+          "event": "boiler",
+          "node": "embers2_0",
+          "flag": "embers2",
+          "title": {
+            "zh": "煤炉旁的轮值",
+            "en": "A rota by the stove"
+          },
+          "detail": {
+            "zh": "前往槐生后弄，调查公用煤炉。",
+            "en": "Visit Rear Court; inspect Communal stove."
+          }
+        },
+        {
+          "scene": "waiting",
+          "event": "bench",
+          "node": "embers3_0",
+          "flag": "embers3",
+          "title": {
+            "zh": "把承诺交到手上",
+            "en": "Handing over the promise"
+          },
+          "detail": {
+            "zh": "前往夜航候船室，调查靠窗长凳。",
+            "en": "Visit Night Ferry Hall; inspect Window bench."
+          }
+        }
+      ]
+    },
+    {
+      "flag": "routeDeparture",
+      "title": {
+        "zh": "离沪线 · 另一岸的地址",
+        "en": "Departure · An address beyond the river"
+      },
+      "start": "departureStart",
+      "decision": "departureDecision",
+      "endings": [
+        "departure",
+        "returning"
+      ],
+      "steps": [
+        {
+          "scene": "home",
+          "event": "suitcase",
+          "node": "departure1_0",
+          "flag": "departure1",
+          "title": {
+            "zh": "皮箱里的取舍",
+            "en": "What the suitcase carries"
+          },
+          "detail": {
+            "zh": "前往沈家旧屋，调查床脚的皮箱。",
+            "en": "Visit The Shen Home; inspect Suitcase by the bed."
+          }
+        },
+        {
+          "scene": "warehouse",
+          "event": "cargo",
+          "node": "departure2_0",
+          "flag": "departure2",
+          "title": {
+            "zh": "带走与留下",
+            "en": "Cargo and responsibilities"
+          },
+          "detail": {
+            "zh": "前往沿江货栈，调查待运木箱。",
+            "en": "Visit Riverside Warehouse; inspect Outbound crate."
+          }
+        },
+        {
+          "scene": "waiting",
+          "event": "bench",
+          "node": "departure3_0",
+          "flag": "departure3",
+          "title": {
+            "zh": "一张票的边界",
+            "en": "What a ticket can promise"
+          },
+          "detail": {
+            "zh": "前往夜航候船室，调查靠窗长凳。",
+            "en": "Visit Night Ferry Hall; inspect Window bench."
+          }
+        }
+      ]
+    },
+    {
+      "flag": "routeSilence",
+      "title": {
+        "zh": "缄默线 · 没有递出的纸",
+        "en": "Silence · The undelivered page"
+      },
+      "start": "silenceStart",
+      "decision": "silenceDecision",
+      "endings": [
+        "silence",
+        "letterKept"
+      ],
+      "steps": [
+        {
+          "scene": "archive",
+          "event": "amendment",
+          "node": "silence1_0",
+          "flag": "silence1",
+          "title": {
+            "zh": "更正还是抹去",
+            "en": "Correction or erasure"
+          },
+          "detail": {
+            "zh": "前往旧档案室，调查更正表搁板。",
+            "en": "Visit The Old Archive; inspect Correction forms."
+          }
+        },
+        {
+          "scene": "home",
+          "event": "suitcase",
+          "node": "silence2_0",
+          "flag": "silence2",
+          "title": {
+            "zh": "抽屉里的未寄信",
+            "en": "The unsent letter"
+          },
+          "detail": {
+            "zh": "前往沈家旧屋，调查床脚的皮箱。",
+            "en": "Visit The Shen Home; inspect Suitcase by the bed."
+          }
+        },
+        {
+          "scene": "waiting",
+          "event": "bench",
+          "node": "silence3_0",
+          "flag": "silence3",
+          "title": {
+            "zh": "最后一次说明",
+            "en": "One last explanation"
+          },
+          "detail": {
+            "zh": "前往夜航候船室，调查靠窗长凳。",
+            "en": "Visit Night Ferry Hall; inspect Window bench."
+          }
+        }
+      ]
     }
   ]
 }
