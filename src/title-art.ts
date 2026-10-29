@@ -25,7 +25,7 @@ function paintWaterfront(): HTMLCanvasElement {
   };
   const sky = ['#101a29', '#152131', '#1b2a3a', '#223343', '#2a3d49', '#344953'];
   for (let y = 0; y < 124; y++) box(0, y, WIDTH, 1, sky[Math.min(5, Math.floor(y / 22))]);
-  for (let i = 0; i < 1800; i++) box(random() * WIDTH, random() * 124, 1, 1, i % 2 ? '#b0b6a408' : '#07122514');
+  for (let i = 0; i < 340; i++) box(random() * WIDTH, random() * 124, 1, 1, i % 2 ? '#b0b6a408' : '#07122514');
 
   // A stepped, partially veiled moon rather than a smooth vector disc.
   const moon = ['    xxxxxx    ', '  xxxxxxxxxx  ', ' xxxxxxxxxxxx ', 'xxxxxxxxxxxxxx', 'xxxxxxxxxxxxxx', 'xxxxxxxxxxxxxx', 'xxxxxxxxxxxxxx', ' xxxxxxxxxxxx ', '  xxxxxxxxxx  ', '    xxxxxx    '];
@@ -51,6 +51,13 @@ function paintWaterfront(): HTMLCanvasElement {
     if (roof) shape([[x - 2, y], [x + 7, y - 8], [x + width - 8, y - 8], [x + width + 2, y]], '#233740');
     box(x - 1, y, width + 2, 2, '#64706a');
     box(x, y + height - 3, width, 3, '#283b41');
+    // Cornices, masonry joints and drainpipes retain a clear small-scale silhouette.
+    box(x + 2, y + 3, width - 7, 1, '#8a91804b');
+    box(x + width - 3, y + 3, 1, height - 4, '#8391804a');
+    for(let yy=y+4;yy<y+height-3;yy+=5){
+      box(x+2,yy,width-8,1,'#1c303620');
+      for(let xx=x+4+(yy%2)*4;xx<x+width-7;xx+=10)box(xx,yy+1,1,3,'#273b3d33');
+    }
     for (let yy = y + 6; yy < y + height - 5; yy += 9) {
       for (let xx = x + 4; xx < x + width - 6; xx += 7) {
         box(xx, yy, 3, 5, '#202f38');
@@ -92,7 +99,7 @@ function paintWaterfront(): HTMLCanvasElement {
   for (let y = 127; y < HEIGHT; y++) {
     if (y % 3 === 0) box(0, y, WIDTH, 1, y < 164 ? '#2b46504d' : '#15293770');
   }
-  for (let i = 0; i < 980; i++) {
+  for (let i = 0; i < 470; i++) {
     const y = 128 + random() * 128;
     box(random() * WIDTH, y, 2 + random() * (3 + (y - 128) * .13), 1, ['#52717048', '#6e857344', '#0c263760', '#35575b70'][i % 4]);
   }
@@ -153,11 +160,11 @@ function paintWaterfront(): HTMLCanvasElement {
 
   const lamp = (x: number, foot: number, height: number) => {
     const top = foot - height;
-    // Hard-edged dithered halos stay in the same pixel language as the scenery.
-    for (let yy = -28; yy <= 28; yy++) for (let xx = -28; xx <= 28; xx++) {
-      const distance = Math.sqrt(xx * xx + yy * yy);
-      if (distance < 28 && (xx + yy) % (distance > 16 ? 4 : 2) === 0)
-        box(x + xx, top + 9 + yy, 1, 1, distance < 13 ? '#d2ac5736' : '#c29c4c16');
+    // Small, stepped translucent light pools, without a stippled halo.
+    for(let band=0;band<5;band++){
+      const radius=24-band*4;
+      box(x-radius+4,top+9-radius,radius*2-8,radius*2,'#d2b77504');
+      box(x-radius,top+13-radius,radius*2,radius*2-8,'#d2b77504');
     }
     box(x - 2, top + 17, 5, height - 17, '#101e29'); box(x - 1, top + 18, 1, height - 18, '#667060');
     box(x - 5, foot - 5, 11, 5, '#17262f'); box(x - 7, foot - 1, 15, 3, '#101d27');
@@ -171,6 +178,29 @@ function paintWaterfront(): HTMLCanvasElement {
   lamp(351, 203, 74);
   // A narrow vertical hint of lantern light on wet foreground stones.
   for (let i = 0; i < 12; i++) box(40 - random() * i * .4, 220 + i * 3, 4 + random() * i, 1, '#c3a66936');
+  // A returning traveller waits on the near landing, facing the far bank.
+  // The navy coat, worn scarf and satchel echo Shen Yan's walking sprite.
+  const px=301, py=238;
+  box(px-8,py,19,2,'#0e202b88');box(px-5,py+2,12,1,'#0e202b55');
+  box(px-5,py-9,4,8,'#1c2b34');box(px+2,py-9,4,8,'#172732');
+  box(px-6,py-2,6,3,'#0f1d29');box(px+2,py-2,6,3,'#0f1d29');
+  shape([[px-5,py-31],[px+5,py-31],[px+9,py-25],[px+8,py-8],[px-8,py-8],[px-9,py-25]],'#263845');
+  box(px-5,py-28,9,17,'#344956');box(px-4,py-28,2,17,'#465b60');
+  box(px+5,py-25,2,14,'#182d3c');box(px-8,py-23,2,12,'#4c5d5d');
+  box(px-6,py-40,11,10,'#182833');box(px-4,py-42,8,3,'#202f39');
+  box(px-5,py-39,2,5,'#3c4a4b');box(px-4,py-32,8,3,'#a18f6d');
+  box(px-5,py-30,11,2,'#b2a17c');box(px+4,py-28,3,9,'#8f8163');
+  stroke(px-5,py-28,px+5,py-11,'#957e5c');stroke(px-4,py-28,px+6,py-11,'#574c3d');
+  box(px+4,py-17,8,8,'#574937');box(px+4,py-17,8,2,'#9c8058');box(px+7,py-14,2,2,'#b59b6d');
+  box(px-9,py-13,3,3,'#a49577');box(px-10,py-12,4,6,'#c3b68f');
+  box(px-9,py-11,2,1,'#827e64');
+  // A worn mooring number and a coil of rope tie the foreground to the working quay.
+  box(358,224,10,1,'#9a927160');box(359,226,8,1,'#9a927160');
+  box(359,228,8,1,'#9a927160');box(361,224,1,6,'#9a927160');
+  for(let i=0;i<3;i++){
+    box(337-i*2,237+i,12+i*4,1,'#908164');
+    box(334-i,240+i,17+i*2,1,'#645f4e');
+  }
   return canvas;
 }
 
@@ -180,7 +210,7 @@ export function drawTitleBackground(context: CanvasRenderingContext2D, time: num
   const c = frame.getContext('2d')!;
   c.drawImage(painting, 0, 0);
   // Fog slides above the far bank. Reduced motion uses a fixed composition.
-  const phase = motion ? time * .0008 : 0;
+  const phase = motion ? time * .00025 : 0;
   for (let band = 0; band < 7; band++) {
     const drift = Math.round(Math.sin(phase + band) * 13);
     c.fillStyle = band % 2 ? '#a1b1a00b' : '#a1b1a011';
@@ -188,8 +218,8 @@ export function drawTitleBackground(context: CanvasRenderingContext2D, time: num
     c.fillRect(-27 + band * 54 + drift, 111 + band * 3, 64, 1);
   }
   if (motion) {
-    c.fillStyle = '#c2d0bd25';
-    for (let i = 0; i < 44; i++) {
+    c.fillStyle = '#c2d0bd1c';
+    for (let i = 0; i < 28; i++) {
       const x = Math.floor((i * 61 + time * .006) % WIDTH), y = Math.floor((i * 43 + time * .061) % HEIGHT);
       c.fillRect(x, y, 1, 3);
     }

@@ -186,14 +186,19 @@ function renderTitle() {
   if (!atTitle) { el.innerHTML = ''; return; }
   const focused = el.contains(document.activeElement)
     ? (document.activeElement as HTMLElement).dataset.action : null;
-  const available = !!saves.latest();
-  el.innerHTML = `<div class="title-heading"><span class="title-year">${tr("上海 · 一九六八", "SHANGHAI · 1968")}</span><h1 id="game-title">雾<span>渡</span></h1><p>THE OTHER SHORE</p></div>
+  const latest = saves.latest();
+  const available = !!latest;
+  const lastPlace = latest ? scenes.find(scene => scene.id === latest.state.scene)! : null;
+  const openingSave = latest?.dialogue && storyData.prologue.some(page => page.node === latest.dialogue);
+  el.innerHTML = `<div class="title-content"><div class="title-heading"><span class="title-year">${tr("上海 · 一九六八", "SHANGHAI · 1968")}</span><div class="title-logotype"><h1 id="game-title">雾<span>渡</span></h1><span class="title-seal" aria-hidden="true">沪</span></div><p class="title-english">THE OTHER SHORE</p><p class="title-tagline">${tr("一封旧信，一夜归途。", "An old letter. One night to return.")}</p></div>
     <nav class="title-menu" aria-label="${tr('开始菜单', 'Title menu')}">
-      <button data-action="continue" ${available ? '' : 'disabled'}>${tr('继续游戏', 'Continue')}</button>
+      <button data-action="continue" aria-describedby="title-save-note" ${available ? '' : 'disabled'}>${tr('继续游戏', 'Continue')}</button>
       <button data-action="new-story">${tr('新的故事', 'New story')}</button>
       <button data-action="saves">${tr('读取存档', 'Load game')}</button>
       <button data-action="settings">${tr('设置', 'Options')}</button>
     </nav>
+    <p class="title-save-note" id="title-save-note">${latest && lastPlace ? `${tr('上次停留', 'Last visited')} · ${openingSave ? tr('序幕', 'Prologue') : escape(t(lastPlace.name))}` : tr('从一封未署名的信开始', 'Begin with an unsigned letter')}</p>
+    </div>
     <button class="title-language" data-action="lang" aria-label="${tr('Switch to English', '切换为中文')}">${lang === 'zh' ? '中文 / EN' : '中 / English'}</button>
     <p class="title-controls">${tr('↑ ↓ 选择　Enter 确认', '↑ ↓ Select　Enter Confirm')}</p>`;
   if (focused) el.querySelector<HTMLButtonElement>(`[data-action="${focused}"]`)?.focus({ preventScroll: true });

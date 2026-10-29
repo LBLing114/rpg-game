@@ -20,6 +20,7 @@ test('title is keyboard navigable, contains no game HUD, and does not create an 
   await page.goto('/');
   await expect(page.locator('#game-title')).toHaveText('雾渡');
   await expect(title(page, 'continue')).toBeDisabled();
+  await expect(page.locator('#title-save-note')).toHaveText('从一封未署名的信开始');
   await expect(title(page, 'new-story')).toBeFocused();
   for (const id of ['dialogue', 'game-menu', 'quest-hud']) await expect(page.locator(`#${id}`)).toBeHidden();
   await page.keyboard.press('m');
@@ -115,6 +116,8 @@ test('existing auto and legacy manual saves survive visiting title, options, lan
   expect(await raw(page)).toBe(auto);
   expect(await raw(page, 'wudu-manual-v1')).toBe(legacy);
   await expect(title(page, 'continue')).toHaveText('Continue');
+  await expect(page.locator('#title-save-note')).toContainText('Last visited');
+  await expect(page.locator('#title-save-note')).not.toContainText('Prologue');
   await title(page, 'saves').click();
   await expect(page.locator('[data-slot="1"]')).toContainText('Slot 1');
   await page.locator('[data-action="slot-load-1"]').click();
@@ -150,7 +153,7 @@ test('title and save list remain usable on phone and short landscape screens in 
   await page.goto('/');
   await expect(page.locator('#world')).toHaveAttribute('data-art-ready', 'true');
   await page.screenshot({ path: 'test-results/title-mobile.png' });
-  for (const viewport of [{ width: 390, height: 844 }, { width: 844, height: 390 }, { width: 320, height: 568 }]) {
+  for (const viewport of [{ width: 390, height: 844 }, { width: 844, height: 390 }, { width: 568, height: 320 }, { width: 320, height: 568 }]) {
     await page.setViewportSize(viewport);
     for (let language = 0; language < 2; language++) {
       for (const action of ['new-story', 'saves', 'settings', 'lang']) {
